@@ -376,7 +376,8 @@ under the License.
               Use the current version to generate sample with the last features/fixes of the plugin.
               It implies that the current version is already deployed to generate the site.
             -->
-            <version>${project.version}</version>
+            <!-- <version>${project.version}</version> -->
+            <!-- can't use this version: parent still uses sourceDirectory -->
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
