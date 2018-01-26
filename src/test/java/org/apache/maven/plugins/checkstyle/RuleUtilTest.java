@@ -1,6 +1,6 @@
 package org.apache.maven.plugins.checkstyle;
 
-import org.apache.maven.plugins.checkstyle.RuleUtil;
+import junit.framework.TestCase;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,8 +21,6 @@ import org.apache.maven.plugins.checkstyle.RuleUtil;
  * under the License.
  */
 
-import junit.framework.TestCase;
-
 public class RuleUtilTest
     extends TestCase
 {
@@ -40,6 +38,7 @@ public class RuleUtilTest
         assertEquals( "misc", RuleUtil.getCategory( CHECKSTYLE_PACKAGE + ".FinalParametersCheck" ) );
         assertEquals( "test", RuleUtil.getCategory( CHECKSTYLE_PACKAGE + ".test.FinalParametersCheck" ) );
         assertEquals( "extension", RuleUtil.getCategory( "test.FinalParametersCheck" ) );
+        assertEquals( "extension", RuleUtil.getCategory( "copyright" ) );
         assertNull( RuleUtil.getCategory( (String) null ) );
     }
 
