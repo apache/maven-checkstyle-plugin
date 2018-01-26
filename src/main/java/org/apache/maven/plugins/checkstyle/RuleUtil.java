@@ -92,7 +92,7 @@ public final class RuleUtil
         }
 
         int end = eventSrcName.lastIndexOf( '.' );
-        eventSrcName = eventSrcName.substring( 0,  end );
+        eventSrcName = end == -1 ? eventSrcName : eventSrcName.substring( 0,  end );
 
         if ( CHECKSTYLE_PACKAGE.equals( eventSrcName ) )
         {
