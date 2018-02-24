@@ -32,7 +32,6 @@ under the License.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <checkstyleVersion>@project.version@</checkstyleVersion>
-    <checkstyle.violation.ignore>NewlineAtEndOfFile</checkstyle.violation.ignore>
   </properties>
 
   <build>

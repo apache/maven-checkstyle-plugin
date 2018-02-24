@@ -29,7 +29,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <checkstyle.violation.ignore>JavadocPackage</checkstyle.violation.ignore>
+    <checkstyle.violation.ignore>NewlineAtEndOfFile,JavadocPackage</checkstyle.violation.ignore>
   </properties>
 
   <build>
