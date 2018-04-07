@@ -157,7 +157,10 @@ public class DefaultCheckstyleExecutor
 
         setUpCheckstyleClassloader( checker, classPathStrings, outputDirectories );
 
-        checker.setModuleClassLoader( Thread.currentThread().getContextClassLoader() );
+        ClassLoader moduleClassLoader = Thread.currentThread().getContextClassLoader();
+        CheckstyleModuleFactory moduleFactory =
+            new CheckstyleModuleFactory( PackageNamesLoader.getPackageNames( moduleClassLoader ), moduleClassLoader );
+        checker.setModuleFactory( moduleFactory );
 
         if ( filterSet != null )
         {
@@ -254,7 +257,9 @@ public class DefaultCheckstyleExecutor
             }
         }
 
-        return checkerListener.getResults();
+        CheckstyleResults results = checkerListener.getResults();
+        results.setModuleNameMap( moduleFactory.getModuleNameMap() );
+        return results;
     }
 
     private void setUpCheckstyleClassloader( Checker checker,

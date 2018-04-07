@@ -65,6 +65,8 @@ public class CheckstyleReportGenerator
 
     private boolean enableFilesSummary;
 
+    private boolean skipEmptyViolationRules;
+
     private boolean enableRSS;
 
     private final SiteTool siteTool;
@@ -740,6 +742,16 @@ public class CheckstyleReportGenerator
         this.enableRSS = enableRSS;
     }
 
+    public boolean isSkipEmptyViolationRules()
+    {
+        return skipEmptyViolationRules;
+    }
+
+    public void setSkipEmptyViolationRules( boolean showEmptyViolationRules )
+    {
+        this.skipEmptyViolationRules = showEmptyViolationRules;
+    }
+
     public String getXrefLocation()
     {
         return xrefLocation;
@@ -814,24 +826,24 @@ public class CheckstyleReportGenerator
 
                 // count rule violations
                 long violations = 0;
-                AuditEvent lastMatchedEvent = null;
                 for ( List<AuditEvent> errors : results.getFiles().values() )
                 {
                     for ( AuditEvent event : errors )
                     {
                         if ( matchRule( event, ruleName, fixedmessage, configSeverity ) )
                         {
-                            lastMatchedEvent = event;
                             violations++;
                         }
                     }
                 }
 
-                if ( violations > 0 ) // forget rules without violations
+                if ( violations > 0 || !skipEmptyViolationRules ) // forget rules without violations when not requested
                 {
-                    String category = RuleUtil.getCategory( lastMatchedEvent );
-
-                    result.add( new ConfReference( category, childConfig, parent, violations, result.size() ) );
+                    String category = RuleUtil.getCategory( results.getModuleNameMap().get( ruleName ) );
+                    if ( category != null )
+                    {
+                        result.add( new ConfReference( category, childConfig, parent, violations, result.size() ) );
+                    }
                 }
             }
         }

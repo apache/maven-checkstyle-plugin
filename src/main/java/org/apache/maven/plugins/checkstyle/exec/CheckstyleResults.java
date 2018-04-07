@@ -38,6 +38,7 @@ import java.util.Map;
 public class CheckstyleResults
 {
     private Map<String, List<AuditEvent>> files;
+    private Map<String, String> moduleNameMap;
 
     private Configuration configuration;
 
@@ -140,5 +141,15 @@ public class CheckstyleResults
     public void setConfiguration( Configuration configuration )
     {
         this.configuration = configuration;
+    }
+
+    public Map<String, String> getModuleNameMap()
+    {
+        return moduleNameMap;
+    }
+
+    public void setModuleNameMap( Map<String, String> moduleNameMap )
+    {
+        this.moduleNameMap = moduleNameMap;
     }
 }

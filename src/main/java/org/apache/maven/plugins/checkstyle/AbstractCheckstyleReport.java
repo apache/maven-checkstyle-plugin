@@ -360,6 +360,14 @@ public abstract class AbstractCheckstyleReport
     private boolean enableRSS;
 
     /**
+     * Specifies if rules with no violations should be skipped from the Rules summary.
+     *
+     * @since 3.0.1
+     */
+    @Parameter( property = "checkstyle.skipEmptyViolationRules", defaultValue = "true" )
+    private boolean skipEmptyViolationRules;
+
+    /**
      * SiteTool.
      *
      * @since 2.2
@@ -740,6 +748,7 @@ public abstract class AbstractCheckstyleReport
         generator.setEnableSeveritySummary( enableSeveritySummary );
         generator.setEnableFilesSummary( enableFilesSummary );
         generator.setEnableRSS( enableRSS );
+        generator.setSkipEmptyViolationRules( skipEmptyViolationRules );
         generator.setCheckstyleConfig( results.getConfiguration() );
         if ( linkXRef )
         {
