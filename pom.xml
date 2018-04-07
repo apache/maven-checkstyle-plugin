@@ -25,7 +25,7 @@ under the License.
   <parent>
     <artifactId>maven-plugins</artifactId>
     <groupId>org.apache.maven.plugins</groupId>
-    <version>30</version>
+    <version>31</version>
     <relativePath>../../pom/maven/maven-plugins/pom.xml</relativePath>
   </parent>
 
@@ -71,6 +71,7 @@ under the License.
     <checkstyleVersion>6.18</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
     <sitePluginVersion>3.4</sitePluginVersion>
+    <surefire.version>2.21.0</surefire.version>
   </properties>
 
   <contributors>
