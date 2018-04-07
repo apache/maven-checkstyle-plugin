@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -602,8 +603,8 @@ public class CheckstyleViolationCheckMojo
     {
         int count = 0;
         int ignoreCount = 0;
-        RuleUtil.Matcher[] ignores =
-            ( violationIgnore == null ) ? null : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
+        List<RuleUtil.Matcher> ignores = violationIgnore == null ? Collections.<RuleUtil.Matcher>emptyList()
+                        : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
 
         String basedir = project.getBasedir().getAbsolutePath();
         String file = "";
@@ -704,19 +705,15 @@ public class CheckstyleViolationCheckMojo
         }
     }
 
-    private boolean ignore( RuleUtil.Matcher[] ignores, String source )
+    private boolean ignore( List<RuleUtil.Matcher> ignores, String source )
     {
-        if ( ignores != null )
+        for ( RuleUtil.Matcher ignore : ignores )
         {
-            for ( RuleUtil.Matcher ignore : ignores )
+            if ( ignore.match( source ) )
             {
-                if ( ignore.match( source ) )
-                {
-                    return true;
-                }
+                return true;
             }
         }
-
         return false;
     }
 

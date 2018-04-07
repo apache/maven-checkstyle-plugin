@@ -1,5 +1,7 @@
 package org.apache.maven.plugins.checkstyle;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 /*
@@ -50,18 +52,28 @@ public class RuleUtilTest
                 CHECKSTYLE_PACKAGE + ".test.FinalParametersCheck", "test.FinalParametersCheck",
                 CHECKSTYLE_PACKAGE + ".whitespace.HeaderCheck", CHECKSTYLE_PACKAGE + ".test2.FinalParametersCheck" };
 
-        RuleUtil.Matcher[] matchers = RuleUtil.parseMatchers( specs );
+        List<RuleUtil.Matcher> matchers = RuleUtil.parseMatchers( specs );
 
-        for ( int i = 0; i < matchers.length; i++ )
+        for ( int i = 0; i < matchers.size(); i++ )
         {
             String spec = specs[i];
-            RuleUtil.Matcher matcher = matchers[i];
-            for ( int j = 0; j < matchers.length; j++ )
+            RuleUtil.Matcher matcher = matchers.get( i );
+            for ( int j = 0; j < matchers.size(); j++ )
             {
                 String eventSrcName = eventSrcNames[j];
                 assertEquals( spec + " should" + ( ( i == j ) ? " " : " not " ) + "match " + eventSrcName, i == j,
                               matcher.match( eventSrcName ) );
             }
         }
+    }
+
+    public void testMatcherWithBlankStrings()
+    {
+        String[] specs = ( "   ,,foo, " ).split( "," );
+
+        List<RuleUtil.Matcher> matchers = RuleUtil.parseMatchers( specs );
+
+        assertEquals( 1, matchers.size() );
+        assertTrue( matchers.get( 0 ).match( CHECKSTYLE_PACKAGE + ".foo.SomeCheck" ) );
     }
 }

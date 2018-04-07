@@ -19,6 +19,11 @@ package org.apache.maven.plugins.checkstyle;
  * under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.plexus.util.StringUtils;
+
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 
 /**
@@ -106,12 +111,15 @@ public final class RuleUtil
         return eventSrcName.substring( eventSrcName.lastIndexOf( '.' ) + 1 );
     }
 
-    public static Matcher[] parseMatchers( String[] specs )
+    public static List<Matcher> parseMatchers( String[] specs )
     {
-        Matcher[] matchers = new Matcher[specs.length];
-        int i = 0;
-        for ( String spec: specs )
+        List<Matcher> matchers = new ArrayList<>();
+        for ( String spec : specs )
         {
+            if ( StringUtils.isBlank( spec ) )
+            {
+                continue;
+            }
             spec = spec.trim();
             Matcher matcher;
             if ( Character.isUpperCase( spec.charAt( 0 ) ) )
@@ -138,7 +146,7 @@ public final class RuleUtil
                 // by default, spec is a package name
                 matcher = new PackageMatcher( spec );
             }
-            matchers[i++] = matcher;
+            matchers.add( matcher );
         }
         return matchers;
     }
