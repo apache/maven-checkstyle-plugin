@@ -72,7 +72,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
  * @version $Id$
  */
-@Mojo( name = "check", defaultPhase = LifecyclePhase.VERIFY, requiresDependencyResolution = ResolutionScope.TEST,
+@Mojo( name = "check", defaultPhase = LifecyclePhase.VERIFY, requiresDependencyResolution = ResolutionScope.NONE,
        threadSafe = true )
 public class CheckstyleViolationCheckMojo
     extends AbstractMojo
