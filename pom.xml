@@ -70,7 +70,7 @@ under the License.
     <mavenVersion>3.0</mavenVersion>
     <checkstyleVersion>6.18</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
-    <sitePluginVersion>3.4</sitePluginVersion>
+    <sitePluginVersion>3.7.1</sitePluginVersion>
   </properties>
 
   <contributors>
