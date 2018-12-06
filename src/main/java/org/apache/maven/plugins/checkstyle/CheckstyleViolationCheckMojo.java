@@ -79,10 +79,7 @@ public class CheckstyleViolationCheckMojo
 {
 
     private static final String JAVA_FILES = "**\\/*.java";
-
-    private static final String CHECKSTYLE_FILE_HEADER = "<?xml version=\"1.0\"?>\n"
-            + "<!DOCTYPE module PUBLIC \"-//Puppy Crawl//DTD Check Configuration 1.3//EN\"\n"
-            + "        \"http://www.puppycrawl.com/dtds/configuration_1_3.dtd\">\n";
+    private static final String DEFAULT_CONFIG_LOCATION = "sun_checks.xml";
 
     /**
      * Specifies the path and filename to save the Checkstyle output. The format
@@ -198,7 +195,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.5
      */
-    @Parameter( property = "checkstyle.config.location", defaultValue = "sun_checks.xml" )
+    @Parameter( property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION )
     private String configLocation;
 
     /**
@@ -452,6 +449,15 @@ public class CheckstyleViolationCheckMojo
     private File rulesFiles;
 
     /**
+     * The header to use for the inline configuration.
+     * Only used when you specify {@code checkstyleRules}.
+     */
+    @Parameter( defaultValue = "<?xml version=\"1.0\"?>\n"
+            + "<!DOCTYPE module PUBLIC \"-//Puppy Crawl//DTD Check Configuration 1.3//EN\"\n"
+            + "        \"http://www.puppycrawl.com/dtds/configuration_1_3.dtd\">\n" )
+    private String checkstyleRulesHeader;
+
+    /**
      * Specifies whether modules with a configured severity of <code>ignore</code> should be omitted during Checkstyle
      * invocation.
      * 
@@ -481,7 +487,7 @@ public class CheckstyleViolationCheckMojo
         {
             if ( checkstyleRules != null )
             {
-                if ( !"sun_checks.xml".equals( configLocation ) )
+                if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
                 {
                     throw new MojoExecutionException( "If you use inline configuration for rules, don't specify "
                         + "a configLocation" );
@@ -496,7 +502,7 @@ public class CheckstyleViolationCheckMojo
                 try
                 {
                     FileUtils.forceMkdir( rulesFiles.getParentFile() );
-                    FileUtils.fileWrite( rulesFiles, CHECKSTYLE_FILE_HEADER + checkerModule.toString() );
+                    FileUtils.fileWrite( rulesFiles, checkstyleRulesHeader + checkerModule.toString() );
                 }
                 catch ( final IOException e )
                 {
