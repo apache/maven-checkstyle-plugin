@@ -50,6 +50,7 @@ import org.apache.maven.plugins.checkstyle.rss.CheckstyleRssGenerator;
 import org.apache.maven.plugins.checkstyle.rss.CheckstyleRssGeneratorRequest;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.util.FileUtils;
@@ -72,6 +73,8 @@ public abstract class AbstractCheckstyleReport
     public static final String PLUGIN_RESOURCES = "org/apache/maven/plugins/checkstyle";
 
     protected static final String JAVA_FILES = "**\\/*.java";
+
+    private static final String DEFAULT_CONFIG_LOCATION = "sun_checks.xml";
 
     /**
      * Specifies the cache file used to speed up Checkstyle on successive runs.
@@ -100,7 +103,7 @@ public abstract class AbstractCheckstyleReport
      * <li><code>google_checks.xml</code>: Google Checks.</li>
      * </ul>
      */
-    @Parameter( property = "checkstyle.config.location", defaultValue = "sun_checks.xml" )
+    @Parameter( property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION )
     protected String configLocation;
 
     /**
@@ -403,6 +406,49 @@ public abstract class AbstractCheckstyleReport
     private boolean omitIgnoredModules;
 
     /**
+     * By using this property, you can specify the whole Checkstyle rules
+     * inline directly inside this pom.
+     *
+     * <pre>
+     * &lt;plugin&gt;
+     *   ...
+     *   &lt;configuration&gt;
+     *     &lt;checkstyleRules&gt;
+     *       &lt;module name="Checker"&gt;
+     *         &lt;module name="FileTabCharacter"&gt;
+     *           &lt;property name="eachLine" value="true" /&gt;
+     *         &lt;/module&gt;
+     *         &lt;module name="TreeWalker"&gt;
+     *           &lt;module name="EmptyBlock"/&gt;
+     *         &lt;/module&gt;
+     *       &lt;/module&gt;
+     *     &lt;/checkstyleRules&gt;
+     *   &lt;/configuration&gt;
+     *   ...
+     * </pre>
+     *
+     * @since 2.12
+     */
+    @Parameter
+    private PlexusConfiguration checkstyleRules;
+
+    /**
+     * Dump file for inlined Checkstyle rules.
+     */
+    @Parameter( property = "checkstyle.output.rules.file",
+                    defaultValue = "${project.build.directory}/checkstyle-rules.xml" )
+    private File rulesFiles;
+
+    /**
+     * The header to use for the inline configuration.
+     * Only used when you specify {@code checkstyleRules}.
+     */
+    @Parameter( defaultValue = "<?xml version=\"1.0\"?>\n"
+            + "<!DOCTYPE module PUBLIC \"-//Puppy Crawl//DTD Check Configuration 1.3//EN\"\n"
+            + "        \"http://www.puppycrawl.com/dtds/configuration_1_3.dtd\">\n" )
+    private String checkstyleRulesHeader;
+
+    /**
      */
     @Component
     protected ResourceManager locator;
@@ -451,7 +497,30 @@ public abstract class AbstractCheckstyleReport
         // locator = new Locator( new MojoLogMonitorAdaptor( getLog() ) );
 
         // locator = new Locator( getLog(), new File( project.getBuild().getDirectory() ) );
+        if ( checkstyleRules != null )
+        {
+            if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
+            {
+                throw new MavenReportException( "If you use inline configuration for rules, don't specify "
+                        + "a configLocation" );
+            }
+            if ( checkstyleRules.getChildCount() > 1 )
+            {
+                throw new MavenReportException( "Currently only one root module is supported" );
+            }
+            PlexusConfiguration checkerModule = checkstyleRules.getChild( 0 );
 
+            try
+            {
+                FileUtils.forceMkdir( rulesFiles.getParentFile() );
+                FileUtils.fileWrite( rulesFiles, checkstyleRulesHeader + checkerModule.toString() );
+            }
+            catch ( final IOException e )
+            {
+                throw new MavenReportException( e.getMessage(), e );
+            }
+            configLocation = rulesFiles.getAbsolutePath();
+        }
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
         try
