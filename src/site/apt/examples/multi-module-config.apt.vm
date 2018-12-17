@@ -27,6 +27,10 @@
 
 Multimodule Configuration
 
+  Since version 2.12 of this Plugin you can also
+  {{{./inline-checker-config.html}inline}} the configuration directly in the
+  parent pom.
+
   Configuring the Checkstyle Plugin for use within large multimodule projects
   can be done, but it requires a little setup.
 
