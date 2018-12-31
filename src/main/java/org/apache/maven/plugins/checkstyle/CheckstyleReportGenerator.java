@@ -445,17 +445,23 @@ public class CheckstyleReportGenerator
             // http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
             String msgWithoutSingleQuote = StringUtils.replace( expectedMessage, "'", "" );
 
-            return expectedMessage.equals( event.getMessage() ) || msgWithoutSingleQuote.equals( event.getMessage() );
+            if ( ! ( expectedMessage.equals( event.getMessage() )
+                || msgWithoutSingleQuote.equals( event.getMessage() ) ) )
+            {
+                return false;
+            }
         }
         // Check the severity. This helps to distinguish between
         // different configurations for the same rule, where each
-        // configuration has a different severity, like JavadocMetod.
+        // configuration has a different severity, like JavadocMethod.
         // See also https://issues.apache.org/jira/browse/MCHECKSTYLE-41
         if ( expectedSeverity != null )
         {
-            return expectedSeverity.equals( event.getSeverityLevel().getName() );
+            if ( !expectedSeverity.equals( event.getSeverityLevel().getName() ) )
+            {
+                return false;
+            }
         }
-
         return true;
     }
 
@@ -801,8 +807,9 @@ public class CheckstyleReportGenerator
             else
             {
                 String fixedmessage = getConfigAttribute( childConfig, null, "message", null );
-                // Grab the severity from the rule configuration, use null as default value
-                String configSeverity = getConfigAttribute( childConfig, null, "severity", null );
+                // Grab the severity from the rule configuration, use "error" as default value (as is 
+                // done where the rule severity is displayed otherwise we miscount error violations)
+                String configSeverity = getConfigAttribute( childConfig, null, "severity", "error" );
 
                 // count rule violations
                 long violations = 0;
