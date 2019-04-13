@@ -27,7 +27,6 @@ under the License.
     <property name="file" value="${checkstyle.suppressions.file}"/>
   </module>
     <module name="TreeWalker">
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
         <module name="LeftCurly">
           <property name="option" value="nl"/>
         </module>

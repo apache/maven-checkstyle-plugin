@@ -23,8 +23,6 @@ Checkstyle rules for Basis Technology.
 -->
 <module name="Checker">
     <module name="TreeWalker">
-        <!-- Enable FileContentsHolder to allow us to in turn turn on suppression comments -->
-        <module name="FileContentsHolder"/>
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
         <module name="ConstantName"/>
@@ -159,7 +157,6 @@ Checkstyle rules for Basis Technology.
     <module name="RegexpHeader">
         <property name="header" value="/* A Required Header */"/>
     </module>
-    <module name="SuppressionCommentFilter"/>
     <module name="FileTabCharacter">
       <property name="eachLine" value="true"/>
     </module>

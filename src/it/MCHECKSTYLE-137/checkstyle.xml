@@ -20,8 +20,6 @@ under the License.
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
     <module name="TreeWalker">
-        <!-- Enable FileContentsHolder to allow us to in turn turn on suppression comments -->
-        <module name="FileContentsHolder"/>
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
         <module name="ConstantName"/>
@@ -89,7 +87,7 @@ under the License.
 <!-- blows up with eclipse-cs 5.6.0
         <module name="DoubleCheckedLocking"/>
 -->
-	<module name="EmptyStatement"/>	      
+	<module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField">
 	    <property name="tokens" value="VARIABLE_DEF"/>
@@ -98,7 +96,6 @@ under the License.
         <module name="InnerAssignment"/>
         <module name="MissingSwitchDefault"/>
         <module name="SimplifyBooleanExpression"/>
-        <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
         <module name="NestedIfDepth">
             <property name="max" value="3"/>
@@ -117,7 +114,6 @@ under the License.
         <module name="MultipleVariableDeclarations"/>
         <module name="UnnecessaryParentheses"/>
         <module name="FinalClass"/>
-        <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="ThrowsCount">
             <property name="max" value="5"/>
@@ -125,7 +121,7 @@ under the License.
         <module name="VisibilityModifier">
             <property name="protectedAllowed" value="true"/>
             <property name="packageAllowed" value="true"/>
-            <!-- Allow public members with 'Rule' on the end of their names to allow for 
+            <!-- Allow public members with 'Rule' on the end of their names to allow for
                  JUnit rules. Too bad we can't make this see the @nnotations.
              -->
             <property name="publicMemberPattern" value="^.*Rule$"/>
@@ -152,7 +148,6 @@ under the License.
             <property name="caseIndent" value="0"/>
         </module>
     </module>
-    <module name="SuppressionCommentFilter"/>
     <module name="FileTabCharacter">
       <property name="eachLine" value="true"/>
     </module>

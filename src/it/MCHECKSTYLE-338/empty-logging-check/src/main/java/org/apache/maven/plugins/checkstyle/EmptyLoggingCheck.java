@@ -20,10 +20,13 @@ package org.apache.maven.plugins.checkstyle;
  */
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeSet;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
@@ -32,12 +35,12 @@ public class EmptyLoggingCheck
 {
 
     @Override
-    protected void processFiltered( File file, List<String> lines )
+    protected void processFiltered( File file, FileText lines )
         throws CheckstyleException
     {
-        getMessageCollector().add( new LocalizedMessage( 0, 0, getMessageBundle(),
+        addMessages( new TreeSet<LocalizedMessage>( Collections.singleton( new LocalizedMessage( 0, 0, getMessageBundle(),
                                                          "EmptyLoggingCheck on file " + file.getName(), new Object[0],
-                                                         SeverityLevel.ERROR, getId(), getClass(), null ) );
+                                                         SeverityLevel.ERROR, getId(), getClass(), null ) ) ) );
     }
 
 }

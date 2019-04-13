@@ -63,12 +63,12 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <!-- Because Checkstyle 6.2+ requires Java 7 -->
-    <javaVersion>7</javaVersion>
+    <!-- Because Checkstyle 7+ requires Java 8 -->
+    <javaVersion>8</javaVersion>
     <maven.compiler.source>1.${javaVersion}</maven.compiler.source>
     <maven.compiler.target>1.${javaVersion}</maven.compiler.target>
     <mavenVersion>3.0</mavenVersion>
-    <checkstyleVersion>6.18</checkstyleVersion>
+    <checkstyleVersion>8.19</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
     <sitePluginVersion>3.7.1</sitePluginVersion>
   </properties>

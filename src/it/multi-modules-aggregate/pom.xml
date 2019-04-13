@@ -51,13 +51,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>@pom.version@</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-shared-resources</artifactId>
-            <version>2</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -70,7 +63,8 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>@pom.version@</version>
         <configuration>
-          <configLocation>config/maven_checks.xml</configLocation>
+          <!-- this is the file we had in 2.13, slightly adapted to Checkstyle 8.x -->
+          <configLocation>maven_checks.xml</configLocation>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
         </configuration>
         <inherited>false</inherited>
