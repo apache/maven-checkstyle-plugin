@@ -20,7 +20,6 @@
 
 assert new File( basedir, 'target/checkstyle-cachefile' ).exists();
 assert new File( basedir, 'target/checkstyle-checker.xml' ).exists();
-assert new File( basedir, 'target/checkstyle-header.txt' ).exists();
 assert new File( basedir, 'target/checkstyle-result.xml' ).exists();
 
 assert new File( basedir, 'target/site/checkstyle-aggregate.html' ).exists();

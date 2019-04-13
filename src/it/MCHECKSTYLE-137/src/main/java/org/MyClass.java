@@ -18,16 +18,13 @@ package org;
  * specific language governing permissions and limitations
  * under the License.
  */
+public class MyClass {
 
-public class MyClass
-{
     public static boolean singleCharHiragana(int v1, char v2) {
-        if (v1 != 12 || c == 'の') 
-            {
-                return true;
-            } 
-        else
-            {
-                return false;
-            }
+        if (v1 != 12 || c == 'の') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -22,6 +22,7 @@ package org.apache.maven.plugins.checkstyle.exec;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
@@ -42,7 +43,7 @@ public class CheckstyleCheckerListener
     extends AutomaticBean
     implements AuditListener
 {
-    private List<File> sourceDirectories;
+    private final List<File> sourceDirectories;
 
     private CheckstyleResults results;
 
@@ -109,18 +110,21 @@ public class CheckstyleCheckerListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void auditStarted( AuditEvent event )
     {
         setResults( new CheckstyleResults() );
     }
 
     /** {@inheritDoc} */
+    @Override
     public void auditFinished( AuditEvent event )
     {
         //do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void fileStarted( AuditEvent event )
     {
         final String fileName = StringUtils.replace( event.getFileName(), "\\", "/" );
@@ -146,6 +150,7 @@ public class CheckstyleCheckerListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void fileFinished( AuditEvent event )
     {
         getResults().setFileViolations( currentFile, events );
@@ -153,6 +158,7 @@ public class CheckstyleCheckerListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addError( AuditEvent event )
     {
         if ( SeverityLevel.IGNORE.equals( event.getSeverityLevel() ) )
@@ -167,7 +173,15 @@ public class CheckstyleCheckerListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addException( AuditEvent event, Throwable throwable )
+    {
+        //Do Nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void finishLocalSetup() throws CheckstyleException
     {
         //Do Nothing
     }
