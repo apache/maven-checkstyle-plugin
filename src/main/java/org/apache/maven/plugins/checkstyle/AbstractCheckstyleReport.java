@@ -60,6 +60,7 @@ import org.codehaus.plexus.util.StringUtils;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
 /**
@@ -628,11 +629,11 @@ public abstract class AbstractCheckstyleReport
 
             if ( "xml".equals( outputFileFormat ) )
             {
-                listener = new XMLLogger( out, true );
+                listener = new XMLLogger( out, OutputStreamOptions.CLOSE );
             }
             else if ( "plain".equals( outputFileFormat ) )
             {
-                listener = new DefaultLogger( out, true );
+                listener = new DefaultLogger( out, OutputStreamOptions.CLOSE );
             }
             else
             {
@@ -681,13 +682,13 @@ public abstract class AbstractCheckstyleReport
         if ( useFile == null )
         {
             stringOutputStream = new ByteArrayOutputStream();
-            consoleListener = new DefaultLogger( stringOutputStream, false );
+            consoleListener = new DefaultLogger( stringOutputStream, OutputStreamOptions.NONE );
         }
         else
         {
             OutputStream out = getOutputStream( useFile );
 
-            consoleListener = new DefaultLogger( out, true );
+            consoleListener = new DefaultLogger( out, OutputStreamOptions.CLOSE );
         }
 
         return consoleListener;

@@ -62,6 +62,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
 /**
@@ -731,13 +732,13 @@ public class CheckstyleViolationCheckMojo
         if ( useFile == null )
         {
             stringOutputStream = new ByteArrayOutputStream();
-            consoleListener = new DefaultLogger( stringOutputStream, false );
+            consoleListener = new DefaultLogger( stringOutputStream, OutputStreamOptions.NONE );
         }
         else
         {
             OutputStream out = getOutputStream( useFile );
 
-            consoleListener = new DefaultLogger( out, true );
+            consoleListener = new DefaultLogger( out, OutputStreamOptions.CLOSE );
         }
 
         return consoleListener;
@@ -778,7 +779,7 @@ public class CheckstyleViolationCheckMojo
 
             if ( "xml".equals( outputFileFormat ) )
             {
-                listener = new XMLLogger( out, true );
+                listener = new XMLLogger( out, OutputStreamOptions.CLOSE );
             }
             else if ( "plain".equals( outputFileFormat ) )
             {
@@ -790,8 +791,8 @@ public class CheckstyleViolationCheckMojo
                     outputXmlFile.deleteOnExit();
                     OutputStream xmlOut = getOutputStream( outputXmlFile );
                     CompositeAuditListener compoundListener = new CompositeAuditListener();
-                    compoundListener.addListener( new XMLLogger( xmlOut, true ) );
-                    compoundListener.addListener( new DefaultLogger( out, true ) );
+                    compoundListener.addListener( new XMLLogger( xmlOut, OutputStreamOptions.CLOSE ) );
+                    compoundListener.addListener( new DefaultLogger( out, OutputStreamOptions.CLOSE ) );
                     listener = compoundListener;
                 }
                 catch ( IOException e )

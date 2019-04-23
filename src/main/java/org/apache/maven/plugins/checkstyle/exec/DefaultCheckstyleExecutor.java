@@ -25,14 +25,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -58,6 +56,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
+import com.puppycrawl.tools.checkstyle.ConfigurationLoader.IgnoredModulesOptions;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.PackageNamesLoader;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;
@@ -373,9 +372,18 @@ public class DefaultCheckstyleExecutor
             Thread.currentThread().setContextClassLoader( checkstyleClassLoader );
             String configFile = getConfigFile( request );
             Properties overridingProperties = getOverridingProperties( request );
+            IgnoredModulesOptions omitIgnoredModules;
+            if ( request.isOmitIgnoredModules() )
+            {
+                omitIgnoredModules = IgnoredModulesOptions.OMIT;
+            }
+            else
+            {
+                omitIgnoredModules = IgnoredModulesOptions.EXECUTE;
+            }
             Configuration config =
                 ConfigurationLoader.loadConfiguration( configFile, new PropertiesExpander( overridingProperties ),
-                                                       request.isOmitIgnoredModules() );
+                                                       omitIgnoredModules );
             String effectiveEncoding = StringUtils.isNotEmpty( request.getEncoding() ) ? request.getEncoding() : System
                 .getProperty( "file.encoding", "UTF-8" );
             
@@ -385,18 +393,6 @@ public class DefaultCheckstyleExecutor
                                       + ", i.e. build is platform dependent!" );
             }
 
-            // MCHECKSTYLE-332 Checkstyle 6.16+ (#569): the cache is moved to the Checker module instead of TreeWalker
-            boolean cacheInChecker = false;
-            for ( Method method : Checker.class.getMethods() )
-            {
-                if ( "setCacheFile".equals( method.getName() )
-                    && Arrays.equals( method.getParameterTypes(), new Class<?>[] { String.class } ) )
-                {
-                    cacheInChecker = true;
-                    break;
-                }
-            }
-
             if ( "Checker".equals( config.getName() )
                     || "com.puppycrawl.tools.checkstyle.Checker".equals( config.getName() ) )
             {
@@ -404,34 +400,11 @@ public class DefaultCheckstyleExecutor
                 {
                     // MCHECKSTYLE-173 Only add the "charset" attribute if it has not been set
                     addAttributeIfNotExists( (DefaultConfiguration) config, "charset", effectiveEncoding );
-                    if ( cacheInChecker )
-                    {
-                        addAttributeIfNotExists( (DefaultConfiguration) config, "cacheFile", request.getCacheFile() );
-                    }
+                    addAttributeIfNotExists( (DefaultConfiguration) config, "cacheFile", request.getCacheFile() );
                 }
                 else
                 {
                     getLogger().warn( "Failed to configure file encoding on module " + config );
-                }
-            }
-            Configuration[] modules = config.getChildren();
-            for ( Configuration module : modules )
-            {
-                if ( "TreeWalker".equals( module.getName() )
-                    || "com.puppycrawl.tools.checkstyle.TreeWalker".equals( module.getName() ) )
-                {
-                    if ( module instanceof DefaultConfiguration )
-                    {
-                        if ( !cacheInChecker )
-                        {
-                            addAttributeIfNotExists( (DefaultConfiguration) module, "cacheFile",
-                                                     request.getCacheFile() );
-                        }
-                    }
-                    else
-                    {
-                        getLogger().warn( "Failed to configure cache file on module " + module );
-                    }
                 }
             }
             return config;
