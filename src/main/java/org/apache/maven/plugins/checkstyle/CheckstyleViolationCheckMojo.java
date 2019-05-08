@@ -454,8 +454,8 @@ public class CheckstyleViolationCheckMojo
      * Only used when you specify {@code checkstyleRules}.
      */
     @Parameter( defaultValue = "<?xml version=\"1.0\"?>\n"
-            + "<!DOCTYPE module PUBLIC \"-//Puppy Crawl//DTD Check Configuration 1.3//EN\"\n"
-            + "        \"http://www.puppycrawl.com/dtds/configuration_1_3.dtd\">\n" )
+            + "<!DOCTYPE module PUBLIC \"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\"\n"
+            + "        \"https://checkstyle.org/dtds/configuration_1_3.dtd\">\n" )
     private String checkstyleRulesHeader;
 
     /**
