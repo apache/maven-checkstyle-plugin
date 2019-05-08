@@ -92,8 +92,8 @@ mycompany-checkstyle-checks
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE checkstyle-packages PUBLIC
-  "-//Puppy Crawl//DTD Package Names 1.0//EN"
-  "http://www.puppycrawl.com/dtds/packages_1_0.dtd">
+  "-//Checkstyle//DTD Package Names Configuration 1.0//EN"
+  "https://checkstyle.org/dtds/packages_1_0.dtd">
 
 <checkstyle-packages>
   <package name="com.mycompany.checks"/>
@@ -203,8 +203,8 @@ mycompany-checkstyle-checks-1.0.jar
 <?xml version="1.0" ?>
 
 <!DOCTYPE module PUBLIC
-  "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-  "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+  "-//Checkstyle//DTD Checkstyle Configuration 1.2//EN"
+  "https://checkstyle.org/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
   <module name="TreeWalker">
