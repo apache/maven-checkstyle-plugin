@@ -25,7 +25,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 /**
  * @author Olivier Lamy
  * @since 2.5
- * @version $Id$
+ *
  */
 public interface CheckstyleExecutor
 {

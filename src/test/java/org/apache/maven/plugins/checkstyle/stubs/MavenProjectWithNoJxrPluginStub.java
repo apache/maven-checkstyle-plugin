@@ -26,7 +26,7 @@ import org.apache.maven.model.ReportPlugin;
 
 /**
  * @author Edwin Punzalan
- * @version $Id$
+ *
  */
 public class MavenProjectWithNoJxrPluginStub
     extends MinMavenProjectStub

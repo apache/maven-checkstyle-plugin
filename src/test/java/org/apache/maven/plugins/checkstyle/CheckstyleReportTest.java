@@ -41,7 +41,7 @@ import org.codehaus.plexus.util.WriterFactory;
 
 /**
  * @author Edwin Punzalan
- * @version $Id$
+ *
  */
 public class CheckstyleReportTest
     extends AbstractMojoTestCase

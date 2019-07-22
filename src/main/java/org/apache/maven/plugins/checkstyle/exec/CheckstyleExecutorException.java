@@ -22,7 +22,7 @@ package org.apache.maven.plugins.checkstyle.exec;
 /**
  * @author Olivier Lamy
  * @since 2.5
- * @version $Id$
+ *
  */
 public class CheckstyleExecutorException
     extends Exception

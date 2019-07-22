@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * @author Edwin Punzalan
- * @version $Id$
+ *
  */
 public class MavenProjectWithExceptionsStub
     extends MinMavenProjectStub

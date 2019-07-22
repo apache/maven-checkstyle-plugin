@@ -71,7 +71,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
  * It can also be configured to re-use an earlier analysis.
  *
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
- * @version $Id$
+ *
  */
 @Mojo( name = "check", defaultPhase = LifecyclePhase.VERIFY, requiresDependencyResolution = ResolutionScope.NONE,
        threadSafe = true )

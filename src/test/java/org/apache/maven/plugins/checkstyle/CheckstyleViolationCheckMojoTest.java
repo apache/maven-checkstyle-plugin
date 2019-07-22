@@ -33,7 +33,7 @@ import org.apache.maven.plugins.checkstyle.CheckstyleViolationCheckMojo;
 
 /**
  * @author Edwin Punzalan
- * @version $Id$
+ *
  */
 public class CheckstyleViolationCheckMojoTest
     extends AbstractMojoTestCase

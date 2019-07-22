@@ -34,7 +34,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditListener;
 /**
  * @author Olivier Lamy
  * @since 2.5
- * @version $Id$
+ *
  */
 public class CheckstyleExecutorRequest
 {

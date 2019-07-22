@@ -43,7 +43,7 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 /**
  * Generate a report based on CheckstyleResults.
  *
- * @version $Id$
+ *
  */
 public class CheckstyleReportGenerator
 {

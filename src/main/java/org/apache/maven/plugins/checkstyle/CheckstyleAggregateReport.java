@@ -33,7 +33,7 @@ import java.util.List;
  * HTML report on the violations that Checkstyle finds in a multi-module reactor
  * build.
  *
- * @version $Id$
+ *
  */
 @Mojo( name = "checkstyle-aggregate", aggregator = true, requiresDependencyResolution = ResolutionScope.COMPILE,
        threadSafe = true )

@@ -34,7 +34,7 @@ import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
 
 /**
  * @author Edwin Punzalan
- * @version $Id$
+ *
  */
 public class CheckstyleReportListenerTest
     extends TestCase

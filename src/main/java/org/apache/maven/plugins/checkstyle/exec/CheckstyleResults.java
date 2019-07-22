@@ -33,7 +33,7 @@ import java.util.Map;
  * TODO: provide fallback to disk based storage if too many results.
  *
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
- * @version $Id$
+ *
  */
 public class CheckstyleResults
 {

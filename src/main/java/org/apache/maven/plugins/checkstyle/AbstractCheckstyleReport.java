@@ -66,7 +66,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 /**
  * Base abstract class for Checkstyle reports.
  *
- * @version $Id$
+ *
  */
 public abstract class AbstractCheckstyleReport
     extends AbstractMavenReport

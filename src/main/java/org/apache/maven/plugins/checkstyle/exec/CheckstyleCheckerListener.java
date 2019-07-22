@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @author <a href="mailto:evenisse@apache.org">Emmanuel Venisse</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
+ *
  */
 public class CheckstyleCheckerListener
     extends AutomaticBean

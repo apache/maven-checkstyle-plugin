@@ -69,7 +69,7 @@ import com.puppycrawl.tools.checkstyle.filters.SuppressionsLoader;
 /**
  * @author Olivier Lamy
  * @since 2.5
- * @version $Id$
+ *
  */
 @Component( role = CheckstyleExecutor.class, hint = "default", instantiationStrategy = "per-lookup" )
 public class DefaultCheckstyleExecutor

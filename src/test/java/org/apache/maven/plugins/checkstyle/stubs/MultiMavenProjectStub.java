@@ -31,7 +31,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
- * @version $Id$
+ *
  */
 public class MultiMavenProjectStub
     extends org.apache.maven.plugin.testing.stubs.MavenProjectStub
