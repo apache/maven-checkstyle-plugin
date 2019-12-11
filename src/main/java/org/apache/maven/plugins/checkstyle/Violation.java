@@ -29,13 +29,16 @@ import java.util.StringJoiner;
  */
 public class Violation
 {
+
+  public static final String NO_COLUMN = "-1";
+
   private final String source;
 
   private final String file;
 
-  private final int line;
+  private final String line;
 
-  private @Nullable Integer column;
+  private String column = NO_COLUMN;
 
   private final String severity;
 
@@ -46,9 +49,28 @@ public class Violation
   private final String category;
 
   // Leaving out column, because there is no CHECKSTYLE:OFF support.
+
+  /**
+   * Creates a violation instance without a column set.
+   *
+   * @param source
+   *     the source, to be defined.
+   * @param file
+   *     the file in which the violation occurred.
+   * @param line
+   *     the line in the file on which the violation occurred.
+   * @param severity
+   *     the severity of the violation.
+   * @param message
+   *     the message from checkstyle for this violation.
+   * @param ruleName
+   *     the rule name from which this violation was created.
+   * @param category
+   *     the category of the checkstyle violation.
+   */
   public Violation( String source,
                     String file,
-                    int line,
+                    String line,
                     String severity,
                     String message,
                     String ruleName,
@@ -63,47 +85,53 @@ public class Violation
     this.category = Objects.requireNonNull( category );
   }
 
-  public String getSource()
+  protected String getSource( )
   {
     return source;
   }
 
-  public String getFile()
+  protected String getFile( )
   {
     return file;
   }
 
-  public long getLine()
+  protected String getLine( )
   {
     return line;
   }
 
-  public @Nullable Integer getColumn()
+  protected String getColumn( )
   {
     return column;
   }
 
-  public void setColumn( @Nullable Integer column )
+  protected void setColumn( @Nullable String column )
   {
+    if ( null == column || column.length() < 1 )
+    {
+      this.column = NO_COLUMN;
+      return;
+    }
+
     this.column = column;
   }
 
-  public String getSeverity()
+  protected String getSeverity( )
   {
     return severity;
   }
 
-  public String getMessage()
+  protected String getMessage( )
   {
     return message;
   }
 
-  public String getRuleName()
+  protected String getRuleName( )
   {
     return ruleName;
   }
 
-  public String getCategory()
+  protected String getCategory( )
   {
     return category;
   }
@@ -120,7 +148,7 @@ public class Violation
       return false;
     }
     Violation violation = ( Violation ) other;
-    return line == violation.line
+    return line.equals( violation.line )
         && Objects.equals( column, violation.column )
         && source.equals( violation.source )
         && file.equals( violation.file )
