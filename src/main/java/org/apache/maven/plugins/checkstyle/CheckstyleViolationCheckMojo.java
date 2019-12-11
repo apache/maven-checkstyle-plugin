@@ -156,10 +156,10 @@ public class CheckstyleViolationCheckMojo
      */
     @Parameter( property = "checkstyle.console", defaultValue = "true" )
     private boolean logViolationsToConsole;
-    
+
     /**
      * Output the detected violation count to the console.
-     * 
+     *
      * @since 3.0.1
      */
     @Parameter( property = "checkstyle.logViolationCount", defaultValue = "true" )
@@ -577,11 +577,14 @@ public class CheckstyleViolationCheckMojo
             XmlPullParser xpp = new MXParser();
             xpp.setInput( reader );
 
-            int violations = countViolations( xpp );
+            final List<Violation> violationsList = getViolations( xpp );
+            long violationCount = countViolations( violationsList );
+            printViolations( violationsList );
 
-            String msg = "You have " + violations + " Checkstyle violation"
-                + ( ( violations > 1 || violations == 0 ) ? "s" : "" ) + ".";
-            if ( violations > maxAllowedViolations )
+            String msg = "You have " + violationCount + " Checkstyle violation"
+                + ( ( violationCount > 1 || violationCount == 0 ) ? "s" : "" ) + ".";
+
+            if ( violationCount > maxAllowedViolations )
             {
                 if ( failOnViolation )
                 {
@@ -591,7 +594,7 @@ public class CheckstyleViolationCheckMojo
                     }
                     throw new MojoFailureException( msg );
                 }
-                
+
                 getLog().warn( "checkstyle:check violations detected but failOnViolation set to false" );
             }
             if ( logViolationCountToConsole )
@@ -621,16 +624,14 @@ public class CheckstyleViolationCheckMojo
         }
     }
 
-    private int countViolations( XmlPullParser xpp )
+    private List<Violation> getViolations( XmlPullParser xpp )
         throws XmlPullParserException, IOException
     {
-        int count = 0;
-        int ignoreCount = 0;
-        List<RuleUtil.Matcher> ignores = violationIgnore == null ? Collections.<RuleUtil.Matcher>emptyList()
-                        : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
+        List<Violation> violations = new ArrayList<>();
 
         String basedir = project.getBasedir().getAbsolutePath();
         String file = "";
+
         for ( int eventType = xpp.getEventType(); eventType != XmlPullParser.END_DOCUMENT; eventType = xpp.next() )
         {
             if ( eventType != XmlPullParser.START_TAG )
@@ -640,49 +641,99 @@ public class CheckstyleViolationCheckMojo
             else if ( "file".equals( xpp.getName() ) )
             {
                 file = PathTool.getRelativeFilePath( basedir, xpp.getAttributeValue( "", "name" ) );
-                //file = file.substring( file.lastIndexOf( File.separatorChar ) + 1 );
+                continue;
             }
-            else if ( "error".equals( xpp.getName() ) )
+            else if ( ! "error".equals( xpp.getName() ) )
             {
-                String severity = xpp.getAttributeValue( "", "severity" );
-
-                if ( !isViolation( severity ) )
-                {
-                    continue;
-                }
-
-                String source = xpp.getAttributeValue( "", "source" );
-
-                if ( ignore( ignores, source ) )
-                {
-                    ignoreCount++;
-                }
-                else
-                {
-                    count++;
-
-                    if ( logViolationsToConsole )
-                    {
-                        String line = xpp.getAttributeValue( "", "line" );
-                        String column = xpp.getAttributeValue( "", "column" );
-                        String message = xpp.getAttributeValue( "", "message" );
-                        String rule = RuleUtil.getName( source );
-                        String category = RuleUtil.getCategory( source );
-
-                        log( severity, file + ":[" + line + ( ( column == null ) ? "" : ( ',' + column ) ) + "] ("
-                            + category + ") " + rule + ": " + message );
-                    }
-                }
+                continue;
             }
+
+            String severity = xpp.getAttributeValue( "", "severity" );
+            String source = xpp.getAttributeValue( "", "source" );
+            String line = xpp.getAttributeValue( "", "line" );
+            /* Nullable */
+            String column = xpp.getAttributeValue( "", "column" );
+            String message = xpp.getAttributeValue( "", "message" );
+            String rule = RuleUtil.getName( source );
+            String category = RuleUtil.getCategory( source );
+
+            Violation violation = new Violation(
+                source,
+                file,
+                line,
+                severity,
+                message,
+                rule,
+                category
+            );
+            if ( column != null )
+            {
+                violation.setColumn( column );
+            }
+
+            violations.add( violation );
         }
 
-        if ( ignoreCount > 0 )
+        return violations;
+    }
+
+    private int countViolations( List<Violation> violations )
+    {
+        List<RuleUtil.Matcher> ignores = violationIgnore == null ? Collections.<RuleUtil.Matcher>emptyList()
+            : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
+
+        int ignored = 0;
+        int countedViolations = 0;
+
+        for ( Violation violation : violations )
         {
-            getLog().info( "Ignored " + ignoreCount + " error" + ( ( ignoreCount > 1 ) ? "s" : "" ) + ", " + count
-                               + " violation" + ( ( count > 1 ) ? "s" : "" ) + " remaining." );
+            if ( ! isViolation( violation.getSeverity() ) )
+            {
+                continue;
+            }
+
+            if ( ignore( ignores, violation.getSource() ) )
+            {
+                ignored++;
+                continue;
+            }
+
+            countedViolations++;
         }
 
-        return count;
+        if ( ignored > 0 )
+        {
+            getLog().info( "Ignored " + ignored + " error" + ( ( ignored > 1L ) ? "s" : "" ) + ", " + countedViolations
+                + " violation" + ( ( countedViolations > 1 ) ? "s" : "" ) + " remaining." );
+        }
+
+        return countedViolations;
+    }
+
+    private void printViolations( List<Violation> violations )
+    {
+        if ( ! logViolationsToConsole )
+        {
+            return;
+        }
+
+        List<RuleUtil.Matcher> ignores = violationIgnore == null ? Collections.<RuleUtil.Matcher>emptyList()
+            : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
+
+        violations.stream()
+            .filter( violation -> isViolation( violation.getSeverity() ) )
+            .filter( violation -> !ignore( ignores, violation.getSource() ) )
+            .forEach( violation ->
+            {
+                final String message = String.format( "%s:[%s%s] (%s) %s: %s",
+                    violation.getFile(),
+                    violation.getLine(),
+                    ( Violation.NO_COLUMN.equals( violation.getColumn() ) ) ? "" : ( ',' + violation.getColumn() ),
+                    violation.getCategory(),
+                    violation.getRuleName(),
+                    violation.getMessage() );
+                log( violation.getSeverity(), message );
+            } );
     }
 
     private void log( String severity, String message )
