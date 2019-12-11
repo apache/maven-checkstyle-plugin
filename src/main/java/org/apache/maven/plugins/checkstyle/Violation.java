@@ -19,8 +19,6 @@ package org.apache.maven.plugins.checkstyle;
  * under the License.
  */
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -105,7 +103,7 @@ public class Violation
     return column;
   }
 
-  protected void setColumn( @Nullable String column )
+  protected void setColumn( /* Nullable */ String column )
   {
     if ( null == column || column.length() < 1 )
     {

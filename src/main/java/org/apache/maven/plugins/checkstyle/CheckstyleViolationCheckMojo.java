@@ -50,7 +50,6 @@ import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorException;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
 import org.apache.maven.project.MavenProject;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.PathTool;
@@ -652,7 +651,8 @@ public class CheckstyleViolationCheckMojo
             String severity = xpp.getAttributeValue( "", "severity" );
             String source = xpp.getAttributeValue( "", "source" );
             String line = xpp.getAttributeValue( "", "line" );
-            @Nullable String column = xpp.getAttributeValue( "", "column" );
+            /* Nullable */
+            String column = xpp.getAttributeValue( "", "column" );
             String message = xpp.getAttributeValue( "", "message" );
             String rule = RuleUtil.getName( source );
             String category = RuleUtil.getCategory( source );
