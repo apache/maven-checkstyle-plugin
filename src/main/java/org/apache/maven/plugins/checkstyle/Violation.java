@@ -28,10 +28,15 @@ import java.util.StringJoiner;
 public class Violation
 {
 
-  public static final String NO_COLUMN = "-1";
+  /**
+   * Indicates that a column is not set.
+   */
+  protected static final String NO_COLUMN = "-1";
 
+  /** The source file name relative to the project's root. */
   private final String source;
 
+  /** File is the absolute file name to the checked file. */
   private final String file;
 
   private final String line;
@@ -52,9 +57,9 @@ public class Violation
    * Creates a violation instance without a column set.
    *
    * @param source
-   *     the source, to be defined.
+   *     the source file name, relative to the project's root.
    * @param file
-   *     the file in which the violation occurred.
+   *     the absolute file name in which the violation occurred.
    * @param line
    *     the line in the file on which the violation occurred.
    * @param severity
@@ -83,21 +88,41 @@ public class Violation
     this.category = Objects.requireNonNull( category );
   }
 
+  /**
+   * Returns the source file name relative to the project's root.
+   *
+   * @return the source file name relative to the project's root.
+   */
   protected String getSource( )
   {
     return source;
   }
 
+  /**
+   * Returns the absolute file name to the checked file.
+   *
+   * @return the absolute file name to the checked file.
+   */
   protected String getFile( )
   {
     return file;
   }
 
+  /**
+   * Returns the line of in the checked file on which the violation occurred.
+   *
+   * @return the line of in the checked file on which the violation occurred.
+   */
   protected String getLine( )
   {
     return line;
   }
 
+  /**
+   * Returns the column in which the violation occurred, if available.
+   *
+   * @return the column in which the violation occurred, if available. Otherwise returns {@code "-1"}.
+   */
   protected String getColumn( )
   {
     return column;
@@ -114,21 +139,41 @@ public class Violation
     this.column = column;
   }
 
+  /**
+   * Returns the severity of the current violation.
+   *
+   * @return the severity of the current violation.
+   */
   protected String getSeverity( )
   {
     return severity;
   }
 
+  /**
+   * Returns the message produced by checkstyle for the current violation.
+   *
+   * @return the message produced by checkstyle for the current violation.
+   */
   protected String getMessage( )
   {
     return message;
   }
 
+  /**
+   * Returns the name of the rule which led to the current violation.
+   *
+   * @return the name of the rule which led to the current violation.
+   */
   protected String getRuleName( )
   {
     return ruleName;
   }
 
+  /**
+   * Returns the category of the current violation.
+   *
+   * @return the category of the current violation.
+   */
   protected String getCategory( )
   {
     return category;
