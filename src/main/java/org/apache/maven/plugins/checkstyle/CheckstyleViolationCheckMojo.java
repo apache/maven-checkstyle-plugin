@@ -674,7 +674,7 @@ public class CheckstyleViolationCheckMojo
             violations.add( violation );
         }
 
-        return Collections.unmodifiableList( violations );
+        return violations;
     }
 
     private int countViolations( List<Violation> violations )

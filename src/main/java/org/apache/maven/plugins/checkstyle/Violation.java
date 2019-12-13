@@ -121,22 +121,27 @@ public class Violation
   /**
    * Returns the column in which the violation occurred, if available.
    *
-   * @return the column in which the violation occurred, if available. Otherwise returns {@code "-1"}.
+   * @return the column in which the violation occurred, if available. Otherwise returns {@link #NO_COLUMN}.
    */
   protected String getColumn( )
   {
     return column;
   }
 
+  /**
+   * Sets the column value for this violation to the given string value.
+   * @param column the column value to set. May be {@code null}, which will set it to the {@link #NO_COLUMN} value.
+   */
   protected void setColumn( /* Nullable */ String column )
   {
-    if ( null == column || column.length() < 1 )
+    if ( column == null || column.length() < 1 )
     {
       this.column = NO_COLUMN;
-      return;
     }
-
-    this.column = column;
+    else
+    {
+      this.column = column;
+    }
   }
 
   /**
