@@ -683,8 +683,7 @@ public class CheckstyleViolationCheckMojo
             : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
 
         int ignored = 0;
-
-        List<Violation> actualViolations = new ArrayList<>();
+        int countedViolations = 0;
 
         for ( Violation violation : violations )
         {
@@ -699,18 +698,16 @@ public class CheckstyleViolationCheckMojo
                 continue;
             }
 
-            actualViolations.add( violation );
+            countedViolations++;
         }
-
-        final int count = actualViolations.size();
 
         if ( ignored > 0 )
         {
-            getLog().info( "Ignored " + ignored + " error" + ( ( ignored > 1L ) ? "s" : "" ) + ", " + count
-                + " violation" + ( ( count > 1 ) ? "s" : "" ) + " remaining." );
+            getLog().info( "Ignored " + ignored + " error" + ( ( ignored > 1L ) ? "s" : "" ) + ", " + countedViolations
+                + " violation" + ( ( countedViolations > 1 ) ? "s" : "" ) + " remaining." );
         }
 
-        return count;
+        return countedViolations;
     }
 
     private void printViolations( List<Violation> violations )
