@@ -30,7 +30,7 @@
 ${project.name}
 
   The Checkstyle Plugin generates a report regarding the code style used by the developers. For more information about Checkstyle,
-  see {{{https://checkstyle.sourceforge.io/}https://checkstyle.sourceforge.io/}}.
+  see {{{https://checkstyle.org/}https://checkstyle.org/}}.
 
   This version of the plugin uses Checkstyle ${checkstyleVersion} by default and requires Java ${javaVersion}. But you can
   {{{./examples/upgrading-checkstyle.html}upgrade the version used at runtime}}.
