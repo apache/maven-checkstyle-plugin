@@ -156,6 +156,14 @@ public class CheckstyleViolationCheckMojo
      */
     @Parameter( property = "checkstyle.console", defaultValue = "true" )
     private boolean logViolationsToConsole;
+    
+    /**
+     * Output the detected violation count to the console.
+     * 
+     * @since 3.0.1
+     */
+    @Parameter( property = "checkstyle.logViolationCount", defaultValue = "true" )
+    private boolean logViolationCountToConsole;
 
     /**
      * Specifies the location of the resources to be used for Checkstyle.
@@ -571,20 +579,28 @@ public class CheckstyleViolationCheckMojo
 
             int violations = countViolations( xpp );
 
+            String msg = "You have " + violations + " Checkstyle violation"
+                + ( ( violations > 1 || violations == 0 ) ? "s" : "" ) + ".";
             if ( violations > maxAllowedViolations )
             {
                 if ( failOnViolation )
                 {
-                    String msg =
-                        "You have " + violations + " Checkstyle violation" + ( ( violations > 1 ) ? "s" : "" ) + ".";
                     if ( maxAllowedViolations > 0 )
                     {
                         msg += " The maximum number of allowed violations is " + maxAllowedViolations + ".";
                     }
                     throw new MojoFailureException( msg );
                 }
-
+                
                 getLog().warn( "checkstyle:check violations detected but failOnViolation set to false" );
+            }
+            if ( logViolationCountToConsole )
+            {
+                if ( maxAllowedViolations > 0 )
+                {
+                  msg += " The maximum number of allowed violations is " + maxAllowedViolations + ".";
+                }
+                getLog().info( msg );
             }
         }
         catch ( IOException | XmlPullParserException e )
