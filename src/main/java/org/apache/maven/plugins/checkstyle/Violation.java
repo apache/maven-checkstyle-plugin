@@ -33,10 +33,10 @@ public class Violation
    */
   protected static final String NO_COLUMN = "-1";
 
-  /** The source file name relative to the project's root. */
+  /** The full qualified class name of the checkstyle rule */
   private final String source;
 
-  /** File is the absolute file name to the checked file. */
+  /** The absolute path of the file containing the violation */
   private final String file;
 
   private final String line;
@@ -57,19 +57,19 @@ public class Violation
    * Creates a violation instance without a column set.
    *
    * @param source
-   *     the source file name, relative to the project's root.
+   *     the fully qualified class name of the checkstyle rule
    * @param file
-   *     the absolute file name in which the violation occurred.
+   *     the absolute file path in which the violation occurred
    * @param line
-   *     the line in the file on which the violation occurred.
+   *     the line in the file on which the violation occurred
    * @param severity
-   *     the severity of the violation.
+   *     the severity of the violation
    * @param message
-   *     the message from checkstyle for this violation.
+   *     the message from checkstyle for this violation
    * @param ruleName
-   *     the rule name from which this violation was created.
+   *     the rule name from which this violation was created
    * @param category
-   *     the category of the checkstyle violation.
+   *     the category of the checkstyle violation
    */
   public Violation( String source,
                     String file,
@@ -89,9 +89,9 @@ public class Violation
   }
 
   /**
-   * Returns the source file name relative to the project's root.
+   * Returns the fully qualified class name of the checker rule.
    *
-   * @return the source file name relative to the project's root.
+   * @return the fully qualified class name of the checker rule
    */
   protected String getSource( )
   {
@@ -99,9 +99,9 @@ public class Violation
   }
 
   /**
-   * Returns the absolute file name to the checked file.
+   * Returns the absolute file path to the checked file.
    *
-   * @return the absolute file name to the checked file.
+   * @return the absolute file path to the checked file
    */
   protected String getFile( )
   {
@@ -109,9 +109,9 @@ public class Violation
   }
 
   /**
-   * Returns the line of in the checked file on which the violation occurred.
+   * Returns the line in the checked file on which the violation occurred.
    *
-   * @return the line of in the checked file on which the violation occurred.
+   * @return the line in the checked file on which the violation occurred
    */
   protected String getLine( )
   {
@@ -147,7 +147,7 @@ public class Violation
   /**
    * Returns the severity of the current violation.
    *
-   * @return the severity of the current violation.
+   * @return the severity of the current violation
    */
   protected String getSeverity( )
   {
@@ -157,7 +157,7 @@ public class Violation
   /**
    * Returns the message produced by checkstyle for the current violation.
    *
-   * @return the message produced by checkstyle for the current violation.
+   * @return the message produced by checkstyle for the current violation
    */
   protected String getMessage( )
   {
@@ -167,7 +167,7 @@ public class Violation
   /**
    * Returns the name of the rule which led to the current violation.
    *
-   * @return the name of the rule which led to the current violation.
+   * @return the name of the rule which led to the current violation
    */
   protected String getRuleName( )
   {
@@ -177,7 +177,7 @@ public class Violation
   /**
    * Returns the category of the current violation.
    *
-   * @return the category of the current violation.
+   * @return the category of the current violation
    */
   protected String getCategory( )
   {
