@@ -41,7 +41,7 @@ class Violation
 
   private final String line;
 
-  private String column = NO_COLUMN;
+  private final String column;
 
   private final String severity;
 
