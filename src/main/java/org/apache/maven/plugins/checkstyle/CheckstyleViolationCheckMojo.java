@@ -653,6 +653,10 @@ public class CheckstyleViolationCheckMojo
             String line = xpp.getAttributeValue( "", "line" );
             /* Nullable */
             String column = xpp.getAttributeValue( "", "column" );
+            if ( column == null )
+            {
+                column = Violation.NO_COLUMN;
+            }
             String message = xpp.getAttributeValue( "", "message" );
             String rule = RuleUtil.getName( source );
             String category = RuleUtil.getCategory( source );
@@ -661,15 +665,12 @@ public class CheckstyleViolationCheckMojo
                 source,
                 file,
                 line,
+                column,
                 severity,
                 message,
                 rule,
                 category
             );
-            if ( column != null )
-            {
-                violation.setColumn( column );
-            }
 
             violations.add( violation );
         }

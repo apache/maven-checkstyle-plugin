@@ -25,7 +25,7 @@ import java.util.StringJoiner;
 /**
  * Holds data about a single violation and represents the violation itself.
  */
-public class Violation
+class Violation
 {
 
   /**
@@ -71,17 +71,19 @@ public class Violation
    * @param category
    *     the category of the checkstyle violation
    */
-  public Violation( String source,
-                    String file,
-                    String line,
-                    String severity,
-                    String message,
-                    String ruleName,
-                    String category )
+  Violation( String source,
+             String file,
+             String line,
+             String column,
+             String severity,
+             String message,
+             String ruleName,
+             String category )
   {
     this.source = Objects.requireNonNull( source );
     this.file = file;
     this.line = line;
+    this.column = column;
     this.severity = Objects.requireNonNull( severity );
     this.message = Objects.requireNonNull( message );
     this.ruleName = Objects.requireNonNull( ruleName );
@@ -126,22 +128,6 @@ public class Violation
   protected String getColumn( )
   {
     return column;
-  }
-
-  /**
-   * Sets the column value for this violation to the given string value.
-   * @param column the column value to set. May be {@code null}, which will set it to the {@link #NO_COLUMN} value.
-   */
-  protected void setColumn( /* Nullable */ String column )
-  {
-    if ( column == null || column.length() < 1 )
-    {
-      this.column = NO_COLUMN;
-    }
-    else
-    {
-      this.column = column;
-    }
   }
 
   /**
