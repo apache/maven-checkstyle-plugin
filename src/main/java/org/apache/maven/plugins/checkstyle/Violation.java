@@ -25,7 +25,7 @@ import java.util.StringJoiner;
 /**
  * Holds data about a single violation and represents the violation itself.
  */
-public class Violation
+class Violation
 {
 
   /**
@@ -71,7 +71,7 @@ public class Violation
    * @param category
    *     the category of the checkstyle violation
    */
-  public Violation( String source,
+  Violation( String source,
                     String file,
                     String line,
                     String severity,
