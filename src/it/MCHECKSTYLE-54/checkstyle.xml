@@ -17,19 +17,9 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>org.apache.maven.plugins.checkstyle</groupId>
-  <artifactId>mcheckstyle-225</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>build-tools</module>
-    <module>core</module>
-  </modules>
-</project>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.2//EN" "https://checkstyle.org/dtds/configuration_1_2.dtd">
+<module name="Checker">
+  <module name="TreeWalker">
+    <module name="JavadocMethod"/>
+  </module>
+</module>
