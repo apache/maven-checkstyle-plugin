@@ -82,7 +82,7 @@ under the License.
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod">
+        <module name="MissingJavadocMethod">
           <property name="severity" value="warning"/>
           <property name="scope" value="protected"/>
         </module>
