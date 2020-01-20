@@ -44,6 +44,11 @@
                                 <property name="charset" value="UTF-8" />
                                 <property name="severity" value="error" />
 
+                                <!-- Sizes -->
+                                <module name="LineLength">
+                                    <property name="max" value="120" />
+                                </module>
+
                                 <module name="TreeWalker">
                                     <property name="tabWidth" value="3" />
 
@@ -132,10 +137,6 @@
                                     <!-- Naming -->
                                     <module name="ConstantName" />
 
-                                    <!-- Sizes -->
-                                    <module name="LineLength">
-                                        <property name="max" value="120" />
-                                    </module>
                                 </module>
 
                                 <module name="RegexpSingleline">
