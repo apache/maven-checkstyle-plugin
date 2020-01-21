@@ -807,9 +807,10 @@ public class CheckstyleReportGenerator
             else
             {
                 String fixedmessage = getConfigAttribute( childConfig, null, "message", null );
-                // Grab the severity from the rule configuration, use "error" as default value (as is 
-                // done where the rule severity is displayed otherwise we miscount error violations)
-                String configSeverity = getConfigAttribute( childConfig, null, "severity", "error" );
+                // Grab the severity from the rule configuration. Do not set default value here as
+                // it breaks our rule aggregate section entirely.  The counts are off but this is
+                // not appropriate fix location per MCHECKSTYLE-365.
+                String configSeverity = getConfigAttribute( childConfig, null, "severity", null );
 
                 // count rule violations
                 long violations = 0;
