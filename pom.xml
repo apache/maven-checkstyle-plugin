@@ -69,6 +69,7 @@ under the License.
     <checkstyleVersion>8.29</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
     <sitePluginVersion>3.7.1</sitePluginVersion>
+    <project.build.outputTimestamp>2020-02-06T09:03:59Z</project.build.outputTimestamp>
   </properties>
 
   <contributors>
