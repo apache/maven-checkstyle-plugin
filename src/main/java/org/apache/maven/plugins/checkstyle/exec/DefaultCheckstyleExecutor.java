@@ -313,6 +313,13 @@ public class DefaultCheckstyleExecutor
         try
         {
             checker.setClassLoader( projectClassLoader );
+            /*
+             * MCHECKSTYLE-387: If the previous method call was successful, emit a warning that the user is using
+             * an old version of checkstyle.
+             */
+            getLogger().warn( "Old version of checkstyle detected. Consider updating to >= v8.30" );
+            getLogger().warn( "For more information see: "
+                + "https://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html" );
         }
         catch ( NoSuchMethodError ignored )
         {
