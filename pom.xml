@@ -68,7 +68,8 @@ under the License.
     <mavenVersion>3.0</mavenVersion>
     <checkstyleVersion>8.29</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
-    <sitePluginVersion>3.9.0</sitePluginVersion>    <project.build.outputTimestamp>2020-02-08T08:24:16Z</project.build.outputTimestamp>
+    <sitePluginVersion>3.9.0</sitePluginVersion>
+    <project.build.outputTimestamp>2020-02-08T08:24:16Z</project.build.outputTimestamp>
   </properties>
 
   <contributors>
