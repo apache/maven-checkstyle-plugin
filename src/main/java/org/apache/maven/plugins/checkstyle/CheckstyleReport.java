@@ -21,7 +21,6 @@ package org.apache.maven.plugins.checkstyle;
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -48,13 +47,6 @@ public class CheckstyleReport
     protected MavenProject getProject()
     {
         return project;
-    }
-
-    /** {@inheritDoc} */
-    public void executeReport( Locale locale )
-        throws MavenReportException
-    {
-        super.executeReport( locale );
     }
 
     /**
