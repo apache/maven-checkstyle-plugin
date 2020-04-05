@@ -604,7 +604,7 @@ public abstract class AbstractCheckstyleReport
             {
              // @todo if we can filter on hints, it should be done here...
                 String depKey = dep.getGroupId() + ":" + dep.getArtifactId();
-                artifacts.add( (Artifact) plugin.getArtifactMap().get( depKey ) );
+                artifacts.add( plugin.getArtifactMap().get( depKey ) );
             }
         }
         return artifacts;
