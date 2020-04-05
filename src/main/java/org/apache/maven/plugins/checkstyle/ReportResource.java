@@ -46,7 +46,7 @@ public class ReportResource
     public void copy( String resourceName ) throws IOException
     {
         File resource = new File( outputDirectory, resourceName );
-        if ( ( resource != null ) && ( !resource.exists() ) )
+        if ( !resource.exists() )
         {
             URL url =
                 Thread.currentThread().getContextClassLoader().getResource( resourcePathBase + "/" + resourceName );
