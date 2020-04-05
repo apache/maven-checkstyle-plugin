@@ -82,6 +82,10 @@ public class CheckstyleViolationCheckMojo
     private static final String JAVA_FILES = "**\\/*.java";
     private static final String DEFAULT_CONFIG_LOCATION = "sun_checks.xml";
 
+    private static final String SEVERITY_ERROR = "error";
+    private static final String SEVERITY_WARNING = "warning";
+    private static final String SEVERITY_INFO = "info";
+
     /**
      * Specifies the path and filename to save the Checkstyle output. The format
      * of the output file is determined by the <code>outputFileFormat</code>
@@ -121,8 +125,8 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "checkstyle.violationSeverity", defaultValue = "error" )
-    private String violationSeverity = "error";
+    @Parameter( property = "checkstyle.violationSeverity", defaultValue = SEVERITY_ERROR )
+    private String violationSeverity = SEVERITY_ERROR;
 
     /**
      * Violations to ignore. This is a comma-separated list, each value being either
@@ -642,7 +646,7 @@ public class CheckstyleViolationCheckMojo
                 file = PathTool.getRelativeFilePath( basedir, xpp.getAttributeValue( "", "name" ) );
                 //file = file.substring( file.lastIndexOf( File.separatorChar ) + 1 );
             }
-            else if ( "error".equals( xpp.getName() ) )
+            else if ( SEVERITY_ERROR.equals( xpp.getName() ) )
             {
                 String severity = xpp.getAttributeValue( "", "severity" );
 
@@ -687,11 +691,11 @@ public class CheckstyleViolationCheckMojo
 
     private void log( String severity, String message )
     {
-        if ( "info".equals( severity ) )
+        if ( SEVERITY_INFO.equals( severity ) )
         {
             getLog().info( message );
         }
-        else if ( "warning".equals( severity ) )
+        else if ( SEVERITY_WARNING.equals( severity ) )
         {
             getLog().warn( message );
         }
@@ -709,18 +713,18 @@ public class CheckstyleViolationCheckMojo
      */
     private boolean isViolation( String severity )
     {
-        if ( "error".equals( severity ) )
+        if ( SEVERITY_ERROR.equals( severity ) )
         {
-            return "error".equals( violationSeverity ) || "warning".equals( violationSeverity )
-                || "info".equals( violationSeverity );
+            return SEVERITY_ERROR.equals( violationSeverity ) || SEVERITY_WARNING.equals( violationSeverity )
+                || SEVERITY_INFO.equals( violationSeverity );
         }
-        else if ( "warning".equals( severity ) )
+        else if ( SEVERITY_WARNING.equals( severity ) )
         {
-            return "warning".equals( violationSeverity ) || "info".equals( violationSeverity );
+            return SEVERITY_WARNING.equals( violationSeverity ) || SEVERITY_INFO.equals( violationSeverity );
         }
-        else if ( "info".equals( severity ) )
+        else if ( SEVERITY_INFO.equals( severity ) )
         {
-            return "info".equals( violationSeverity );
+            return SEVERITY_INFO.equals( violationSeverity );
         }
         else
         {
