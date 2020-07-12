@@ -71,6 +71,10 @@ public class CheckstyleReportGenerator
 
     private String xrefLocation;
 
+    private String xrefTestLocation;
+
+    private List<File> testSourceDirectories = new ArrayList<>();
+
     private List<String> treeWalkerNames = Collections.singletonList( "TreeWalker" );
 
     private final IconTool iconTool;
@@ -673,9 +677,10 @@ public class CheckstyleReportGenerator
             sink.tableCell();
 
             int line = event.getLine();
-            if ( getXrefLocation() != null && line != 0 )
+            String effectiveXrefLocation = getEffectiveXrefLocation( eventList );
+            if ( effectiveXrefLocation != null && line != 0 )
             {
-                sink.link( getXrefLocation() + "/" + filename.replaceAll( "\\.java$", ".html" ) + "#L"
+                sink.link( effectiveXrefLocation + "/" + filename.replaceAll( "\\.java$", ".html" ) + "#L"
                     + line );
                 sink.text( String.valueOf( line ) );
                 sink.link_();
@@ -688,6 +693,32 @@ public class CheckstyleReportGenerator
 
             sink.tableRow_();
         }
+    }
+
+    private String getEffectiveXrefLocation( List<AuditEvent> eventList )
+    {
+        String absoluteFilename = eventList.get( 0 ).getFileName();
+        if ( isTestSource( absoluteFilename ) )
+        {
+            return getXrefTestLocation();
+        }
+        else
+        {
+            return getXrefLocation();
+        }
+    }
+
+    private boolean isTestSource( final String absoluteFilename )
+    {
+        for ( File testSourceDirectory : testSourceDirectories )
+        {
+            if ( absoluteFilename.startsWith( testSourceDirectory.getAbsolutePath() ) )
+            {
+                return true;
+            }
+        }
+      
+        return false;
     }
 
     public SeverityLevel getSeverityLevel()
@@ -748,6 +779,26 @@ public class CheckstyleReportGenerator
     public void setXrefLocation( String xrefLocation )
     {
         this.xrefLocation = xrefLocation;
+    }
+
+    public String getXrefTestLocation()
+    {
+        return xrefTestLocation;
+    }
+
+    public void setXrefTestLocation( String xrefTestLocation )
+    {
+        this.xrefTestLocation = xrefTestLocation;
+    }
+
+    public List<File> getTestSourceDirectories() 
+    {
+        return testSourceDirectories;
+    }
+
+    public void setTestSourceDirectories( List<File> testSourceDirectories ) 
+    {
+        this.testSourceDirectories = testSourceDirectories;
     }
 
     public Configuration getCheckstyleConfig()
