@@ -42,6 +42,7 @@ under the License.
           <consoleOutput>false</consoleOutput>
           <linkXRef>true</linkXRef>
           <xrefLocation>${basedir}/target/site/xref</xrefLocation>
+          <xrefTestLocation>${basedir}/target/site/xref-test</xrefTestLocation>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
