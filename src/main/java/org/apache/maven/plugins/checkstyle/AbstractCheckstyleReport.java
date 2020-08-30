@@ -795,7 +795,7 @@ public abstract class AbstractCheckstyleReport
     private String determineRelativePath( File location )
     {
       String relativePath = PathTool.getRelativePath( getOutputDirectory(), location.getAbsolutePath() );
-      if ( StringUtils.isEmpty( relativePath ) )
+      if ( relativePath == null || relativePath.trim().isEmpty() )
       {
           relativePath = ".";
       }
