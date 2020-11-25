@@ -21,7 +21,6 @@ package org.apache.maven.plugins.checkstyle;
 
 import junit.framework.TestCase;
 
-import org.apache.maven.plugins.checkstyle.ReportResource;
 import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
