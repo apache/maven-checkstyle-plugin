@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
@@ -496,7 +495,6 @@ public class DefaultCheckstyleExecutor
         throws CheckstyleExecutorException
     {
         Properties p = new Properties();
-        InputStream in = null;
         try
         {
             if ( request.getPropertiesLocation() != null )
@@ -511,10 +509,10 @@ public class DefaultCheckstyleExecutor
 
                 if ( propertiesFile != null )
                 {
-                    in = new FileInputStream( propertiesFile );
-                    p.load( in );
-                    in.close();
-                    in = null;
+                    try ( InputStream in = new FileInputStream( propertiesFile ) )
+                    {
+                        p.load( in );
+                    }
                 }
             }
 
@@ -569,10 +567,6 @@ public class DefaultCheckstyleExecutor
         catch ( IOException | ResourceNotFoundException | FileResourceCreationException e )
         {
             throw new CheckstyleExecutorException( "Failed to get overriding properties", e );
-        }
-        finally
-        {
-            IOUtils.closeQuietly( in );
         }
         if ( request.getSuppressionsFileExpression() != null )
         {
