@@ -27,9 +27,6 @@ import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 
 import java.util.Collections;
 import java.util.Map;
-
-import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
