@@ -66,7 +66,7 @@ under the License.
     <!-- Because Checkstyle 7+ requires Java 8 -->
     <javaVersion>8</javaVersion>
     <mavenVersion>3.0</mavenVersion>
-    <checkstyleVersion>8.29</checkstyleVersion>
+    <checkstyleVersion>8.38</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
     <sitePluginVersion>3.9.0</sitePluginVersion>
     <project.build.outputTimestamp>2020-02-08T08:24:16Z</project.build.outputTimestamp>
@@ -207,13 +207,6 @@ under the License.
       <groupId>com.puppycrawl.tools</groupId>
       <artifactId>checkstyle</artifactId>
       <version>${checkstyleVersion}</version>
-      <exclusions>
-        <!-- MCHECKSTYLE-156 -->
-        <exclusion>
-          <groupId>com.sun</groupId>
-          <artifactId>tools</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- misc -->
