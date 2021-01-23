@@ -26,7 +26,7 @@ under the License.
     <artifactId>maven-plugins</artifactId>
     <groupId>org.apache.maven.plugins</groupId>
     <version>34</version>
-    <relativePath>../../pom/maven/maven-plugins/pom.xml</relativePath>
+    <relativePath />
   </parent>
 
   <artifactId>maven-checkstyle-plugin</artifactId>
@@ -69,6 +69,7 @@ under the License.
     <checkstyleVersion>8.29</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
     <sitePluginVersion>3.9.0</sitePluginVersion>
+    <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2020-02-08T08:24:16Z</project.build.outputTimestamp>
   </properties>
 
@@ -267,10 +268,15 @@ under the License.
             </excludes>
           </configuration>
         </plugin>
+        <!-- remove with parent pom upgrade -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M3</version>
         </plugin>
       </plugins>
     </pluginManagement>
