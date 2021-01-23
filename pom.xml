@@ -278,6 +278,22 @@ under the License.
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>3.0.0-M3</version>
         </plugin>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.1.1</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>8.39</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.shared</groupId>
+              <artifactId>maven-shared-resources</artifactId>
+              <version>3</version>
+            </dependency>
+          </dependencies>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
