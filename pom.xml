@@ -68,10 +68,7 @@ under the License.
     <mavenVersion>3.0</mavenVersion>
     <checkstyleVersion>8.29</checkstyleVersion>
     <doxiaVersion>1.4</doxiaVersion>
-<<<<<<< HEAD
     <sitePluginVersion>3.9.1</sitePluginVersion>
-=======
-    <sitePluginVersion>3.9.0</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
 >>>>>>> master
