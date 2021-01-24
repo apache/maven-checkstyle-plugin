@@ -32,14 +32,18 @@ assert htmlReportFile.exists();
  *
  * A more robust solution would be to parse the HTML, but that's
  * a lot more effort than required to actually verify the behaviour.
+ *
+ * TODO: The original fix of MCHECKSTYLE-365 does not take into account when 'error'
+ * type doesn't exist and therefore breaks 'rules' aggregate reporting. As a result, counts
+ * set back to 3 and code is reverted. A better fix needs to be implemented.
  */
 
 // Case with no custom messages
 def numberOfOccurancesOfFileTabCharacter = htmlReportFile.text.count(">FileTabCharacter<")
-assert 2 == numberOfOccurancesOfFileTabCharacter;
+assert 3 == numberOfOccurancesOfFileTabCharacter;
 
 // Case with custom messages
 def numberOfOccurancesOfRegexpSingleline = htmlReportFile.text.count(">RegexpSingleline<");
-assert 2 == numberOfOccurancesOfRegexpSingleline;
+assert 3 == numberOfOccurancesOfRegexpSingleline;
 
 return true;

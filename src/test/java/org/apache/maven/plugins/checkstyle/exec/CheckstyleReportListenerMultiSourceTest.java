@@ -29,12 +29,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.maven.plugins.checkstyle.exec.CheckstyleCheckerListener;
-import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
-
-/**
- *
- */
 public class CheckstyleReportListenerMultiSourceTest
     extends TestCase
 {

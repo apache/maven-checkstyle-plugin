@@ -1,4 +1,6 @@
-/**
+package org;
+
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,4 +19,9 @@
  * under the License.
  */
 
-asfMavenTlpPlgnBuild(jdk:['8','11','13','14'])
+/**
+ * My class.
+ */
+public class MyClass
+{
+}

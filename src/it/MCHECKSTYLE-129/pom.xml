@@ -57,7 +57,7 @@ under the License.
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${checkstyleVersion}</version>
         <configuration>
-          <configLocation>https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-8.19/src/main/resources/sun_checks.xml</configLocation>
+          <configLocation>https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-8.28/src/main/resources/sun_checks.xml</configLocation>
         </configuration>
       </plugin>
     </plugins>

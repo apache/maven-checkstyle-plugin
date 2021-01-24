@@ -1,4 +1,5 @@
-/**
+
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,5 +17,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+def buildLog = new File( basedir, 'build.log' )
 
-asfMavenTlpPlgnBuild(jdk:['8','11','13','14'])
+assert buildLog.text.contains( "[INFO] You have 1 Checkstyle violation. The maximum number of allowed violations is 10." )

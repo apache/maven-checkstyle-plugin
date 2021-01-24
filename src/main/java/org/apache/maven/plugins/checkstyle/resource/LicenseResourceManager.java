@@ -46,7 +46,7 @@ public class LicenseResourceManager
     @Override
     public void addSearchPath( String id, String path )
     {
-        ResourceLoader loader = (ResourceLoader) resourceLoaders.get( id );
+        ResourceLoader loader = resourceLoaders.get( id );
 
         if ( loader == null )
         {

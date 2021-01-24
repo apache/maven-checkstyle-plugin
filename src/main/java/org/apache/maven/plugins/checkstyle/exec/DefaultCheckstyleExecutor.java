@@ -20,7 +20,6 @@ package org.apache.maven.plugins.checkstyle.exec;
  */
 
 import java.io.ByteArrayInputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,7 +38,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
@@ -157,51 +155,7 @@ public class DefaultCheckstyleExecutor
                                     testSourceDirectories );
         }
 
-        final List<URL> urls = new ArrayList<>( classPathStrings.size() );
-
-        for ( String path : classPathStrings )
-        {
-            try
-            {
-                urls.add( new File( path ).toURI().toURL() );
-            }
-            catch ( MalformedURLException e )
-            {
-                throw new CheckstyleExecutorException( e.getMessage(), e );
-            }
-        }
-
-        for ( String outputDirectoryString : outputDirectories )
-        {
-            try
-            {
-                if ( outputDirectoryString != null )
-                {
-                    File outputDirectoryFile = new File( outputDirectoryString );
-                    if ( outputDirectoryFile.exists() )
-                    {
-                        URL outputDirectoryUrl = outputDirectoryFile.toURI().toURL();
-                        getLogger().debug( "Adding the outputDirectory " + outputDirectoryUrl.toString()
-                                               + " to the Checkstyle class path" );
-                        urls.add( outputDirectoryUrl );
-                    }
-                }
-            }
-            catch ( MalformedURLException e )
-            {
-                throw new CheckstyleExecutorException( e.getMessage(), e );
-            }
-        }
-
-        URLClassLoader projectClassLoader = AccessController.doPrivileged( new PrivilegedAction<URLClassLoader>()
-        {
-            public URLClassLoader run()
-            {
-                return new URLClassLoader( urls.toArray( new URL[urls.size()] ), null );
-            }
-        } );
-
-        checker.setClassLoader( projectClassLoader );
+        setUpCheckstyleClassloader( checker, classPathStrings, outputDirectories );
 
         checker.setModuleClassLoader( Thread.currentThread().getContextClassLoader() );
 
@@ -247,19 +201,6 @@ public class DefaultCheckstyleExecutor
         int nbErrors = checker.process( files );
 
         checker.destroy();
-
-        if ( projectClassLoader instanceof Closeable )
-        {
-            try
-            {
-                ( ( Closeable ) projectClassLoader ).close();
-            }
-            catch ( IOException ex ) 
-            {
-                // Nothing we can do - and not detrimental to the build (save running out of file handles).
-                getLogger().info( "Failed to close custom Classloader - this indicated a bug in the code.", ex );
-            }
-        }
 
         if ( request.getStringOutputStream() != null )
         {
@@ -314,6 +255,80 @@ public class DefaultCheckstyleExecutor
         }
 
         return checkerListener.getResults();
+    }
+
+    private void setUpCheckstyleClassloader( Checker checker,
+                                             List<String> classPathStrings,
+                                             List<String> outputDirectories )
+        throws CheckstyleExecutorException
+    {
+        final List<URL> urls = new ArrayList<>( classPathStrings.size() );
+
+        for ( String path : classPathStrings )
+        {
+            try
+            {
+                urls.add( new File( path ).toURI().toURL() );
+            }
+            catch ( MalformedURLException e )
+            {
+                throw new CheckstyleExecutorException( e.getMessage(), e );
+            }
+        }
+
+        for ( String outputDirectoryString : outputDirectories )
+        {
+            try
+            {
+                if ( outputDirectoryString != null )
+                {
+                    File outputDirectoryFile = new File( outputDirectoryString );
+                    if ( outputDirectoryFile.exists() )
+                    {
+                        URL outputDirectoryUrl = outputDirectoryFile.toURI().toURL();
+                        getLogger().debug( "Adding the outputDirectory " + outputDirectoryUrl.toString()
+                                               + " to the Checkstyle class path" );
+                        urls.add( outputDirectoryUrl );
+                    }
+                }
+            }
+            catch ( MalformedURLException e )
+            {
+                throw new CheckstyleExecutorException( e.getMessage(), e );
+            }
+        }
+
+        URLClassLoader projectClassLoader = AccessController.doPrivileged( new PrivilegedAction<URLClassLoader>()
+        {
+            public URLClassLoader run()
+            {
+                return new URLClassLoader( urls.toArray( new URL[0] ), null );
+            }
+        } );
+
+        /*
+         * MCHECKSTYLE-381: More recent Checkstyle versions will drop the setClassLoader() method.
+         * However, it was used before Checkstyle 8.25.
+         */
+        try
+        {
+            checker.setClassLoader( projectClassLoader );
+            /*
+             * MCHECKSTYLE-387: If the previous method call was successful, emit a warning that the user is using
+             * an old version of checkstyle.
+             */
+            getLogger().warn( "Old version of checkstyle detected. Consider updating to >= v8.30" );
+            getLogger().warn( "For more information see: "
+                + "https://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html" );
+        }
+        catch ( NoSuchMethodError ignored )
+        {
+            /*
+             * The current checkstyle version does not support the method setClassLoader anymore.
+             * This is expected. The method call is being retained for less recent versions of checkstyle.
+             */
+        }
+
     }
 
     protected void addSourceDirectory( CheckstyleCheckerListener sinkListener, Collection<File> sourceDirectories,
@@ -487,7 +502,6 @@ public class DefaultCheckstyleExecutor
         throws CheckstyleExecutorException
     {
         Properties p = new Properties();
-        InputStream in = null;
         try
         {
             if ( request.getPropertiesLocation() != null )
@@ -502,10 +516,10 @@ public class DefaultCheckstyleExecutor
 
                 if ( propertiesFile != null )
                 {
-                    in = new FileInputStream( propertiesFile );
-                    p.load( in );
-                    in.close();
-                    in = null;
+                    try ( InputStream in = new FileInputStream( propertiesFile ) )
+                    {
+                        p.load( in );
+                    }
                 }
             }
 
@@ -560,10 +574,6 @@ public class DefaultCheckstyleExecutor
         catch ( IOException | ResourceNotFoundException | FileResourceCreationException e )
         {
             throw new CheckstyleExecutorException( "Failed to get overriding properties", e );
-        }
-        finally
-        {
-            IOUtils.closeQuietly( in );
         }
         if ( request.getSuppressionsFileExpression() != null )
         {
