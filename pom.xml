@@ -71,7 +71,6 @@ under the License.
     <sitePluginVersion>3.9.1</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
->>>>>>> master
   </properties>
 
   <contributors>
