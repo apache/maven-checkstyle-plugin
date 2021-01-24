@@ -134,6 +134,11 @@ under the License.
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-core</artifactId>
+      <version>${doxiaVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-sink-api</artifactId>
       <version>${doxiaVersion}</version>
     </dependency>
@@ -172,6 +177,11 @@ under the License.
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-resources</artifactId>
       <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+      <version>1.4.2</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
