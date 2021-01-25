@@ -28,13 +28,15 @@ import org.apache.velocity.exception.VelocityException;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <p>
- * A component to work with VelocityTemplates from within plugins.
+ * A component to work with Velocity templates from within plugins.
  * <p>
  * You will need to reference the velocity component as a parameter
  * in your plugin.  Like this:
@@ -77,51 +79,33 @@ public class VelocityTemplate
      * Using a specified Velocity Template and provided context, create the outputFilename.
      *
      * @param outputFilename the file to be generated.
-     * @param template       the velocity template to use.
-     * @param context        the velocity context map.
-     * @throws VelocityException if the template was not found or any other Velocity exception.
-     * @throws MojoExecutionException if merging the velocity template failed.
-     * @throws IOException if there was an error when writing to the output file.
+     * @param template       the velocity template to use
+     * @param context        the velocity context map
+     * @throws VelocityException if the template was not found or any other Velocity exception
+     * @throws MojoExecutionException if merging the velocity template failed
+     * @throws IOException if there was an error writing to the output file
      */
     public void generate( String outputFilename, String template, Context context )
         throws VelocityException, MojoExecutionException, IOException
     {
-        Writer writer = null;
 
-        try
+        File outputFile = new File( outputFilename );
+        if ( !outputFile.getParentFile().exists() )
         {
-            File f = new File( outputFilename );
-
-            if ( !f.getParentFile().exists() )
-            {
-                f.getParentFile().mkdirs();
-            }
-
-            writer = new FileWriter( f );
-
+            outputFile.getParentFile().mkdirs();
+        }
+        
+        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), StandardCharsets.UTF_8 ) )
+        {
             getVelocity().getEngine().mergeTemplate( templateDirectory + "/" + template, context, writer );
         }
         catch ( ResourceNotFoundException e )
         {
             throw new ResourceNotFoundException( "Template not found: " + templateDirectory + "/" + template, e );
         }
-        catch ( VelocityException | IOException e )
-        {
-            throw e; // to get past generic catch for Exception.
-        }
-        catch ( Exception e )
+        catch ( RuntimeException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        }
-        finally
-        {
-            if ( writer != null )
-            {
-                writer.flush();
-                writer.close();
-
-                getLog().debug( "File " + outputFilename + " created..." );
-            }
         }
     }
 
