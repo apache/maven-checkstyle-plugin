@@ -89,13 +89,13 @@ public class VelocityTemplate
         throws VelocityException, MojoExecutionException, IOException
     {
 
-        File f = new File( outputFilename );
-        if ( !f.getParentFile().exists() )
+        File outputFile = new File( outputFilename );
+        if ( !outputFile.getParentFile().exists() )
         {
-            f.getParentFile().mkdirs();
+            outputFile.getParentFile().mkdirs();
         }
         
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( f ), StandardCharsets.UTF_8 ) )
+        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), StandardCharsets.UTF_8 ) )
         {
             getVelocity().getEngine().mergeTemplate( templateDirectory + "/" + template, context, writer );
         }
