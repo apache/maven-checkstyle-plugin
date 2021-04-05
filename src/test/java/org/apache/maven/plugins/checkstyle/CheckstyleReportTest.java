@@ -215,7 +215,7 @@ public class CheckstyleReportTest
         String htmlString = FileUtils.fileRead( outputHtml );
 
         boolean searchHeaderFound =
-            ( htmlString.indexOf( "<h2>" + bundle.getString( "report.checkstyle.rules" ) ) > 0 );
+            htmlString.contains( getHtmlHeader( bundle.getString( "report.checkstyle.rules" ) ) );
         Boolean rules = (Boolean) getVariableValueFromObject( mojo, "enableRulesSummary" );
         if (rules)
         {
@@ -226,8 +226,7 @@ public class CheckstyleReportTest
             assertFalse( "Test for Rules Summary", searchHeaderFound );
         }
 
-        searchHeaderFound =
-            ( htmlString.indexOf( "<h2>" + bundle.getString( "report.checkstyle.summary" )  ) > 0 );
+        searchHeaderFound = htmlString.contains( getHtmlHeader( bundle.getString( "report.checkstyle.summary" ) ) );
         Boolean severity = (Boolean) getVariableValueFromObject( mojo, "enableSeveritySummary" );
         if (severity)
         {
@@ -238,8 +237,7 @@ public class CheckstyleReportTest
             assertFalse( "Test for Severity Summary", searchHeaderFound );
         }
 
-        searchHeaderFound =
-            ( htmlString.indexOf( "<h2>" + bundle.getString( "report.checkstyle.files" ) ) > 0 );
+        searchHeaderFound = htmlString.contains( getHtmlHeader( bundle.getString( "report.checkstyle.files" ) ) );
         Boolean files = (Boolean) getVariableValueFromObject( mojo, "enableFilesSummary" );
         if (files)
         {
@@ -251,6 +249,11 @@ public class CheckstyleReportTest
         }
 
         return outputHtml;
+    }
+
+    private static String getHtmlHeader( String s )
+    {
+        return ">" + s + "</h2>";
     }
 
     /**
