@@ -37,6 +37,6 @@ assert item != null
 assert item.title.text().startsWith('File: 1,')
 
 def html = new File( basedir, 'target/site/checkstyle.html' ).text;
-assert html.contains( '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' );
+assert html.contains( '<meta charset="UTF-8" />' );
 
 return true;

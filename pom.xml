@@ -65,9 +65,9 @@ under the License.
   <properties>
     <!-- Because Checkstyle 7+ requires Java 8 -->
     <javaVersion>8</javaVersion>
-    <mavenVersion>3.0</mavenVersion>
+    <mavenVersion>3.1.1</mavenVersion>
     <checkstyleVersion>8.29</checkstyleVersion>
-    <doxiaVersion>1.4</doxiaVersion>
+    <doxiaVersion>1.9.2</doxiaVersion>
     <sitePluginVersion>3.9.1</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
@@ -116,51 +116,39 @@ under the License.
     <!-- shared -->
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-api</artifactId>
-      <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
-      <version>2.3</version>
+      <version>3.0.0</version>
       <exclusions>
-        <exclusion>
-          <groupId>org.apache.maven</groupId>
-          <artifactId>maven-project</artifactId>
+       <exclusion>
+          <groupId>org.apache.maven.doxia</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- shared to help doxia work with the old version of maven -->
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+      <version>0.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+      <version>3.2.5</version>
+      <classifier>no_aop</classifier>
     </dependency>
 
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
-      <artifactId>doxia-sink-api</artifactId>
-      <version>${doxiaVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.doxia</groupId>
-      <artifactId>doxia-decoration-model</artifactId>
-      <version>${doxiaVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-site-renderer</artifactId>
       <version>${doxiaVersion}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-container-default</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-integration-tools</artifactId>
-      <version>1.6</version>
+      <version>${doxiaVersion}</version>
     </dependency>
 
     <!-- plexus -->
@@ -234,7 +222,7 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>2.1</version>
+      <version>3.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
