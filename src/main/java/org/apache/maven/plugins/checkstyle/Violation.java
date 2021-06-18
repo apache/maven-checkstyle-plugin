@@ -196,10 +196,10 @@ class Violation
       return false;
     }
     Violation violation = ( Violation ) other;
-    return line.equals( violation.line )
+    return Objects.equals( line, violation.line )
         && Objects.equals( column, violation.column )
         && source.equals( violation.source )
-        && file.equals( violation.file )
+        && Objects.equals( file, violation.file )
         && severity.equals( violation.severity )
         && message.equals( violation.message )
         && ruleName.equals( violation.ruleName )
