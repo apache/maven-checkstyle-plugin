@@ -27,8 +27,8 @@ import java.util.TreeSet;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 
 public class EmptyLoggingCheck
     extends AbstractFileSetCheck
@@ -38,7 +38,7 @@ public class EmptyLoggingCheck
     protected void processFiltered( File file, FileText lines )
         throws CheckstyleException
     {
-        addMessages( new TreeSet<LocalizedMessage>( Collections.singleton( new LocalizedMessage( 0, 0, getMessageBundle(),
+        addViolations( new TreeSet<Violation>( Collections.singleton( new Violation( 0, 0, getMessageBundle(),
                                                          "EmptyLoggingCheck on file " + file.getName(), new Object[0],
                                                          SeverityLevel.ERROR, getId(), getClass(), null ) ) ) );
     }

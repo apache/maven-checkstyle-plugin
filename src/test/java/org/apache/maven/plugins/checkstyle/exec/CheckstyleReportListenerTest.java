@@ -20,8 +20,9 @@ package org.apache.maven.plugins.checkstyle.exec;
  */
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.api.Violation;
+
 
 import junit.framework.TestCase;
 
@@ -67,20 +68,20 @@ public class CheckstyleReportListenerTest
 
         AuditEvent event = new AuditEvent( this, "/source/path/file1", null );
         fireFileStarted( event );
-        LocalizedMessage message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.INFO, null, getClass(), null );
+        Violation message = new Violation( 0, 0, "", "", null, SeverityLevel.INFO, null, getClass(), null );
         fireAddError( new AuditEvent( this, "/source/path/file1", message ) );
         fireFileFinished( event );
 
         event = new AuditEvent( this, "/source/path/file2", null );
         fireFileStarted( event );
-        message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.WARNING, null, getClass(), null );
+        message = new Violation( 0, 0, "", "", null, SeverityLevel.WARNING, null, getClass(), null );
         fireAddError( new AuditEvent( this, "/source/path/file2", message ) );
         fireAddError( new AuditEvent( this, "/source/path/file2", message ) );
         fireFileFinished( event );
 
         event = new AuditEvent( this, "/source/path/file3", null );
         fireFileStarted( event );
-        message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.ERROR, null, getClass(), null );
+        message = new Violation( 0, 0, "", "", null, SeverityLevel.ERROR, null, getClass(), null );
         fireAddError( new AuditEvent( this, "/source/path/file3", message ) );
         fireAddError( new AuditEvent( this, "/source/path/file3", message ) );
         fireAddError( new AuditEvent( this, "/source/path/file3", message ) );
@@ -88,7 +89,7 @@ public class CheckstyleReportListenerTest
 
         event = new AuditEvent( this, "/source/path/file4", null );
         fireFileStarted( event );
-        message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.IGNORE, null, getClass(), null );
+        message = new Violation( 0, 0, "", "", null, SeverityLevel.IGNORE, null, getClass(), null );
         fireAddError( new AuditEvent( this, "/source/path/file4", message ) );
         fireAddError( new AuditEvent( this, "/source/path/file4", message ) );
         fireAddError( new AuditEvent( this, "/source/path/file4", message ) );

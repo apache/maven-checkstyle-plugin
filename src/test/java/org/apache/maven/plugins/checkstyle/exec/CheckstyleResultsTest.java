@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 
 import java.util.Collections;
 import java.util.Map;
@@ -75,24 +75,24 @@ public class CheckstyleResultsTest
     {
         Map<String, List<AuditEvent>> files = new HashMap<>();
 
-        LocalizedMessage message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.INFO, null, getClass(), null );
+        Violation message = new Violation( 0, 0, "", "", null, SeverityLevel.INFO, null, getClass(), null );
         AuditEvent event = new AuditEvent( this, "file1", message );
         files.put( "file1", Collections.singletonList( event ) );
 
-        message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.WARNING, null, getClass(), null );
+        message = new Violation( 0, 0, "", "", null, SeverityLevel.WARNING, null, getClass(), null );
         List<AuditEvent> events = new ArrayList<>();
         events.add( new AuditEvent( this, "file2", message ) );
         events.add( new AuditEvent( this, "file2", message ) );
         files.put( "file2", events );
 
-        message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.ERROR, null, getClass(), null );
+        message = new Violation( 0, 0, "", "", null, SeverityLevel.ERROR, null, getClass(), null );
         events = new ArrayList<>();
         events.add( new AuditEvent( this, "file3", message ) );
         events.add( new AuditEvent( this, "file3", message ) );
         events.add( new AuditEvent( this, "file3", message ) );
         files.put( "file3", events );
 
-        message = new LocalizedMessage( 0, 0, "", "", null, SeverityLevel.IGNORE, null, getClass(), null );
+        message = new Violation( 0, 0, "", "", null, SeverityLevel.IGNORE, null, getClass(), null );
         events = new ArrayList<>();
         events.add( new AuditEvent( this, "file4", message ) );
         events.add( new AuditEvent( this, "file4", message ) );
