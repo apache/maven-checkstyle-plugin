@@ -36,7 +36,7 @@ Using Custom Developed Checkstyle Checks
  required to reference your custom check modules more easily.
 
  In this example we will be using the
- {{{https://checkstyle.org/writingchecks.html#Visitor%20in%20action}example check}}
+ {{{https://checkstyle.org/writingchecks.html#Visitor_in_action}example check}}
  that can be found on the Checkstyle web site.
 
 
