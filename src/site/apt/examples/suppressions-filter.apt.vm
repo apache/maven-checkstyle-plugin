@@ -29,7 +29,7 @@ Using a Suppressions Filter
 
    Checkstyle allows the definition of a list of files and their line ranges that should be suppressed
    from reporting any violations (known as a
-   {{{http://checkstyle.sourceforge.net/config.html#Filters}suppressions filter}} ).
+   {{{https://checkstyle.org/config.html#Filters}suppressions filter}} ).
 
    Example: <<<checkstyle-suppressions.xml>>>
 

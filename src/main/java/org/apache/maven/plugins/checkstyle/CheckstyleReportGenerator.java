@@ -176,7 +176,7 @@ public class CheckstyleReportGenerator
 
         sink.paragraph();
         sink.text( bundle.getString( "report.checkstyle.checkstylelink" ) + " " );
-        sink.link( "http://checkstyle.sourceforge.net/" );
+        sink.link( "https://checkstyle.org/" );
         sink.text( "Checkstyle" );
         sink.link_();
         String version = getCheckstyleVersion();
@@ -335,7 +335,7 @@ public class CheckstyleReportGenerator
         sink.tableCell();
         if ( !"extension".equals( category ) )
         {
-            sink.link( "http://checkstyle.sourceforge.net/config_" + category + ".html#" + ruleName );
+            sink.link( "https://checkstyle.org/config_" + category + ".html#" + ruleName );
             sink.text( ruleName );
             sink.link_();
         }

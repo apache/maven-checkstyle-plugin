@@ -188,7 +188,7 @@ public class CheckstyleViolationCheckMojo
      * Potential values are a filesystem path, a URL, or a classpath resource.
      * This parameter expects that the contents of the location conform to the
      * xml format (Checkstyle <a
-     * href="http://checkstyle.sourceforge.net/config.html#Modules">Checker
+     * href="https://checkstyle.org/config.html#Modules">Checker
      * module</a>) configuration of rulesets.
      * <p>
      * This parameter is resolved as resource, URL, then file. If successfully
