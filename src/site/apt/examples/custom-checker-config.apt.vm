@@ -27,7 +27,7 @@
 
 Using a Custom Checkstyle Checker Configuration
 
-  A custom {{{http://checkstyle.sourceforge.net/config.html#Checker}Checker configuration xml file}} can
+  A custom {{{https://checkstyle.org/config.html#Checker}Checker configuration xml file}} can
   be defined and then referenced via a URL, File, or build classpath resource reference.
 
   To reference a custom Checkstyle Checker configuration, use the <<<configLocation>>> parameter.

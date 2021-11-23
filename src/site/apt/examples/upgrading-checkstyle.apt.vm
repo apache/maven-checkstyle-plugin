@@ -31,7 +31,7 @@ Upgrading Checkstyle at Runtime
    Checkstyle  ${checkstyleVersion} is used by default.
 
    Given Checkstyle generally keeps good compatibility between versions, you can override the version used at runtime to
-   benefit from {{{http://checkstyle.sourceforge.net/releasenotes.html}Checkstyle latest bugfixes}}:
+   benefit from {{{https://checkstyle.org/releasenotes.html}Checkstyle latest bugfixes}}:
 
 +-----+
 <project>

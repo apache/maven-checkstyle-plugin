@@ -36,8 +36,8 @@ ${project.name}
   {{{./examples/upgrading-checkstyle.html}upgrade the version used at runtime}}.
 
   The plugin can be configured in the project's POM. Predefined rulesets available for use in this version of the plugin are:
-  {{{http://checkstyle.sourceforge.net/sun_style.html}<<<sun_checks.xml>>>}} and
-  {{{http://checkstyle.sourceforge.net/google_style.html}<<<google_checks.xml>>>}}.
+  {{{https://checkstyle.org/sun_style.html}<<<sun_checks.xml>>>}} and
+  {{{https://checkstyle.org/google_style.html}<<<google_checks.xml>>>}}.
   You can also use a custom ruleset by specifying it in the plugin configuration.
 
 * Goals Overview

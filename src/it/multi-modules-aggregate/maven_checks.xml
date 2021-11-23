@@ -67,7 +67,7 @@ under the License.
         <property name="tabWidth" value="4"/>
 
         <!-- required for SuppressWarningsFilter (and other Suppress* rules not used here) -->
-        <!-- see http://checkstyle.sourceforge.net/config_annotation.html#SuppressWarningsHolder -->
+        <!-- see https://checkstyle.org/config_annotation.html#SuppressWarningsHolder -->
         <module name="SuppressWarningsHolder"/>
 
         <module name="LeftCurly">
@@ -195,11 +195,11 @@ under the License.
     </module>
 
     <!-- Support @SuppressWarnings (added in Checkstyle 5.7) -->
-    <!-- see http://checkstyle.sourceforge.net/config.html#SuppressWarningsFilter -->
+    <!-- see https://checkstyle.org/config.html#SuppressWarningsFilter -->
     <module name="SuppressWarningsFilter"/>
 
     <!-- Checks properties file for a duplicated properties. -->
-    <!-- See http://checkstyle.sourceforge.net/config_misc.html#UniqueProperties -->
+    <!-- See https://checkstyle.org/config_misc.html#UniqueProperties -->
     <module name="UniqueProperties"/>
 
 </module>

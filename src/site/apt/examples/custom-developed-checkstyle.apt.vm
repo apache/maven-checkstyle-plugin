@@ -32,11 +32,11 @@ Using Custom Developed Checkstyle Checks
  as a dependency to the Checkstyle Plugin.
 
  The plugin also provides the ability to define the
- {{{http://checkstyle.sourceforge.net/config.html#Packages}package names XML document}}
+ {{{https://checkstyle.org/config.html#Packages}package names XML document}}
  required to reference your custom check modules more easily.
 
  In this example we will be using the
- {{{http://checkstyle.sourceforge.net/writingchecks.html#Visitor%20in%20action}example check}}
+ {{{https://checkstyle.org/writingchecks.html#Visitor%20in%20action}example check}}
  that can be found on the Checkstyle web site.
 
 

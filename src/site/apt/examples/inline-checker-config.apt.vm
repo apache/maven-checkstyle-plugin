@@ -27,7 +27,7 @@
 
 Using an Inline Checkstyle Checker Configuration
 
-  Since version 2.12, an inlined {{{http://checkstyle.sourceforge.net/config.html#Checker}Checker configuration}} can
+  Since version 2.12, an inlined {{{https://checkstyle.org/config.html#Checker}Checker configuration}} can
   be defined directly in the <<<configuration>>> section of the plugin itself inside your <<<pom.xml>>>.
 
   This is especially useful when the Checkstyle checks should be executed with every compile
@@ -90,7 +90,7 @@ Using a different header
 
   The inline configuration works by writing the configuration to a file and passing that
   file to checkstyle. This configuration file must contain a specific
-  {{{http://checkstyle.sourceforge.net/config.html#Configuration_XML_Structure}header}}.
+  {{{https://checkstyle.org/config.html#Configuration_XML_Structure}header}}.
 
   We include one by default that is compatible with the included checkstyle version.
 

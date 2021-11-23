@@ -27,7 +27,7 @@
 
 Using Custom Checkstyle Property Expansion Definitions
 
-  Custom {{{http://checkstyle.sourceforge.net/config.html#Properties}property expansion definitions}}
+  Custom {{{https://checkstyle.org/config.html#Properties}property expansion definitions}}
   for the Checker can be defined.
 
   Checkstyle uses the property expansion mechanism to allow injection of specific values into a pre-defined
