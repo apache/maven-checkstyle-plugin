@@ -67,7 +67,7 @@ under the License.
     <javaVersion>8</javaVersion>
     <mavenVersion>3.0</mavenVersion>
     <checkstyleVersion>9.1</checkstyleVersion>
-    <doxiaVersion>1.4</doxiaVersion>
+    <doxiaVersion>1.10</doxiaVersion>
     <sitePluginVersion>3.9.1</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
