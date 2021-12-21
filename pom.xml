@@ -135,7 +135,7 @@ under the License.
     <dependency>
       <groupId>org.sonatype.sisu</groupId>
       <artifactId>sisu-guice</artifactId>
-      <version>3.2.5</version>
+      <version>4.2.0</version>
       <classifier>no_aop</classifier>
     </dependency>
 
