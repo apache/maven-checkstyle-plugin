@@ -65,9 +65,10 @@ under the License.
   <properties>
     <!-- Because Checkstyle 7+ requires Java 8 -->
     <javaVersion>8</javaVersion>
-    <mavenVersion>3.1.1</mavenVersion>
+    <mavenVersion>4.0.0-alpha-1-SNAPSHOT</mavenVersion>
     <checkstyleVersion>9.2.1</checkstyleVersion>
-    <doxiaVersion>1.11.1</doxiaVersion>
+    <doxiaVersion>2.0.0-M2-SNAPSHOT</doxiaVersion>
+    <doxiaSiteVersion>2.0.0-M1-SNAPSHOT</doxiaSiteVersion>
     <sitePluginVersion>3.9.1</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
@@ -143,12 +144,12 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-site-renderer</artifactId>
-      <version>${doxiaVersion}</version>
+      <version>${doxiaSiteVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-integration-tools</artifactId>
-      <version>${doxiaVersion}</version>
+      <version>${doxiaSiteVersion}</version>
     </dependency>
 
     <!-- plexus -->
@@ -215,7 +216,7 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>3.1.0</version>
+      <version>3.4.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -263,7 +264,7 @@ under the License.
             <dependency>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>extra-enforcer-rules</artifactId>
-              <version>1.5.1</version>
+              <version>1.4</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -294,7 +295,7 @@ under the License.
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.5.1</version>
+            <version>1.4</version>
           </dependency>
         </dependencies>
       </plugin>
