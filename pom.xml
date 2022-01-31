@@ -64,7 +64,7 @@ under the License.
 
   <properties>
     <javaVersion>8</javaVersion>
-    <mavenVersion>3.1.1</mavenVersion>
+    <mavenVersion>3.2.5</mavenVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <sitePluginVersion>3.9.1</sitePluginVersion>
@@ -125,24 +125,17 @@ under the License.
       </exclusions>
     </dependency>
 
-    <!-- shared to help doxia work with the old version of maven -->
-    <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <version>0.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sonatype.sisu</groupId>
-      <artifactId>sisu-guice</artifactId>
-      <version>3.2.5</version>
-      <classifier>no_aop</classifier>
-    </dependency>
-
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-site-renderer</artifactId>
       <version>${doxiaVersion}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>plexus-container-default</artifactId>
+          <groupId>org.codehaus.plexus</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
@@ -159,6 +152,12 @@ under the License.
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-resources</artifactId>
       <version>1.1.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>plexus-container-default</artifactId>
+          <groupId>org.codehaus.plexus</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -214,7 +213,7 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>3.1.0</version>
+      <version>3.3.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
