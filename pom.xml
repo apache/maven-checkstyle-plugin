@@ -25,7 +25,7 @@ under the License.
   <parent>
     <artifactId>maven-plugins</artifactId>
     <groupId>org.apache.maven.plugins</groupId>
-    <version>34</version>
+    <version>35-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -68,7 +68,7 @@ under the License.
     <mavenVersion>4.0.0-alpha-1-SNAPSHOT</mavenVersion>
     <checkstyleVersion>9.2.1</checkstyleVersion>
     <doxiaVersion>2.0.0-M2-SNAPSHOT</doxiaVersion>
-    <doxiaSiteVersion>2.0.0-M1-SNAPSHOT</doxiaSiteVersion>
+    <doxiaSiteVersion>2.0.0-M3-SNAPSHOT</doxiaSiteVersion>
     <sitePluginVersion>3.9.1</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
@@ -324,7 +324,7 @@ under the License.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
         <configuration>
           <signature>
             <groupId>org.codehaus.mojo.signature</groupId>

@@ -834,7 +834,7 @@ public class CheckstyleViolationCheckMojo
     }
 
     private AuditListener getListener()
-        throws MojoFailureException, MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
         AuditListener listener = null;
 
