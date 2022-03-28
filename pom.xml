@@ -65,7 +65,7 @@ under the License.
   <properties>
     <javaVersion>8</javaVersion>
     <mavenVersion>3.2.5</mavenVersion>
-    <checkstyleVersion>9.3</checkstyleVersion>
+    <checkstyleVersion>10.1</checkstyleVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <sitePluginVersion>3.9.1</sitePluginVersion>
     <surefire.version>2.22.2</surefire.version>
