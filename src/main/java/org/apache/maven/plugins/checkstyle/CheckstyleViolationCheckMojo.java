@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -476,6 +477,14 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     @Parameter(defaultValue = "false")
     private boolean omitIgnoredModules;
 
+    /**
+     * Specifies whether generated source files should be excluded from Checkstyle.
+     *
+     * @since 3.3.1
+     */
+    @Parameter(property = "checkstyle.excludeGeneratedSources", defaultValue = "false")
+    private boolean excludeGeneratedSources;
+
     private ByteArrayOutputStream stringOutputStream;
 
     private File outputXmlFile;
@@ -832,7 +841,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     private List<File> getSourceDirectories() {
         if (sourceDirectories == null) {
-            sourceDirectories = project.getCompileSourceRoots();
+            sourceDirectories = filterBuildTarget(project.getCompileSourceRoots());
         }
         List<File> sourceDirs = new ArrayList<>(sourceDirectories.size());
         for (String sourceDir : sourceDirectories) {
@@ -843,12 +852,31 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     private List<File> getTestSourceDirectories() {
         if (testSourceDirectories == null) {
-            testSourceDirectories = project.getTestCompileSourceRoots();
+            testSourceDirectories = filterBuildTarget(project.getTestCompileSourceRoots());
         }
         List<File> testSourceDirs = new ArrayList<>(testSourceDirectories.size());
         for (String testSourceDir : testSourceDirectories) {
             testSourceDirs.add(FileUtils.resolveFile(project.getBasedir(), testSourceDir));
         }
         return testSourceDirs;
+    }
+
+    private List<String> filterBuildTarget(List<String> sourceDirectories) {
+        if (!excludeGeneratedSources) {
+            return sourceDirectories;
+        }
+
+        List<String> filtered = new ArrayList<>(sourceDirectories.size());
+        Path buildTarget = FileUtils.resolveFile(
+                        project.getBasedir(), project.getBuild().getDirectory())
+                .toPath();
+
+        for (String sourceDir : sourceDirectories) {
+            Path src = FileUtils.resolveFile(project.getBasedir(), sourceDir).toPath();
+            if (!src.startsWith(buildTarget)) {
+                filtered.add(sourceDir);
+            }
+        }
+        return filtered;
     }
 }
