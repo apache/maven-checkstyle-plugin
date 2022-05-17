@@ -68,7 +68,10 @@ Using Custom Checkstyle Property Expansion Definitions
         <version>${project.version}</version>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
-          <propertyExpansion>projectname=whizbang</propertyExpansion>
+          <propertyExpansion>
+            projectname=whizbang
+            anotherProperty=bazinga
+          </propertyExpansion>
         </configuration>
       </plugin>
     </plugins>
@@ -91,7 +94,7 @@ Using Custom Checkstyle Property Expansion Definitions
         <version>${project.version}</version>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
-          <propertesLocation>${basedir}/checkstyle.properties</propertiesLocation>
+          <propertiesLocation>${basedir}/checkstyle.properties</propertiesLocation>
         </configuration>
       </plugin>
     </plugins>
