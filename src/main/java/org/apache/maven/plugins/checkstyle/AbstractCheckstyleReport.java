@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.doxia.tools.SiteTool;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginManagement;
@@ -77,6 +77,9 @@ public abstract class AbstractCheckstyleReport
 
     private static final String DEFAULT_CONFIG_LOCATION = "sun_checks.xml";
 
+    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    private MavenSession session;
+
     /**
      * Specifies the cache file used to speed up Checkstyle on successive runs.
      */
@@ -112,16 +115,6 @@ public abstract class AbstractCheckstyleReport
      */
     @Parameter( property = "checkstyle.consoleOutput", defaultValue = "false" )
     protected boolean consoleOutput;
-
-    /**
-     * The file encoding to use when reading the source files. If the property <code>project.build.sourceEncoding</code>
-     * is not set, the platform default encoding is used. <strong>Note:</strong> This parameter always overrides the
-     * property <code>charset</code> from Checkstyle's <code>TreeWalker</code> module.
-     *
-     * @since 2.2
-     */
-    @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
-    protected String encoding;
 
     /**
      * Specifies if the build should fail upon a violation.
@@ -361,14 +354,6 @@ public abstract class AbstractCheckstyleReport
     @Parameter( property = "checkstyle.enable.rss", defaultValue = "false" )
     @Deprecated
     private boolean enableRSS;
-
-    /**
-     * SiteTool.
-     *
-     * @since 2.2
-     */
-    @Component( role = SiteTool.class )
-    protected SiteTool siteTool;
 
     /**
      * The Plugin Descriptor

@@ -18,33 +18,37 @@ under the License.
 -->
 
 <project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>test</groupId>
+  <artifactId>test</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <outputDirectory>${basedir}/target/test-harness/checkstyle/custom</outputDirectory>
+          <outputDirectory>${basedir}/target/test-harness/checkstyle/no-severity</outputDirectory>
+          <localRepository>${localRepository}</localRepository>
           <enableRulesSummary>true</enableRulesSummary>
-          <enableSeveritySummary>true</enableSeveritySummary>
+          <enableSeveritySummary>false</enableSeveritySummary>
           <enableFilesSummary>true</enableFilesSummary>
           <enableRSS>true</enableRSS>
           <includes>**/*.java</includes>
-          <configLocation>google_checks.xml</configLocation>
-          <headerLocation>LICENSE.txt</headerLocation>
-          <cacheFile>${basedir}/target/test-harness/checkstyle/custom/checkstyle-cachefile</cacheFile>
-          <outputFile>${basedir}/target/test-harness/checkstyle/custom/checkstyle-result.xml</outputFile>
-          <outputFileFormat>plain</outputFileFormat>
+          <configLocation>sun_checks.xml</configLocation>
+          <headerLocation>${basedir}/src/test/test-sources/LICENSE.txt</headerLocation>
+          <cacheFile>${basedir}/target/test-harness/checkstyle/no-severity/checkstyle-cachefile</cacheFile>
+          <outputFile>${basedir}/target/test-harness/checkstyle/no-severity/checkstyle-result.xml</outputFile>
+          <outputFileFormat>xml</outputFileFormat>
           <failsOnError>false</failsOnError>
           <sourceDirectories>
             <sourceDirectory>${basedir}/src/test/test-sources</sourceDirectory>
           </sourceDirectories>
-          <project implementation="org.apache.maven.plugins.checkstyle.stubs.MavenProjectWithNoJxrPluginStub"/>
-          <consoleOutput>true</consoleOutput>
+          <project implementation="org.apache.maven.plugins.checkstyle.stubs.MinMavenProjectStub"/>
+          <consoleOutput>false</consoleOutput>
           <linkXRef>true</linkXRef>
-          <!-- value not really important, just point to an existing dir -->
-          <xrefLocation>${basedir}/target/test-harness/checkstyle/custom</xrefLocation>
-          <xrefTestLocation>${basedir}/target/test-harness/checkstyle/custom</xrefTestLocation>
-          <encoding>UTF-8</encoding>
+          <xrefLocation>${basedir}/target/site/xref</xrefLocation>
+          <xrefTestLocation>${basedir}/target/site/xref-test</xrefTestLocation>
+          <inputEncoding>UTF-8</inputEncoding>
         </configuration>
       </plugin>
     </plugins>

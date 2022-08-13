@@ -25,10 +25,6 @@ under the License.
   <version>1.0-SNAPSHOT</version>
   <name>checkstyle-new</name>
   <url>http://maven.apache.org</url>
-  <properties>
-    <checkstyleVersion>@pom.version@</checkstyleVersion>
-    <jxrPluginVersion>3.0.0</jxrPluginVersion>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -43,7 +39,7 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>@pom.version@</version>
+          <version>@project.version@</version>
           <configuration>
             <configLocation>https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-8.28/src/main/resources/sun_checks.xml</configLocation>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -52,10 +48,10 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
-          <version>${jxrPluginVersion}</version>
+          <version>@jxrPluginVersion@</version>
         </plugin>
       </plugins>
-    </pluginManagement>  
+    </pluginManagement>
   </build>
   <reporting>
     <plugins>

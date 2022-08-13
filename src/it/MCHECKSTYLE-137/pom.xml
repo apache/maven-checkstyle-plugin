@@ -37,17 +37,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>@pom.version@</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
+        <version>@project.version@</version>
         <executions>
           <execution>
             <id>validate</id>
             <phase>validate</phase>
             <configuration>
               <configLocation>checkstyle.xml</configLocation>
-              <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>
               <failsOnError>true</failsOnError>
               <linkXRef>false</linkXRef>

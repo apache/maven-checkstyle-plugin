@@ -25,9 +25,6 @@ under the License.
   <version>1.0-SNAPSHOT</version>
   <name>checkstyle-new</name>
   <url>http://maven.apache.org</url>
-  <properties>
-    <checkstyleVersion>@pom.version@</checkstyleVersion>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -46,16 +43,16 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyleVersion}</version>
-      </plugin>      
+        <version>@project.version@</version>
+      </plugin>
     </plugins>
-  </build>  
+  </build>
   <reporting>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyleVersion}</version>
+        <version>@project.version@</version>
         <configuration>
           <configLocation>https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-8.28/src/main/resources/sun_checks.xml</configLocation>
         </configuration>

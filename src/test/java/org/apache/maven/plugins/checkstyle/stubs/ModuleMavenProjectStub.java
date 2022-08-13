@@ -35,7 +35,7 @@ import java.io.File;
  *
  */
 public class ModuleMavenProjectStub
-    extends org.apache.maven.plugin.testing.stubs.MavenProjectStub
+    extends CheckstyleProjectStub
 {
 
     /** {@inheritDoc} */

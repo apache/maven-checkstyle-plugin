@@ -172,7 +172,7 @@ public class CheckstyleViolationCheckMojo
      */
     @Parameter( defaultValue = "${project.resources}", readonly = true )
     protected List<Resource> resources;
-    
+
     /**
      * Specifies the location of the test resources to be used for Checkstyle.
      *
@@ -292,7 +292,7 @@ public class CheckstyleViolationCheckMojo
      * @since 2.2
      */
     @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
-    private String encoding;
+    private String inputEncoding;
 
     /**
      * @since 2.5
@@ -311,7 +311,7 @@ public class CheckstyleViolationCheckMojo
      */
     @Parameter ( defaultValue = "${project}", readonly = true, required = true )
     protected MavenProject project;
-    
+
     /**
      * The Plugin Descriptor
      */
@@ -392,7 +392,7 @@ public class CheckstyleViolationCheckMojo
 
     /**
      * Specifies the location of the source directory to be used for Checkstyle.
-     * 
+     *
      * @deprecated instead use {@link #sourceDirectories}. For version 3.0.0, this parameter is only defined to break
      *             the build if you use it!
      */
@@ -451,7 +451,7 @@ public class CheckstyleViolationCheckMojo
     private PlexusConfiguration checkstyleRules;
 
     /**
-     * Dump file for inlined Checkstyle rules. 
+     * Dump file for inlined Checkstyle rules.
      */
     @Parameter( property = "checkstyle.output.rules.file",
                     defaultValue = "${project.build.directory}/checkstyle-rules.xml" )
@@ -469,7 +469,7 @@ public class CheckstyleViolationCheckMojo
     /**
      * Specifies whether modules with a configured severity of <code>ignore</code> should be omitted during Checkstyle
      * invocation.
-     * 
+     *
      * @since 3.0.0
      */
     @Parameter( defaultValue = "false" )
@@ -540,7 +540,7 @@ public class CheckstyleViolationCheckMojo
                     .setPropertyExpansion( propertyExpansion )
                     .setHeaderLocation( headerLocation ).setLicenseArtifacts( collectArtifacts( "license" ) )
                     .setCacheFile( cacheFile ).setSuppressionsFileExpression( suppressionsFileExpression )
-                    .setEncoding( encoding ).setPropertiesLocation( propertiesLocation )
+                    .setEncoding( inputEncoding ).setPropertiesLocation( propertiesLocation )
                     .setOmitIgnoredModules( omitIgnoredModules );
                 checkstyleExecutor.executeCheckstyle( request );
 
@@ -876,7 +876,7 @@ public class CheckstyleViolationCheckMojo
 
         return listener;
     }
-    
+
     private List<Artifact> collectArtifacts( String hint )
     {
         List<Artifact> artifacts = new ArrayList<>();
@@ -895,7 +895,7 @@ public class CheckstyleViolationCheckMojo
     private List<Artifact> getCheckstylePluginDependenciesAsArtifacts( Map<String, Plugin> plugins, String hint )
     {
         List<Artifact> artifacts = new ArrayList<>();
-        
+
         Plugin checkstylePlugin = plugins.get( plugin.getGroupId() + ":" + plugin.getArtifactId() );
         if ( checkstylePlugin != null )
         {
@@ -908,7 +908,7 @@ public class CheckstyleViolationCheckMojo
         }
         return artifacts;
     }
-    
+
     private List<File> getSourceDirectories()
     {
         if ( sourceDirectories == null )
@@ -922,7 +922,7 @@ public class CheckstyleViolationCheckMojo
         }
         return sourceDirs;
     }
-    
+
     private List<File> getTestSourceDirectories()
     {
         if ( testSourceDirectories == null )
@@ -936,5 +936,5 @@ public class CheckstyleViolationCheckMojo
         }
         return testSourceDirs;
     }
-    
+
 }

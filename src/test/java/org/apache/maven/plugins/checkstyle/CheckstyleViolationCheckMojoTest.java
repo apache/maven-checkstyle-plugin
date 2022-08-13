@@ -37,22 +37,19 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 public class CheckstyleViolationCheckMojoTest
     extends AbstractMojoTestCase
 {
-    
-    
-    
     public void testDefaultConfig()
         throws Exception
     {
-        File pluginXmlFile = new File( getBasedir(), "src/test/plugin-configs/check-plugin-config.xml" );
+        File pluginXmlFile = new File( getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml" );
 
         CheckstyleViolationCheckMojo mojo = (CheckstyleViolationCheckMojo) lookupMojo( "check", pluginXmlFile );
-        
+
         mojoSetup( mojo );
-        
+
         assertNotNull( "Mojo found.", mojo );
-        
+
         assertNotNull( "project null.", mojo.project );
-        
+
         try
         {
             mojo.execute();
@@ -68,14 +65,14 @@ public class CheckstyleViolationCheckMojoTest
     public void testInvalidFormatWithSkipExec()
         throws Exception
     {
-        File pluginXmlFile = new File( getBasedir(), "src/test/plugin-configs/check-plugin-config.xml" );
+        File pluginXmlFile = new File( getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml" );
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
         assertNotNull( "Mojo found.", mojo );
 
         mojoSetup( mojo );
-        
+
         setVariableValueToObject( mojo, "outputFileFormat", "plain" );
 
         try
@@ -93,14 +90,14 @@ public class CheckstyleViolationCheckMojoTest
     public void testNoOutputFile()
         throws Exception
     {
-        File pluginXmlFile = new File( getBasedir(), "src/test/plugin-configs/check-plugin-config.xml" );
+        File pluginXmlFile = new File( getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml" );
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
         assertNotNull( "Mojo found.", mojo );
 
         mojoSetup( mojo );
-        
+
         setVariableValueToObject( mojo, "outputFile", new File( "target/NoSuchFile.xml" ) );
 
         mojo.execute();
@@ -109,7 +106,7 @@ public class CheckstyleViolationCheckMojoTest
     private void doTestPlainOutputFile( boolean failsOnError )
         throws Exception
     {
-        File pluginXmlFile = new File( getBasedir(), "src/test/plugin-configs/check-plugin-plain-output.xml" );
+        File pluginXmlFile = new File( getBasedir(), "src/test/resources/plugin-configs/check-plugin-plain-output.xml" );
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
@@ -149,19 +146,19 @@ public class CheckstyleViolationCheckMojoTest
     public void testNoFail()
         throws Exception
     {
-        File pluginXmlFile = new File( getBasedir(), "src/test/plugin-configs/check-plugin-config.xml" );
+        File pluginXmlFile = new File( getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml" );
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
         assertNotNull( "Mojo found.", mojo );
 
         mojoSetup( mojo );
-        
+
         setVariableValueToObject( mojo, "failOnViolation", Boolean.FALSE );
 
         mojo.execute();
     }
-    
+
     protected void mojoSetup( Mojo mojo )
         throws Exception
     {
@@ -193,7 +190,7 @@ public class CheckstyleViolationCheckMojoTest
         setVariableValueToObject( mojo, "configLocation", "sun_checks.xml" );
         setVariableValueToObject( mojo, "cacheFile", getBasedir() + "/target/classes/checkstyle-cachefile" );
         setVariableValueToObject( mojo, "sourceDirectories", Arrays.asList( getBasedir() + "/src/test/plugin-configs/src" ));// new File( getBasedir() + "/target" ) );
-        setVariableValueToObject( mojo, "encoding", "UTF-8" );
+        setVariableValueToObject( mojo, "inputEncoding", "UTF-8" );
         setVariableValueToObject( mojo, "skipExec", Boolean.TRUE );
 
     }

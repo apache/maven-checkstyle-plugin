@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
@@ -64,11 +64,13 @@ under the License.
 
   <properties>
     <javaVersion>8</javaVersion>
+    <aetherVersion>1.0.0.v20140518</aetherVersion>
     <mavenVersion>3.2.5</mavenVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
-    <sitePluginVersion>3.9.1</sitePluginVersion>
-    <surefire.version>2.22.2</surefire.version>
+    <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
+    <sitePluginVersion>3.12.1</sitePluginVersion>
+    <jxrPluginVersion>3.3.0</jxrPluginVersion>
     <project.build.outputTimestamp>2021-01-23T22:30:12Z</project.build.outputTimestamp>
   </properties>
 
@@ -119,32 +121,30 @@ under the License.
     <!-- shared -->
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-api</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
-      <version>3.1.0</version>
-      <exclusions>
-       <exclusion>
-          <groupId>org.apache.maven.doxia</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>3.2.0</version>
     </dependency>
 
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
-      <artifactId>doxia-site-renderer</artifactId>
+      <artifactId>doxia-sink-api</artifactId>
       <version>${doxiaVersion}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>plexus-container-default</artifactId>
-          <groupId>org.codehaus.plexus</groupId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-core</artifactId>
+      <version>${doxiaVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-integration-tools</artifactId>
-      <version>${doxiaVersion}</version>
+      <version>${doxiaSitetoolsVersion}</version>
     </dependency>
 
     <!-- plexus -->
@@ -167,11 +167,6 @@ under the License.
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>3.4.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-interpolation</artifactId>
-      <version>1.26</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -209,15 +204,63 @@ under the License.
 
     <!-- test -->
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>2.1.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.36</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
       <version>3.3.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-container-default</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-api</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-impl</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-connector-basic</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-transport-wagon</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-http-lightweight</artifactId>
+      <version>3.5.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -335,6 +378,7 @@ under the License.
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
             <configuration>
               <goals>
@@ -376,7 +420,7 @@ under the License.
         </plugins>
       </reporting>
     </profile>
-    
+
     <profile>
       <id>jdk9</id>
       <activation>

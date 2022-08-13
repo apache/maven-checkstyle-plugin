@@ -18,21 +18,26 @@ under the License.
 -->
 
 <project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>test</groupId>
+  <artifactId>test</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <outputDirectory>${basedir}/target/test-harness/checkstyle/no-rules</outputDirectory>
-          <enableRulesSummary>false</enableRulesSummary>
+          <outputDirectory>${basedir}/target/test-harness/checkstyle/no-files</outputDirectory>
+          <localRepository>${localRepository}</localRepository>
+          <enableRulesSummary>true</enableRulesSummary>
           <enableSeveritySummary>true</enableSeveritySummary>
-          <enableFilesSummary>true</enableFilesSummary>
+          <enableFilesSummary>false</enableFilesSummary>
           <enableRSS>true</enableRSS>
           <includes>**/*.java</includes>
           <configLocation>sun_checks.xml</configLocation>
           <headerLocation>${basedir}/src/test/test-sources/LICENSE.txt</headerLocation>
-          <cacheFile>${basedir}/target/test-harness/checkstyle/no-rules/checkstyle-cachefile</cacheFile>
-          <outputFile>${basedir}/target/test-harness/checkstyle/no-rules/checkstyle-result.xml</outputFile>
+          <cacheFile>${basedir}/target/test-harness/checkstyle/no-files/checkstyle-cachefile</cacheFile>
+          <outputFile>${basedir}/target/test-harness/checkstyle/no-files/checkstyle-result.xml</outputFile>
           <outputFileFormat>xml</outputFileFormat>
           <failsOnError>false</failsOnError>
           <sourceDirectories>
@@ -43,7 +48,7 @@ under the License.
           <linkXRef>true</linkXRef>
           <xrefLocation>${basedir}/target/site/xref</xrefLocation>
           <xrefTestLocation>${basedir}/target/site/xref-test</xrefTestLocation>
-          <encoding>UTF-8</encoding>
+          <inputEncoding>UTF-8</inputEncoding>
         </configuration>
       </plugin>
     </plugins>

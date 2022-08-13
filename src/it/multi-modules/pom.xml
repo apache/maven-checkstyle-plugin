@@ -38,8 +38,8 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>@pom.version@</version>
-        </plugin>      
+          <version>@project.version@</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>

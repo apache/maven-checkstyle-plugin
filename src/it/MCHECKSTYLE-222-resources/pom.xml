@@ -31,7 +31,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>@pom.version@</version>
+        <version>@project.version@</version>
       </plugin>
     </plugins>
   </build>
@@ -42,7 +42,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>@pom.version@</version>
+        <version>@project.version@</version>
         <reportSets>
           <reportSet>
             <reports>

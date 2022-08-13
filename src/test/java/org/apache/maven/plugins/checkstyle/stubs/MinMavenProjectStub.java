@@ -35,7 +35,7 @@ import java.io.File;
  *
  */
 public class MinMavenProjectStub
-    extends org.apache.maven.plugin.testing.stubs.MavenProjectStub
+    extends CheckstyleProjectStub
 {
     /** {@inheritDoc} */
     public List<String> getCompileClasspathElements()

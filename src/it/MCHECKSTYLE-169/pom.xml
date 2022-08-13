@@ -31,7 +31,6 @@ under the License.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <checkstyleVersion>@project.version@</checkstyleVersion>
   </properties>
 
   <build>
@@ -41,7 +40,7 @@ under the License.
           <inherited>true</inherited>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${checkstyleVersion}</version>
+          <version>@project.version@</version>
         </plugin>
         <plugin>
           <inherited>true</inherited>

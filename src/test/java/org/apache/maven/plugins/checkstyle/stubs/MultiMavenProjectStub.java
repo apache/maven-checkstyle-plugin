@@ -34,7 +34,7 @@ import org.codehaus.plexus.PlexusTestCase;
  *
  */
 public class MultiMavenProjectStub
-    extends org.apache.maven.plugin.testing.stubs.MavenProjectStub
+    extends CheckstyleProjectStub
 {
 
     public MultiMavenProjectStub()

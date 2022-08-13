@@ -69,7 +69,7 @@ public class CheckstyleReport
             .setTestSourceDirectories( getTestSourceDirectories() ).setConfigLocation( configLocation )
             .setPropertyExpansion( propertyExpansion ).setHeaderLocation( headerLocation )
             .setCacheFile( cacheFile ).setSuppressionsFileExpression( suppressionsFileExpression )
-            .setEncoding( encoding ).setPropertiesLocation( propertiesLocation );
+            .setEncoding( getInputEncoding() ).setPropertiesLocation( propertiesLocation );
         return request;
     }
 
@@ -86,7 +86,7 @@ public class CheckstyleReport
         {
             return false;
         }
-        
+
         // TODO: would be good to scan the files here
         for ( File sourceDirectory : getSourceDirectories() )
         {
@@ -95,7 +95,7 @@ public class CheckstyleReport
                 return true;
             }
         }
-        
+
         if ( includeTestSourceDirectory )
         {
             for ( File testSourceDirectory : getTestSourceDirectories() )
@@ -106,7 +106,7 @@ public class CheckstyleReport
                 }
             }
         }
-        
+
         return ( ( includeResources && hasResources( resources ) )
             || ( includeTestResources && hasResources( testResources ) )
         );

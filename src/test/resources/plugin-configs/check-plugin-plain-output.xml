@@ -23,27 +23,17 @@ under the License.
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <outputDirectory>${basedir}/target/test-harness/checkstyle/fail-on-error</outputDirectory>
-          <enableRulesSummary>true</enableRulesSummary>
-          <enableSeveritySummary>true</enableSeveritySummary>
-          <enableFilesSummary>true</enableFilesSummary>
-          <enableRSS>true</enableRSS>
-          <includes>**/*.java</includes>
           <configLocation>sun_checks.xml</configLocation>
-          <headerLocation>${basedir}/src/test/test-sources/LICENSE.txt</headerLocation>
-          <cacheFile>${basedir}/target/test-harness/checkstyle/fail-on-error/checkstyle-cachefile</cacheFile>
-          <outputFile>${basedir}/target/test-harness/checkstyle/fail-on-error/checkstyle-result.xml</outputFile>
-          <outputFileFormat>xml</outputFileFormat>
+          <cacheFile>${basedir}/target/test-harness/checkstyle/check-plugin-plain-output/checkstyle-cachefile</cacheFile>
+          <outputFile>${basedir}/target/test-harness/checkstyle/check-plugin-plain-output/checkstyle-result.txt</outputFile>
+          <outputFileFormat>plain</outputFileFormat>
           <failsOnError>true</failsOnError>
           <sourceDirectories>
             <sourceDirectory>${basedir}/src/test/test-sources</sourceDirectory>
           </sourceDirectories>
           <project implementation="org.apache.maven.plugins.checkstyle.stubs.MinMavenProjectStub"/>
           <consoleOutput>false</consoleOutput>
-          <linkXRef>true</linkXRef>
-          <xrefLocation>${basedir}/target/site/xref</xrefLocation>
-          <xrefTestLocation>${basedir}/target/site/xref-test</xrefTestLocation>
-          <encoding>UTF-8</encoding>
+          <inputEncoding>UTF-8</inputEncoding>
         </configuration>
       </plugin>
     </plugins>
