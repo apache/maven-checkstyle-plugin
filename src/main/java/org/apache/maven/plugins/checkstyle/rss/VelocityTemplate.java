@@ -51,6 +51,7 @@ import java.nio.charset.StandardCharsets;
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
  *
  */
+@Deprecated
 public class VelocityTemplate
 {
     private String templateDirectory;
@@ -94,7 +95,7 @@ public class VelocityTemplate
         {
             outputFile.getParentFile().mkdirs();
         }
-        
+
         try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), StandardCharsets.UTF_8 ) )
         {
             getVelocity().getEngine().mergeTemplate( templateDirectory + "/" + template, context, writer );

@@ -41,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
  * @since 2.4
  */
 @Component( role = CheckstyleRssGenerator.class, hint = "default" )
+@Deprecated
 public class DefaultCheckstyleRssGenerator
     implements CheckstyleRssGenerator
 {
@@ -78,5 +79,5 @@ public class DefaultCheckstyleRssGenerator
             throw new MavenReportException( "Unable to generate checkstyle.rss.", e );
         }
     }
-    
+
 }

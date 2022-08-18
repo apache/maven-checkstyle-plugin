@@ -28,6 +28,7 @@ import org.apache.maven.project.MavenProject;
  * @author Olivier Lamy
  * @since 2.4
  */
+@Deprecated
 public class CheckstyleRssGeneratorRequest
 {
     private MavenProject mavenProject;
@@ -35,7 +36,7 @@ public class CheckstyleRssGeneratorRequest
     private String copyright;
 
     private File outputDirectory;
-    
+
     private Log log;
 
     public CheckstyleRssGeneratorRequest( MavenProject mavenProject, String copyright, File outputDirectory, Log log )

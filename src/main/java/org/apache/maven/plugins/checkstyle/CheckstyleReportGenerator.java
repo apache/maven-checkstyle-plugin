@@ -65,6 +65,7 @@ public class CheckstyleReportGenerator
 
     private boolean enableFilesSummary;
 
+    @Deprecated
     private boolean enableRSS;
 
     private final SiteTool siteTool;
@@ -97,7 +98,7 @@ public class CheckstyleReportGenerator
         this.enableRulesSummary = true;
         this.enableSeveritySummary = true;
         this.enableFilesSummary = true;
-        this.enableRSS = true;
+        this.enableRSS = false;
         this.iconTool = new IconTool( sink, bundle );
     }
 
@@ -717,7 +718,7 @@ public class CheckstyleReportGenerator
                 return true;
             }
         }
-      
+
         return false;
     }
 
@@ -761,11 +762,13 @@ public class CheckstyleReportGenerator
         this.enableFilesSummary = enableFilesSummary;
     }
 
+    @Deprecated
     public boolean isEnableRSS()
     {
         return enableRSS;
     }
 
+    @Deprecated
     public void setEnableRSS( boolean enableRSS )
     {
         this.enableRSS = enableRSS;
@@ -791,12 +794,12 @@ public class CheckstyleReportGenerator
         this.xrefTestLocation = xrefTestLocation;
     }
 
-    public List<File> getTestSourceDirectories() 
+    public List<File> getTestSourceDirectories()
     {
         return testSourceDirectories;
     }
 
-    public void setTestSourceDirectories( List<File> testSourceDirectories ) 
+    public void setTestSourceDirectories( List<File> testSourceDirectories )
     {
         this.testSourceDirectories = testSourceDirectories;
     }

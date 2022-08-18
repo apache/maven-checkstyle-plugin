@@ -26,6 +26,7 @@ import org.apache.maven.reporting.MavenReportException;
  * @author Olivier Lamy
  * @since 2.4
  */
+@Deprecated
 public interface CheckstyleRssGenerator
 {
     void generateRSS( CheckstyleResults results, CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest )

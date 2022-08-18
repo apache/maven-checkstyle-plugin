@@ -251,7 +251,7 @@ public abstract class AbstractCheckstyleReport
 
     /**
      * Specifies the location of the source directory to be used for Checkstyle.
-     * 
+     *
      * @deprecated instead use {@link #sourceDirectories}. For version 3.0.0, this parameter is only defined to break
      *             the build if you use it!
      */
@@ -267,7 +267,7 @@ public abstract class AbstractCheckstyleReport
     // Compatibility with all Maven 3: default of 'project.compileSourceRoots' is done manually because of MNG-5440
     @Parameter
     private List<String> sourceDirectories;
-    
+
     /**
      * Specifies the location of the test source directory to be used for Checkstyle.
      *
@@ -278,7 +278,7 @@ public abstract class AbstractCheckstyleReport
     @Parameter
     @Deprecated
     private File testSourceDirectory;
-    
+
     /**
      * Specifies the location of the test source directories to be used for Checkstyle.
      * Default value is <code>${project.testCompileSourceRoots}</code>.
@@ -355,8 +355,11 @@ public abstract class AbstractCheckstyleReport
 
     /**
      * Specifies if the RSS should be enabled or not.
+     *
+     * @deprecated This feature will be removed in a future version.
      */
-    @Parameter( property = "checkstyle.enable.rss", defaultValue = "true" )
+    @Parameter( property = "checkstyle.enable.rss", defaultValue = "false" )
+    @Deprecated
     private boolean enableRSS;
 
     /**
@@ -397,7 +400,7 @@ public abstract class AbstractCheckstyleReport
     /**
      * When using custom treeWalkers, specify their names here so the checks
      * inside the treeWalker end up the the rule-summary.
-     * 
+     *
      * @since 2.11
      */
     @Parameter
@@ -406,7 +409,7 @@ public abstract class AbstractCheckstyleReport
     /**
      * Specifies whether modules with a configured severity of <code>ignore</code> should be omitted during Checkstyle
      * invocation.
-     * 
+     *
      * @since 3.0.0
      */
     @Parameter( defaultValue = "false" )
@@ -466,6 +469,7 @@ public abstract class AbstractCheckstyleReport
      * @since 2.4
      */
     @Component( role = CheckstyleRssGenerator.class, hint = "default" )
+    @Deprecated
     protected CheckstyleRssGenerator checkstyleRssGenerator;
 
     /**
@@ -602,7 +606,7 @@ public abstract class AbstractCheckstyleReport
     private List<Artifact> getCheckstylePluginDependenciesAsArtifacts( Map<String, Plugin> plugins, String hint )
     {
         List<Artifact> artifacts = new ArrayList<>();
-        
+
         Plugin checkstylePlugin = plugins.get( plugin.getGroupId() + ":" + plugin.getArtifactId() );
         if ( checkstylePlugin != null )
         {
