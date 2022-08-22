@@ -64,7 +64,7 @@ under the License.
 
   <properties>
     <javaVersion>8</javaVersion>
-    <aetherVersion>1.0.0.v20140518</aetherVersion>
+    <aetherVersion>1.1.0</aetherVersion>
     <mavenVersion>3.2.5</mavenVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
