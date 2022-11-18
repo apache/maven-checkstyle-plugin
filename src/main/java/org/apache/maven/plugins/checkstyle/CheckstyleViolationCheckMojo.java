@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -854,7 +855,7 @@ public class CheckstyleViolationCheckMojo
                 {
                     // Write a plain output file to the standard output file,
                     // and write an XML output file to the temp directory that can be used to count violations
-                    outputXmlFile = File.createTempFile( "checkstyle-result", ".xml" );
+                    outputXmlFile = Files.createTempFile( "checkstyle-result", ".xml" ).toFile();
                     outputXmlFile.deleteOnExit();
                     OutputStream xmlOut = getOutputStream( outputXmlFile );
                     CompositeAuditListener compoundListener = new CompositeAuditListener();
