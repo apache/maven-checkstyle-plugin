@@ -18,7 +18,6 @@
  */
 package org.apache.maven.plugins.checkstyle.stubs;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,15 +88,13 @@ public class MultiMavenProjectStub extends CheckstyleProjectStub {
     public Build getBuild() {
         Build build = new Build();
 
-        build.setDirectory("target/test-harness/checkstyle/multi");
+        build.setDirectory(getBasedir() + "/target/test-harness/checkstyle/multi");
 
         return build;
     }
 
-    /** {@inheritDoc} */
-    public File getFile() {
-        File file = new File(getBasedir(), "pom.xml");
-
-        return file;
+    @Override
+    protected String getPOM() {
+        return "multi-plugin-config.xml";
     }
 }

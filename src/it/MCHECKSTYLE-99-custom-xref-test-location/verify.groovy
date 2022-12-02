@@ -18,9 +18,9 @@
  * under the License.
  */
 
-site = new File( basedir, 'target/site/checkstyle.html' )
-assert site.exists();
-assert site.text.contains( '<a href="./xref/com/example/App.html#L26">' )
-assert site.text.contains( '<a href="./custom-xref-test-location/com/example/AppTest.html#L32">' )
+report = new File( basedir, 'target/reports/checkstyle.html' )
+assert report.exists();
+assert report.text.contains( '<a href="./xref/com/example/App.html#L26">' )
+assert report.text.contains( '<a href="./custom-xref-test-location/com/example/AppTest.html#L32">' )
 
 return true;

@@ -22,10 +22,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.doxia.tools.SiteTool;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -35,11 +35,8 @@ import org.codehaus.plexus.util.FileUtils;
  */
 public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     public void testNoSource() throws Exception {
-        // clean up after earlier runs
-        File report = new File("target/test-harness/checkstyle/no-source/checkstyle.html");
-        report.delete();
-        File generatedReport = generateReport("checkstyle", "no-source-plugin-config.xml");
-        assertFalse(report + " exists", generatedReport.exists());
+        File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
+        assertFalse(FileUtils.fileExists(generatedReport.getAbsolutePath()));
     }
 
     public void testMinConfiguration() throws Exception {
@@ -117,9 +114,9 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     private void generateReport(String pluginXml) throws Exception {
         File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + pluginXml);
         ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", Locale.getDefault(), this.getClassLoader());
+                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
 
-        CheckstyleReport mojo = createReportMojo("checkstyle", pluginXmlFile);
+        CheckstyleReport mojo = createReportMojo(getGoal(), pluginXmlFile);
 
         PluginDescriptor descriptorStub = new PluginDescriptor();
         descriptorStub.setGroupId("org.apache.maven.plugins");
@@ -173,6 +170,11 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     }
 
     private static String getHtmlHeader(String s) {
-        return ">" + s + "</h3>";
+        return ">" + s + "</h2>";
+    }
+
+    @Override
+    protected String getGoal() {
+        return "checkstyle";
     }
 }

@@ -17,6 +17,6 @@
  * under the License.
  */
 
-assert new File(basedir, 'target/site/checkstyle.html').exists();
+assert new File(basedir, 'target/reports/checkstyle.html').exists();
 
 return true;

@@ -78,10 +78,10 @@ under the License.
     <resolverVersion>1.4.1</resolverVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <doxiaVersion>1.11.1</doxiaVersion>
-    <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
-    <sitePluginVersion>3.12.1</sitePluginVersion>
-    <jxrPluginVersion>3.3.0</jxrPluginVersion>
+    <doxiaVersion>2.0.0-M12</doxiaVersion>
+    <doxiaSitetoolsVersion>2.0.0-M19</doxiaSitetoolsVersion>
+    <sitePluginVersion>3.20.0</sitePluginVersion>
+    <jxrPluginVersion>3.4.0</jxrPluginVersion>
     <project.build.outputTimestamp>2024-06-02T14:45:45Z</project.build.outputTimestamp>
   </properties>
 
@@ -132,12 +132,12 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
-      <version>3.1.1</version>
+      <version>4.0.0-M12</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
-      <version>3.2.0</version>
+      <version>4.0.0-M15</version>
     </dependency>
 
     <!-- doxia -->

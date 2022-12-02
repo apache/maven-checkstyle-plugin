@@ -28,7 +28,6 @@ under the License.
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <outputDirectory>${basedir}/target/test-harness/checkstyle/min</outputDirectory>
-          <localRepository>${localRepository}</localRepository>
           <enableRulesSummary>true</enableRulesSummary>
           <enableSeveritySummary>true</enableSeveritySummary>
           <enableFilesSummary>true</enableFilesSummary>
