@@ -49,6 +49,7 @@ import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorException;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -471,6 +472,14 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      */
     protected String getI18nString(Locale locale, String key) {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
+    }
+
+    protected MavenProject getProject() {
+        return project;
+    }
+
+    protected List<MavenProject> getReactorProjects() {
+        return reactorProjects;
     }
 
     /** {@inheritDoc} */
