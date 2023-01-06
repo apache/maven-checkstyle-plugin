@@ -263,6 +263,7 @@ public class CheckstyleReportGenerator
         sink.sectionTitle1_();
 
         sink.table();
+        sink.tableRows( null, false );
 
         sink.tableRow();
         sink.tableHeaderCell();
@@ -303,6 +304,7 @@ public class CheckstyleReportGenerator
             sink.tableRow_();
         }
 
+        sink.tableRows_();
         sink.table_();
 
         sink.section1_();
@@ -478,6 +480,7 @@ public class CheckstyleReportGenerator
         sink.sectionTitle1_();
 
         sink.table();
+        sink.tableRows( null, false );
 
         sink.tableRow();
         sink.tableHeaderCell();
@@ -512,6 +515,7 @@ public class CheckstyleReportGenerator
         sink.tableCell_();
         sink.tableRow_();
 
+        sink.tableRows_();
         sink.table_();
 
         sink.section1_();
@@ -525,6 +529,7 @@ public class CheckstyleReportGenerator
         sink.sectionTitle1_();
 
         sink.table();
+        sink.tableRows( null, false );
 
         sink.tableRow();
         sink.tableHeaderCell();
@@ -577,7 +582,9 @@ public class CheckstyleReportGenerator
             sink.tableRow_();
         }
 
+        sink.tableRows_();
         sink.table_();
+
         sink.section1_();
     }
 
@@ -611,6 +618,8 @@ public class CheckstyleReportGenerator
             sink.sectionTitle_( Sink.SECTION_LEVEL_2 );
 
             sink.table();
+            sink.tableRows( null, false );
+
             sink.tableRow();
             sink.tableHeaderCell();
             sink.text( bundle.getString( "report.checkstyle.column.severity" ) );
@@ -631,7 +640,9 @@ public class CheckstyleReportGenerator
 
             doFileEvents( violations, file );
 
+            sink.tableRows_();
             sink.table_();
+
             sink.section2_();
         }
 
