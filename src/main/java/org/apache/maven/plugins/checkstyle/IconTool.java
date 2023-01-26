@@ -57,9 +57,7 @@ public class IconTool
      */
     public void iconSeverity( String level )
     {
-        sink.figure();
         sink.figureGraphics( "images/icon_" + level + "_sml.gif" );
-        sink.figure_();
     }
 
     /**
@@ -70,9 +68,7 @@ public class IconTool
      */
     public void iconSeverity( String level, int textType )
     {
-        sink.figure();
         sink.figureGraphics( "images/icon_" + level + "_sml.gif" );
-        sink.figure_();
 
         if ( textType > 0 )
         {
