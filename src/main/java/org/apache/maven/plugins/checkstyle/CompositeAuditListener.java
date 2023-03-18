@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,69 +27,53 @@ import com.puppycrawl.tools.checkstyle.api.AuditListener;
 /**
  * AuditListener that forwards events to a list of other AuditListeners
  */
-public class CompositeAuditListener
-    implements AuditListener
-{
+public class CompositeAuditListener implements AuditListener {
 
     private final List<AuditListener> delegates = new ArrayList<>();
 
-    public void addListener( AuditListener listener )
-    {
-        delegates.add( listener );
+    public void addListener(AuditListener listener) {
+        delegates.add(listener);
     }
 
     @Override
-    public void auditStarted( AuditEvent event )
-    {
-        for ( AuditListener listener : delegates )
-        {
-            listener.auditStarted( event );
+    public void auditStarted(AuditEvent event) {
+        for (AuditListener listener : delegates) {
+            listener.auditStarted(event);
         }
     }
 
     @Override
-    public void auditFinished( AuditEvent event )
-    {
-        for ( AuditListener listener : delegates )
-        {
-            listener.auditFinished( event );
+    public void auditFinished(AuditEvent event) {
+        for (AuditListener listener : delegates) {
+            listener.auditFinished(event);
         }
     }
 
     @Override
-    public void fileStarted( AuditEvent event )
-    {
-        for ( AuditListener listener : delegates )
-        {
-            listener.fileStarted( event );
+    public void fileStarted(AuditEvent event) {
+        for (AuditListener listener : delegates) {
+            listener.fileStarted(event);
         }
     }
 
     @Override
-    public void fileFinished( AuditEvent event )
-    {
-        for ( AuditListener listener : delegates )
-        {
-            listener.fileFinished( event );
+    public void fileFinished(AuditEvent event) {
+        for (AuditListener listener : delegates) {
+            listener.fileFinished(event);
         }
     }
 
     @Override
-    public void addError( AuditEvent event )
-    {
-        for ( AuditListener listener : delegates )
-        {
-            listener.addError( event );
+    public void addError(AuditEvent event) {
+        for (AuditListener listener : delegates) {
+            listener.addError(event);
         }
     }
 
     @Override
-    public void addException( AuditEvent event, Throwable throwable )
-    {
-        for ( AuditListener listener : delegates )
-        {
-            listener.addException( event, throwable );
+    public void addException(AuditEvent event, Throwable throwable) {
+        for (AuditListener listener : delegates) {
+            listener.addException(event, throwable);
         }
     }
-
 }

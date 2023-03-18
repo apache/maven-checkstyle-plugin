@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.rss;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle.rss;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.rss;
 
 import java.io.File;
 
@@ -29,8 +28,7 @@ import org.apache.maven.project.MavenProject;
  * @since 2.4
  */
 @Deprecated
-public class CheckstyleRssGeneratorRequest
-{
+public class CheckstyleRssGeneratorRequest {
     private MavenProject mavenProject;
 
     private String copyright;
@@ -39,52 +37,42 @@ public class CheckstyleRssGeneratorRequest
 
     private Log log;
 
-    public CheckstyleRssGeneratorRequest( MavenProject mavenProject, String copyright, File outputDirectory, Log log )
-    {
+    public CheckstyleRssGeneratorRequest(MavenProject mavenProject, String copyright, File outputDirectory, Log log) {
         this.mavenProject = mavenProject;
         this.copyright = copyright;
         this.outputDirectory = outputDirectory;
         this.log = log;
     }
 
-    public MavenProject getMavenProject()
-    {
+    public MavenProject getMavenProject() {
         return mavenProject;
     }
 
-    public void setMavenProject( MavenProject mavenProject )
-    {
+    public void setMavenProject(MavenProject mavenProject) {
         this.mavenProject = mavenProject;
     }
 
-    public String getCopyright()
-    {
+    public String getCopyright() {
         return copyright;
     }
 
-    public void setCopyright( String copyright )
-    {
+    public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
 
-    public File getOutputDirectory()
-    {
+    public File getOutputDirectory() {
         return outputDirectory;
     }
 
-    public void setOutputDirectory( File outputDirectory )
-    {
+    public void setOutputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
-    public Log getLog()
-    {
+    public Log getLog() {
         return log;
     }
 
-    public void setLog( Log log )
-    {
+    public void setLog(Log log) {
         this.log = log;
     }
-
 }

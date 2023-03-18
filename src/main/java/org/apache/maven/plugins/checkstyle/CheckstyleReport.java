@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.io.File;
 import java.util.List;
@@ -38,78 +37,72 @@ import org.apache.maven.reporting.MavenReportException;
  * @author <a href="mailto:joakim@erdfelt.com">Joakim Erdfelt</a>
  *
  */
-@Mojo( name = "checkstyle", requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true )
-public class CheckstyleReport
-    extends AbstractCheckstyleReport
-{
+@Mojo(name = "checkstyle", requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true)
+public class CheckstyleReport extends AbstractCheckstyleReport {
 
     /** {@inheritDoc} */
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return project;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected CheckstyleExecutorRequest createRequest()
-            throws MavenReportException
-    {
+    protected CheckstyleExecutorRequest createRequest() throws MavenReportException {
         CheckstyleExecutorRequest request = new CheckstyleExecutorRequest();
-        request.setConsoleListener( getConsoleListener() ).setConsoleOutput( consoleOutput )
-            .setExcludes( excludes ).setFailsOnError( failsOnError ).setIncludes( includes )
-            .setResourceIncludes( resourceIncludes )
-            .setResourceExcludes( resourceExcludes )
-            .setIncludeResources( includeResources )
-            .setIncludeTestResources( includeTestResources )
-            .setIncludeTestSourceDirectory( includeTestSourceDirectory ).setListener( getListener() )
-            .setProject( project ).setSourceDirectories( getSourceDirectories() )
-            .setResources( resources )
-            .setStringOutputStream( stringOutputStream ).setSuppressionsLocation( suppressionsLocation )
-            .setTestSourceDirectories( getTestSourceDirectories() )
-            .setPropertyExpansion( propertyExpansion ).setHeaderLocation( headerLocation )
-            .setCacheFile( cacheFile ).setSuppressionsFileExpression( suppressionsFileExpression )
-            .setEncoding( getInputEncoding() ).setPropertiesLocation( propertiesLocation );
+        request.setConsoleListener(getConsoleListener())
+                .setConsoleOutput(consoleOutput)
+                .setExcludes(excludes)
+                .setFailsOnError(failsOnError)
+                .setIncludes(includes)
+                .setResourceIncludes(resourceIncludes)
+                .setResourceExcludes(resourceExcludes)
+                .setIncludeResources(includeResources)
+                .setIncludeTestResources(includeTestResources)
+                .setIncludeTestSourceDirectory(includeTestSourceDirectory)
+                .setListener(getListener())
+                .setProject(project)
+                .setSourceDirectories(getSourceDirectories())
+                .setResources(resources)
+                .setStringOutputStream(stringOutputStream)
+                .setSuppressionsLocation(suppressionsLocation)
+                .setTestSourceDirectories(getTestSourceDirectories())
+                .setPropertyExpansion(propertyExpansion)
+                .setHeaderLocation(headerLocation)
+                .setCacheFile(cacheFile)
+                .setSuppressionsFileExpression(suppressionsFileExpression)
+                .setEncoding(getInputEncoding())
+                .setPropertiesLocation(propertiesLocation);
         return request;
     }
 
     /** {@inheritDoc} */
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return "checkstyle";
     }
 
     /** {@inheritDoc} */
-    public boolean canGenerateReport()
-    {
-        if ( skip )
-        {
+    public boolean canGenerateReport() {
+        if (skip) {
             return false;
         }
 
         // TODO: would be good to scan the files here
-        for ( File sourceDirectory : getSourceDirectories() )
-        {
-            if ( sourceDirectory.exists() )
-            {
+        for (File sourceDirectory : getSourceDirectories()) {
+            if (sourceDirectory.exists()) {
                 return true;
             }
         }
 
-        if ( includeTestSourceDirectory )
-        {
-            for ( File testSourceDirectory : getTestSourceDirectories() )
-            {
-                if ( testSourceDirectory.exists() )
-                {
+        if (includeTestSourceDirectory) {
+            for (File testSourceDirectory : getTestSourceDirectories()) {
+                if (testSourceDirectory.exists()) {
                     return true;
                 }
             }
         }
 
-        return ( ( includeResources && hasResources( resources ) )
-            || ( includeTestResources && hasResources( testResources ) )
-        );
+        return ((includeResources && hasResources(resources)) || (includeTestResources && hasResources(testResources)));
     }
 
     /**
@@ -117,16 +110,12 @@ public class CheckstyleReport
      * @param resources The resources to check
      * @return <code>true</code> if the resource directory exist
      */
-    private boolean hasResources( List<Resource> resources )
-    {
-        for ( Resource resource : resources )
-        {
-            if ( new File( resource.getDirectory() ).exists() )
-            {
+    private boolean hasResources(List<Resource> resources) {
+        for (Resource resource : resources) {
+            if (new File(resource.getDirectory()).exists()) {
                 return true;
             }
         }
-      return false;
+        return false;
     }
-
 }

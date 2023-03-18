@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -33,6 +32,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.puppycrawl.tools.checkstyle.DefaultLogger;
+import com.puppycrawl.tools.checkstyle.XMLLogger;
+import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
@@ -60,12 +64,6 @@ import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
-import com.puppycrawl.tools.checkstyle.DefaultLogger;
-import com.puppycrawl.tools.checkstyle.XMLLogger;
-import com.puppycrawl.tools.checkstyle.api.AuditListener;
-import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-
 /**
  * Performs Checkstyle analysis and outputs violations or a count of violations
  * to the console, potentially failing the build.
@@ -74,11 +72,12 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
  *
  */
-@Mojo( name = "check", defaultPhase = LifecyclePhase.VERIFY, requiresDependencyResolution = ResolutionScope.NONE,
-       threadSafe = true )
-public class CheckstyleViolationCheckMojo
-    extends AbstractMojo
-{
+@Mojo(
+        name = "check",
+        defaultPhase = LifecyclePhase.VERIFY,
+        requiresDependencyResolution = ResolutionScope.NONE,
+        threadSafe = true)
+public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     private static final String JAVA_FILES = "**\\/*.java";
     private static final String DEFAULT_CONFIG_LOCATION = "sun_checks.xml";
@@ -88,14 +87,14 @@ public class CheckstyleViolationCheckMojo
      * of the output file is determined by the <code>outputFileFormat</code>
      * parameter.
      */
-    @Parameter( property = "checkstyle.output.file", defaultValue = "${project.build.directory}/checkstyle-result.xml" )
+    @Parameter(property = "checkstyle.output.file", defaultValue = "${project.build.directory}/checkstyle-result.xml")
     private File outputFile;
 
     /**
      * Specifies the format of the output to be used when writing to the output
      * file. Valid values are "<code>plain</code>" and "<code>xml</code>".
      */
-    @Parameter( property = "checkstyle.output.format", defaultValue = "xml" )
+    @Parameter(property = "checkstyle.output.format", defaultValue = "xml")
     private String outputFileFormat;
 
     /**
@@ -104,7 +103,7 @@ public class CheckstyleViolationCheckMojo
      * Compare this to {@link #failsOnError} which fails the build immediately
      * before examining the output log.
      */
-    @Parameter( property = "checkstyle.failOnViolation", defaultValue = "true" )
+    @Parameter(property = "checkstyle.failOnViolation", defaultValue = "true")
     private boolean failOnViolation;
 
     /**
@@ -113,7 +112,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.3
      */
-    @Parameter( property = "checkstyle.maxAllowedViolations", defaultValue = "0" )
+    @Parameter(property = "checkstyle.maxAllowedViolations", defaultValue = "0")
     private int maxAllowedViolations;
 
     /**
@@ -122,7 +121,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "checkstyle.violationSeverity", defaultValue = "error" )
+    @Parameter(property = "checkstyle.violationSeverity", defaultValue = "error")
     private String violationSeverity = "error";
 
     /**
@@ -131,7 +130,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.13
      */
-    @Parameter( property = "checkstyle.violation.ignore" )
+    @Parameter(property = "checkstyle.violation.ignore")
     private String violationIgnore;
 
     /**
@@ -139,7 +138,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "checkstyle.skip", defaultValue = "false" )
+    @Parameter(property = "checkstyle.skip", defaultValue = "false")
     private boolean skip;
 
     /**
@@ -147,7 +146,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.5
      */
-    @Parameter( property = "checkstyle.skipExec", defaultValue = "false" )
+    @Parameter(property = "checkstyle.skipExec", defaultValue = "false")
     private boolean skipExec;
 
     /**
@@ -155,7 +154,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.3
      */
-    @Parameter( property = "checkstyle.console", defaultValue = "true" )
+    @Parameter(property = "checkstyle.console", defaultValue = "true")
     private boolean logViolationsToConsole;
 
     /**
@@ -163,7 +162,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 3.0.1
      */
-    @Parameter( property = "checkstyle.logViolationCount", defaultValue = "true" )
+    @Parameter(property = "checkstyle.logViolationCount", defaultValue = "true")
     private boolean logViolationCountToConsole;
 
     /**
@@ -171,7 +170,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.11
      */
-    @Parameter( defaultValue = "${project.resources}", readonly = true )
+    @Parameter(defaultValue = "${project.resources}", readonly = true)
     protected List<Resource> resources;
 
     /**
@@ -179,7 +178,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.16
      */
-    @Parameter( defaultValue = "${project.testResources}", readonly = true )
+    @Parameter(defaultValue = "${project.testResources}", readonly = true)
     protected List<Resource> testResources;
 
     /**
@@ -205,7 +204,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.5
      */
-    @Parameter( property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION )
+    @Parameter(property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION)
     private String configLocation;
 
     /**
@@ -224,7 +223,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.5
      */
-    @Parameter( property = "checkstyle.properties.location" )
+    @Parameter(property = "checkstyle.properties.location")
     private String propertiesLocation;
 
     /**
@@ -251,13 +250,13 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.0-beta-2
      */
-    @Parameter( property = "checkstyle.header.file", defaultValue = "LICENSE.txt" )
+    @Parameter(property = "checkstyle.header.file", defaultValue = "LICENSE.txt")
     private String headerLocation;
 
     /**
      * Specifies the cache file used to speed up Checkstyle on successive runs.
      */
-    @Parameter( defaultValue = "${project.build.directory}/checkstyle-cachefile" )
+    @Parameter(defaultValue = "${project.build.directory}/checkstyle-cachefile")
     private String cacheFile;
 
     /**
@@ -265,7 +264,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.1
      */
-    @Parameter( property = "checkstyle.suppression.expression", defaultValue = "checkstyle.suppressions.file" )
+    @Parameter(property = "checkstyle.suppression.expression", defaultValue = "checkstyle.suppressions.file")
     private String suppressionsFileExpression;
 
     /**
@@ -282,7 +281,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.0-beta-2
      */
-    @Parameter( property = "checkstyle.suppressions.location" )
+    @Parameter(property = "checkstyle.suppressions.location")
     private String suppressionsLocation;
 
     /**
@@ -292,31 +291,31 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
+    @Parameter(property = "encoding", defaultValue = "${project.build.sourceEncoding}")
     private String inputEncoding;
 
     /**
      * @since 2.5
      */
-    @Component( role = CheckstyleExecutor.class, hint = "default" )
+    @Component(role = CheckstyleExecutor.class, hint = "default")
     protected CheckstyleExecutor checkstyleExecutor;
 
     /**
      * Output errors to console.
      */
-    @Parameter( property = "checkstyle.consoleOutput", defaultValue = "false" )
+    @Parameter(property = "checkstyle.consoleOutput", defaultValue = "false")
     private boolean consoleOutput;
 
     /**
      * The Maven Project Object.
      */
-    @Parameter ( defaultValue = "${project}", readonly = true, required = true )
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
 
     /**
      * The Plugin Descriptor
      */
-    @Parameter( defaultValue = "${plugin}", readonly = true, required = true )
+    @Parameter(defaultValue = "${plugin}", readonly = true, required = true)
     private PluginDescriptor plugin;
 
     /**
@@ -330,13 +329,13 @@ public class CheckstyleViolationCheckMojo
      * Specifies the names filter of the source files to be excluded for
      * Checkstyle.
      */
-    @Parameter( property = "checkstyle.excludes" )
+    @Parameter(property = "checkstyle.excludes")
     private String excludes;
 
     /**
      * Specifies the names filter of the source files to be used for Checkstyle.
      */
-    @Parameter( property = "checkstyle.includes", defaultValue = JAVA_FILES, required = true )
+    @Parameter(property = "checkstyle.includes", defaultValue = JAVA_FILES, required = true)
     private String includes;
 
     /**
@@ -344,14 +343,14 @@ public class CheckstyleViolationCheckMojo
      * Checkstyle when checking resources.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.resourceExcludes" )
+    @Parameter(property = "checkstyle.resourceExcludes")
     private String resourceExcludes;
 
     /**
      * Specifies the names filter of the files to be used for Checkstyle when checking resources.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true )
+    @Parameter(property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true)
     private String resourceIncludes;
 
     /**
@@ -360,7 +359,7 @@ public class CheckstyleViolationCheckMojo
      * for {@link #logViolationsToConsole}. If you want to use {@link #logViolationsToConsole},
      * use {@link #failOnViolation} instead of this.
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean failsOnError;
 
     /**
@@ -388,7 +387,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 2.2
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean includeTestSourceDirectory;
 
     /**
@@ -414,14 +413,14 @@ public class CheckstyleViolationCheckMojo
      * Whether to apply Checkstyle to resource directories.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.includeResources", defaultValue = "true", required = true )
+    @Parameter(property = "checkstyle.includeResources", defaultValue = "true", required = true)
     private boolean includeResources = true;
 
     /**
      * Whether to apply Checkstyle to test resource directories.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.includeTestResources", defaultValue = "true", required = true )
+    @Parameter(property = "checkstyle.includeTestResources", defaultValue = "true", required = true)
     private boolean includeTestResources = true;
 
     /**
@@ -454,17 +453,19 @@ public class CheckstyleViolationCheckMojo
     /**
      * Dump file for inlined Checkstyle rules.
      */
-    @Parameter( property = "checkstyle.output.rules.file",
-                    defaultValue = "${project.build.directory}/checkstyle-rules.xml" )
+    @Parameter(
+            property = "checkstyle.output.rules.file",
+            defaultValue = "${project.build.directory}/checkstyle-rules.xml")
     private File rulesFiles;
 
     /**
      * The header to use for the inline configuration.
      * Only used when you specify {@code checkstyleRules}.
      */
-    @Parameter( defaultValue = "<?xml version=\"1.0\"?>\n"
-            + "<!DOCTYPE module PUBLIC \"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\"\n"
-            + "        \"https://checkstyle.org/dtds/configuration_1_3.dtd\">\n" )
+    @Parameter(
+            defaultValue = "<?xml version=\"1.0\"?>\n"
+                    + "<!DOCTYPE module PUBLIC \"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\"\n"
+                    + "        \"https://checkstyle.org/dtds/configuration_1_3.dtd\">\n")
     private String checkstyleRulesHeader;
 
     /**
@@ -473,7 +474,7 @@ public class CheckstyleViolationCheckMojo
      *
      * @since 3.0.0
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean omitIgnoredModules;
 
     private ByteArrayOutputStream stringOutputStream;
@@ -481,221 +482,183 @@ public class CheckstyleViolationCheckMojo
     private File outputXmlFile;
 
     /** {@inheritDoc} */
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        checkDeprecatedParameterUsage( sourceDirectory, "sourceDirectory", "sourceDirectories" );
-        checkDeprecatedParameterUsage( testSourceDirectory, "testSourceDirectory", "testSourceDirectories" );
-        if ( skip )
-        {
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
+        checkDeprecatedParameterUsage(testSourceDirectory, "testSourceDirectory", "testSourceDirectories");
+        if (skip) {
             return;
         }
 
         outputXmlFile = outputFile;
 
-        if ( !skipExec )
-        {
+        if (!skipExec) {
             String effectiveConfigLocation = configLocation;
-            if ( checkstyleRules != null )
-            {
-                if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
-                {
-                    throw new MojoExecutionException( "If you use inline configuration for rules, don't specify "
-                        + "a configLocation" );
+            if (checkstyleRules != null) {
+                if (!DEFAULT_CONFIG_LOCATION.equals(configLocation)) {
+                    throw new MojoExecutionException(
+                            "If you use inline configuration for rules, don't specify " + "a configLocation");
                 }
-                if ( checkstyleRules.getChildCount() > 1 )
-                {
-                    throw new MojoExecutionException( "Currently only one root module is supported" );
+                if (checkstyleRules.getChildCount() > 1) {
+                    throw new MojoExecutionException("Currently only one root module is supported");
                 }
 
-                PlexusConfiguration checkerModule = checkstyleRules.getChild( 0 );
+                PlexusConfiguration checkerModule = checkstyleRules.getChild(0);
 
-                try
-                {
-                    FileUtils.forceMkdir( rulesFiles.getParentFile() );
-                    FileUtils.fileWrite( rulesFiles, checkstyleRulesHeader + checkerModule.toString() );
-                }
-                catch ( final IOException e )
-                {
-                    throw new MojoExecutionException( e.getMessage(), e );
+                try {
+                    FileUtils.forceMkdir(rulesFiles.getParentFile());
+                    FileUtils.fileWrite(rulesFiles, checkstyleRulesHeader + checkerModule.toString());
+                } catch (final IOException e) {
+                    throw new MojoExecutionException(e.getMessage(), e);
                 }
                 effectiveConfigLocation = rulesFiles.getAbsolutePath();
             }
 
             ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
-            try
-            {
+            try {
                 CheckstyleExecutorRequest request = new CheckstyleExecutorRequest();
-                request.setConsoleListener( getConsoleListener() ).setConsoleOutput( consoleOutput )
-                    .setExcludes( excludes ).setFailsOnError( failsOnError ).setIncludes( includes )
-                    .setResourceIncludes( resourceIncludes )
-                    .setResourceExcludes( resourceExcludes )
-                    .setIncludeResources( includeResources )
-                    .setIncludeTestResources( includeTestResources )
-                    .setIncludeTestSourceDirectory( includeTestSourceDirectory ).setListener( getListener() )
-                    .setProject( project ).setSourceDirectories( getSourceDirectories() )
-                    .setResources( resources ).setTestResources( testResources )
-                    .setStringOutputStream( stringOutputStream ).setSuppressionsLocation( suppressionsLocation )
-                    .setTestSourceDirectories( getTestSourceDirectories() ).setConfigLocation( effectiveConfigLocation )
-                    .setConfigurationArtifacts( collectArtifacts( "config" ) )
-                    .setPropertyExpansion( propertyExpansion )
-                    .setHeaderLocation( headerLocation ).setLicenseArtifacts( collectArtifacts( "license" ) )
-                    .setCacheFile( cacheFile ).setSuppressionsFileExpression( suppressionsFileExpression )
-                    .setEncoding( inputEncoding ).setPropertiesLocation( propertiesLocation )
-                    .setOmitIgnoredModules( omitIgnoredModules );
-                checkstyleExecutor.executeCheckstyle( request );
+                request.setConsoleListener(getConsoleListener())
+                        .setConsoleOutput(consoleOutput)
+                        .setExcludes(excludes)
+                        .setFailsOnError(failsOnError)
+                        .setIncludes(includes)
+                        .setResourceIncludes(resourceIncludes)
+                        .setResourceExcludes(resourceExcludes)
+                        .setIncludeResources(includeResources)
+                        .setIncludeTestResources(includeTestResources)
+                        .setIncludeTestSourceDirectory(includeTestSourceDirectory)
+                        .setListener(getListener())
+                        .setProject(project)
+                        .setSourceDirectories(getSourceDirectories())
+                        .setResources(resources)
+                        .setTestResources(testResources)
+                        .setStringOutputStream(stringOutputStream)
+                        .setSuppressionsLocation(suppressionsLocation)
+                        .setTestSourceDirectories(getTestSourceDirectories())
+                        .setConfigLocation(effectiveConfigLocation)
+                        .setConfigurationArtifacts(collectArtifacts("config"))
+                        .setPropertyExpansion(propertyExpansion)
+                        .setHeaderLocation(headerLocation)
+                        .setLicenseArtifacts(collectArtifacts("license"))
+                        .setCacheFile(cacheFile)
+                        .setSuppressionsFileExpression(suppressionsFileExpression)
+                        .setEncoding(inputEncoding)
+                        .setPropertiesLocation(propertiesLocation)
+                        .setOmitIgnoredModules(omitIgnoredModules);
+                checkstyleExecutor.executeCheckstyle(request);
 
-            }
-            catch ( CheckstyleException e )
-            {
-                throw new MojoExecutionException( "Failed during checkstyle configuration", e );
-            }
-            catch ( CheckstyleExecutorException e )
-            {
-                throw new MojoExecutionException( "Failed during checkstyle execution", e );
-            }
-            finally
-            {
-                //be sure to restore original context classloader
-                Thread.currentThread().setContextClassLoader( currentClassLoader );
+            } catch (CheckstyleException e) {
+                throw new MojoExecutionException("Failed during checkstyle configuration", e);
+            } catch (CheckstyleExecutorException e) {
+                throw new MojoExecutionException("Failed during checkstyle execution", e);
+            } finally {
+                // be sure to restore original context classloader
+                Thread.currentThread().setContextClassLoader(currentClassLoader);
             }
         }
 
-        if ( !"xml".equals( outputFileFormat ) && skipExec )
-        {
-            throw new MojoExecutionException( "Output format is '" + outputFileFormat
-                + "', checkstyle:check requires format to be 'xml' when using skipExec." );
+        if (!"xml".equals(outputFileFormat) && skipExec) {
+            throw new MojoExecutionException("Output format is '" + outputFileFormat
+                    + "', checkstyle:check requires format to be 'xml' when using skipExec.");
         }
 
-        if ( !outputXmlFile.exists() )
-        {
-            getLog().info( "Unable to perform checkstyle:check, unable to find checkstyle:checkstyle outputFile." );
+        if (!outputXmlFile.exists()) {
+            getLog().info("Unable to perform checkstyle:check, unable to find checkstyle:checkstyle outputFile.");
             return;
         }
 
-        try ( Reader reader = new BufferedReader( ReaderFactory.newXmlReader( outputXmlFile ) ) )
-        {
+        try (Reader reader = new BufferedReader(ReaderFactory.newXmlReader(outputXmlFile))) {
             XmlPullParser xpp = new MXParser();
-            xpp.setInput( reader );
+            xpp.setInput(reader);
 
-            final List<Violation> violationsList = getViolations( xpp );
-            long violationCount = countViolations( violationsList );
-            printViolations( violationsList );
+            final List<Violation> violationsList = getViolations(xpp);
+            long violationCount = countViolations(violationsList);
+            printViolations(violationsList);
 
             String msg = "You have " + violationCount + " Checkstyle violation"
-                + ( ( violationCount > 1 || violationCount == 0 ) ? "s" : "" ) + ".";
+                    + ((violationCount > 1 || violationCount == 0) ? "s" : "") + ".";
 
-            if ( violationCount > maxAllowedViolations )
-            {
-                if ( failOnViolation )
-                {
-                    if ( maxAllowedViolations > 0 )
-                    {
+            if (violationCount > maxAllowedViolations) {
+                if (failOnViolation) {
+                    if (maxAllowedViolations > 0) {
                         msg += " The maximum number of allowed violations is " + maxAllowedViolations + ".";
                     }
-                    throw new MojoFailureException( msg );
+                    throw new MojoFailureException(msg);
                 }
 
-                getLog().warn( "checkstyle:check violations detected but failOnViolation set to false" );
+                getLog().warn("checkstyle:check violations detected but failOnViolation set to false");
             }
-            if ( logViolationCountToConsole )
-            {
-                if ( maxAllowedViolations > 0 )
-                {
-                  msg += " The maximum number of allowed violations is " + maxAllowedViolations + ".";
+            if (logViolationCountToConsole) {
+                if (maxAllowedViolations > 0) {
+                    msg += " The maximum number of allowed violations is " + maxAllowedViolations + ".";
                 }
-                getLog().info( msg );
+                getLog().info(msg);
             }
-        }
-        catch ( IOException | XmlPullParserException e )
-        {
-            throw new MojoExecutionException( "Unable to read Checkstyle results xml: "
-                + outputXmlFile.getAbsolutePath(), e );
+        } catch (IOException | XmlPullParserException e) {
+            throw new MojoExecutionException(
+                    "Unable to read Checkstyle results xml: " + outputXmlFile.getAbsolutePath(), e);
         }
     }
 
-    private void checkDeprecatedParameterUsage( Object parameter, String name, String replacement )
-        throws MojoFailureException
-    {
-        if ( parameter != null )
-        {
-            throw new MojoFailureException( "You are using '" + name + "' which has been removed"
-                + " from the maven-checkstyle-plugin. " + "Please use '" + replacement
-                + "' and refer to the >>Major Version Upgrade to version 3.0.0<< " + "on the plugin site." );
+    private void checkDeprecatedParameterUsage(Object parameter, String name, String replacement)
+            throws MojoFailureException {
+        if (parameter != null) {
+            throw new MojoFailureException("You are using '" + name + "' which has been removed"
+                    + " from the maven-checkstyle-plugin. " + "Please use '" + replacement
+                    + "' and refer to the >>Major Version Upgrade to version 3.0.0<< " + "on the plugin site.");
         }
     }
 
-    private List<Violation> getViolations( XmlPullParser xpp )
-        throws XmlPullParserException, IOException
-    {
+    private List<Violation> getViolations(XmlPullParser xpp) throws XmlPullParserException, IOException {
         List<Violation> violations = new ArrayList<>();
 
         String basedir = project.getBasedir().getAbsolutePath();
         String file = "";
 
-        for ( int eventType = xpp.getEventType(); eventType != XmlPullParser.END_DOCUMENT; eventType = xpp.next() )
-        {
-            if ( eventType != XmlPullParser.START_TAG )
-            {
+        for (int eventType = xpp.getEventType(); eventType != XmlPullParser.END_DOCUMENT; eventType = xpp.next()) {
+            if (eventType != XmlPullParser.START_TAG) {
                 continue;
-            }
-            else if ( "file".equals( xpp.getName() ) )
-            {
-                file = PathTool.getRelativeFilePath( basedir, xpp.getAttributeValue( "", "name" ) );
+            } else if ("file".equals(xpp.getName())) {
+                file = PathTool.getRelativeFilePath(basedir, xpp.getAttributeValue("", "name"));
                 continue;
-            }
-            else if ( ! "error".equals( xpp.getName() ) )
-            {
+            } else if (!"error".equals(xpp.getName())) {
                 continue;
             }
 
-            String severity = xpp.getAttributeValue( "", "severity" );
-            String source = xpp.getAttributeValue( "", "source" );
-            String line = xpp.getAttributeValue( "", "line" );
+            String severity = xpp.getAttributeValue("", "severity");
+            String source = xpp.getAttributeValue("", "source");
+            String line = xpp.getAttributeValue("", "line");
             /* Nullable */
-            String column = xpp.getAttributeValue( "", "column" );
-            String message = xpp.getAttributeValue( "", "message" );
-            String rule = RuleUtil.getName( source );
-            String category = RuleUtil.getCategory( source );
+            String column = xpp.getAttributeValue("", "column");
+            String message = xpp.getAttributeValue("", "message");
+            String rule = RuleUtil.getName(source);
+            String category = RuleUtil.getCategory(source);
 
-            Violation violation = new Violation(
-                source,
-                file,
-                line,
-                severity,
-                message,
-                rule,
-                category
-            );
-            if ( column != null )
-            {
-                violation.setColumn( column );
+            Violation violation = new Violation(source, file, line, severity, message, rule, category);
+            if (column != null) {
+                violation.setColumn(column);
             }
 
-            violations.add( violation );
+            violations.add(violation);
         }
 
         return violations;
     }
 
-    private int countViolations( List<Violation> violations )
-    {
-        List<RuleUtil.Matcher> ignores = violationIgnore == null ? Collections.<RuleUtil.Matcher>emptyList()
-            : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
+    private int countViolations(List<Violation> violations) {
+        List<RuleUtil.Matcher> ignores = violationIgnore == null
+                ? Collections.<RuleUtil.Matcher>emptyList()
+                : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         int ignored = 0;
         int countedViolations = 0;
 
-        for ( Violation violation : violations )
-        {
-            if ( ! isViolation( violation.getSeverity() ) )
-            {
+        for (Violation violation : violations) {
+            if (!isViolation(violation.getSeverity())) {
                 continue;
             }
 
-            if ( ignore( ignores, violation.getSource() ) )
-            {
+            if (ignore(ignores, violation.getSource())) {
                 ignored++;
                 continue;
             }
@@ -703,54 +666,46 @@ public class CheckstyleViolationCheckMojo
             countedViolations++;
         }
 
-        if ( ignored > 0 )
-        {
-            getLog().info( "Ignored " + ignored + " error" + ( ( ignored > 1L ) ? "s" : "" ) + ", " + countedViolations
-                + " violation" + ( ( countedViolations > 1 ) ? "s" : "" ) + " remaining." );
+        if (ignored > 0) {
+            getLog().info("Ignored " + ignored + " error" + ((ignored > 1L) ? "s" : "") + ", " + countedViolations
+                    + " violation" + ((countedViolations > 1) ? "s" : "") + " remaining.");
         }
 
         return countedViolations;
     }
 
-    private void printViolations( List<Violation> violations )
-    {
-        if ( ! logViolationsToConsole )
-        {
+    private void printViolations(List<Violation> violations) {
+        if (!logViolationsToConsole) {
             return;
         }
 
-        List<RuleUtil.Matcher> ignores = violationIgnore == null ? Collections.<RuleUtil.Matcher>emptyList()
-            : RuleUtil.parseMatchers( violationIgnore.split( "," ) );
+        List<RuleUtil.Matcher> ignores = violationIgnore == null
+                ? Collections.<RuleUtil.Matcher>emptyList()
+                : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         violations.stream()
-            .filter( violation -> isViolation( violation.getSeverity() ) )
-            .filter( violation -> !ignore( ignores, violation.getSource() ) )
-            .forEach( violation ->
-            {
-                final String message = String.format( "%s:[%s%s] (%s) %s: %s",
-                    violation.getFile(),
-                    violation.getLine(),
-                    ( Violation.NO_COLUMN.equals( violation.getColumn() ) ) ? "" : ( ',' + violation.getColumn() ),
-                    violation.getCategory(),
-                    violation.getRuleName(),
-                    violation.getMessage() );
-                log( violation.getSeverity(), message );
-            } );
+                .filter(violation -> isViolation(violation.getSeverity()))
+                .filter(violation -> !ignore(ignores, violation.getSource()))
+                .forEach(violation -> {
+                    final String message = String.format(
+                            "%s:[%s%s] (%s) %s: %s",
+                            violation.getFile(),
+                            violation.getLine(),
+                            (Violation.NO_COLUMN.equals(violation.getColumn())) ? "" : (',' + violation.getColumn()),
+                            violation.getCategory(),
+                            violation.getRuleName(),
+                            violation.getMessage());
+                    log(violation.getSeverity(), message);
+                });
     }
 
-    private void log( String severity, String message )
-    {
-        if ( "info".equals( severity ) )
-        {
-            getLog().info( message );
-        }
-        else if ( "warning".equals( severity ) )
-        {
-            getLog().warn( message );
-        }
-        else
-        {
-            getLog().error( message );
+    private void log(String severity, String message) {
+        if ("info".equals(severity)) {
+            getLog().info(message);
+        } else if ("warning".equals(severity)) {
+            getLog().warn(message);
+        } else {
+            getLog().error(message);
         }
     }
 
@@ -760,183 +715,141 @@ public class CheckstyleViolationCheckMojo
      * @param severity The severity to check
      * @return <code>true</code> if the given severity is a violation, otherwise <code>false</code>
      */
-    private boolean isViolation( String severity )
-    {
-        if ( "error".equals( severity ) )
-        {
-            return "error".equals( violationSeverity ) || "warning".equals( violationSeverity )
-                || "info".equals( violationSeverity );
-        }
-        else if ( "warning".equals( severity ) )
-        {
-            return "warning".equals( violationSeverity ) || "info".equals( violationSeverity );
-        }
-        else if ( "info".equals( severity ) )
-        {
-            return "info".equals( violationSeverity );
-        }
-        else
-        {
+    private boolean isViolation(String severity) {
+        if ("error".equals(severity)) {
+            return "error".equals(violationSeverity)
+                    || "warning".equals(violationSeverity)
+                    || "info".equals(violationSeverity);
+        } else if ("warning".equals(severity)) {
+            return "warning".equals(violationSeverity) || "info".equals(violationSeverity);
+        } else if ("info".equals(severity)) {
+            return "info".equals(violationSeverity);
+        } else {
             return false;
         }
     }
 
-    private boolean ignore( List<RuleUtil.Matcher> ignores, String source )
-    {
-        for ( RuleUtil.Matcher ignore : ignores )
-        {
-            if ( ignore.match( source ) )
-            {
+    private boolean ignore(List<RuleUtil.Matcher> ignores, String source) {
+        for (RuleUtil.Matcher ignore : ignores) {
+            if (ignore.match(source)) {
                 return true;
             }
         }
         return false;
     }
 
-    private DefaultLogger getConsoleListener()
-        throws MojoExecutionException
-    {
+    private DefaultLogger getConsoleListener() throws MojoExecutionException {
         DefaultLogger consoleListener;
 
-        if ( useFile == null )
-        {
+        if (useFile == null) {
             stringOutputStream = new ByteArrayOutputStream();
-            consoleListener = new DefaultLogger( stringOutputStream, OutputStreamOptions.NONE );
-        }
-        else
-        {
-            OutputStream out = getOutputStream( useFile );
+            consoleListener = new DefaultLogger(stringOutputStream, OutputStreamOptions.NONE);
+        } else {
+            OutputStream out = getOutputStream(useFile);
 
-            consoleListener = new DefaultLogger( out, OutputStreamOptions.CLOSE );
+            consoleListener = new DefaultLogger(out, OutputStreamOptions.CLOSE);
         }
 
         return consoleListener;
     }
 
-    private OutputStream getOutputStream( File file )
-        throws MojoExecutionException
-    {
+    private OutputStream getOutputStream(File file) throws MojoExecutionException {
         File parentFile = file.getAbsoluteFile().getParentFile();
 
-        if ( !parentFile.exists() )
-        {
+        if (!parentFile.exists()) {
             parentFile.mkdirs();
         }
 
         FileOutputStream fileOutputStream;
-        try
-        {
-            fileOutputStream = new FileOutputStream( file );
-        }
-        catch ( FileNotFoundException e )
-        {
-            throw new MojoExecutionException( "Unable to create output stream: " + file, e );
+        try {
+            fileOutputStream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException("Unable to create output stream: " + file, e);
         }
         return fileOutputStream;
     }
 
-    private AuditListener getListener()
-        throws MojoFailureException, MojoExecutionException
-    {
+    private AuditListener getListener() throws MojoFailureException, MojoExecutionException {
         AuditListener listener = null;
 
-        if ( StringUtils.isNotEmpty( outputFileFormat ) )
-        {
+        if (StringUtils.isNotEmpty(outputFileFormat)) {
             File resultFile = outputFile;
 
-            OutputStream out = getOutputStream( resultFile );
+            OutputStream out = getOutputStream(resultFile);
 
-            if ( "xml".equals( outputFileFormat ) )
-            {
-                listener = new XMLLogger( out, OutputStreamOptions.CLOSE );
-            }
-            else if ( "plain".equals( outputFileFormat ) )
-            {
-                try
-                {
+            if ("xml".equals(outputFileFormat)) {
+                listener = new XMLLogger(out, OutputStreamOptions.CLOSE);
+            } else if ("plain".equals(outputFileFormat)) {
+                try {
                     // Write a plain output file to the standard output file,
                     // and write an XML output file to the temp directory that can be used to count violations
-                    outputXmlFile = Files.createTempFile( "checkstyle-result", ".xml" ).toFile();
+                    outputXmlFile =
+                            Files.createTempFile("checkstyle-result", ".xml").toFile();
                     outputXmlFile.deleteOnExit();
-                    OutputStream xmlOut = getOutputStream( outputXmlFile );
+                    OutputStream xmlOut = getOutputStream(outputXmlFile);
                     CompositeAuditListener compoundListener = new CompositeAuditListener();
-                    compoundListener.addListener( new XMLLogger( xmlOut, OutputStreamOptions.CLOSE ) );
-                    compoundListener.addListener( new DefaultLogger( out, OutputStreamOptions.CLOSE ) );
+                    compoundListener.addListener(new XMLLogger(xmlOut, OutputStreamOptions.CLOSE));
+                    compoundListener.addListener(new DefaultLogger(out, OutputStreamOptions.CLOSE));
                     listener = compoundListener;
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Unable to create temporary file", e);
                 }
-                catch ( IOException e )
-                {
-                    throw new MojoExecutionException( "Unable to create temporary file", e );
-                }
-            }
-            else
-            {
-                throw new MojoFailureException( "Invalid output file format: (" + outputFileFormat
-                    + "). Must be 'plain' or 'xml'." );
+            } else {
+                throw new MojoFailureException(
+                        "Invalid output file format: (" + outputFileFormat + "). Must be 'plain' or 'xml'.");
             }
         }
 
         return listener;
     }
 
-    private List<Artifact> collectArtifacts( String hint )
-    {
+    private List<Artifact> collectArtifacts(String hint) {
         List<Artifact> artifacts = new ArrayList<>();
 
         PluginManagement pluginManagement = project.getBuild().getPluginManagement();
-        if ( pluginManagement != null )
-        {
-            artifacts.addAll( getCheckstylePluginDependenciesAsArtifacts( pluginManagement.getPluginsAsMap(), hint ) );
+        if (pluginManagement != null) {
+            artifacts.addAll(getCheckstylePluginDependenciesAsArtifacts(pluginManagement.getPluginsAsMap(), hint));
         }
 
-        artifacts.addAll( getCheckstylePluginDependenciesAsArtifacts( project.getBuild().getPluginsAsMap(), hint ) );
+        artifacts.addAll(
+                getCheckstylePluginDependenciesAsArtifacts(project.getBuild().getPluginsAsMap(), hint));
 
         return artifacts;
     }
 
-    private List<Artifact> getCheckstylePluginDependenciesAsArtifacts( Map<String, Plugin> plugins, String hint )
-    {
+    private List<Artifact> getCheckstylePluginDependenciesAsArtifacts(Map<String, Plugin> plugins, String hint) {
         List<Artifact> artifacts = new ArrayList<>();
 
-        Plugin checkstylePlugin = plugins.get( plugin.getGroupId() + ":" + plugin.getArtifactId() );
-        if ( checkstylePlugin != null )
-        {
-            for ( Dependency dep : checkstylePlugin.getDependencies() )
-            {
-             // @todo if we can filter on hints, it should be done here...
+        Plugin checkstylePlugin = plugins.get(plugin.getGroupId() + ":" + plugin.getArtifactId());
+        if (checkstylePlugin != null) {
+            for (Dependency dep : checkstylePlugin.getDependencies()) {
+                // @todo if we can filter on hints, it should be done here...
                 String depKey = dep.getGroupId() + ":" + dep.getArtifactId();
-                artifacts.add( plugin.getArtifactMap().get( depKey ) );
+                artifacts.add(plugin.getArtifactMap().get(depKey));
             }
         }
         return artifacts;
     }
 
-    private List<File> getSourceDirectories()
-    {
-        if ( sourceDirectories == null )
-        {
+    private List<File> getSourceDirectories() {
+        if (sourceDirectories == null) {
             sourceDirectories = project.getCompileSourceRoots();
         }
-        List<File> sourceDirs = new ArrayList<>( sourceDirectories.size() );
-        for ( String sourceDir : sourceDirectories )
-        {
-            sourceDirs.add( FileUtils.resolveFile( project.getBasedir(), sourceDir ) );
+        List<File> sourceDirs = new ArrayList<>(sourceDirectories.size());
+        for (String sourceDir : sourceDirectories) {
+            sourceDirs.add(FileUtils.resolveFile(project.getBasedir(), sourceDir));
         }
         return sourceDirs;
     }
 
-    private List<File> getTestSourceDirectories()
-    {
-        if ( testSourceDirectories == null )
-        {
+    private List<File> getTestSourceDirectories() {
+        if (testSourceDirectories == null) {
             testSourceDirectories = project.getTestCompileSourceRoots();
         }
-        List<File> testSourceDirs = new ArrayList<>( testSourceDirectories.size() );
-        for ( String testSourceDir : testSourceDirectories )
-        {
-            testSourceDirs.add( FileUtils.resolveFile( project.getBasedir(), testSourceDir ) );
+        List<File> testSourceDirs = new ArrayList<>(testSourceDirectories.size());
+        for (String testSourceDir : testSourceDirectories) {
+            testSourceDirs.add(FileUtils.resolveFile(project.getBasedir(), testSourceDir));
         }
         return testSourceDirs;
     }
-
 }

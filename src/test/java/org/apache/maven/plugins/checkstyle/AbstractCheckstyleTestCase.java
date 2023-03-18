@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,16 +31,14 @@ import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
 import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
 import org.eclipse.aether.repository.LocalRepository;
 
 /**
  * Abstract class to test reports generation.
  */
-public abstract class AbstractCheckstyleTestCase
-    extends AbstractMojoTestCase
-{
+public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
     private Locale oldLocale;
 
     private ArtifactStubFactory artifactStubFactory;
@@ -52,26 +49,22 @@ public abstract class AbstractCheckstyleTestCase
     private MavenProject testMavenProject;
 
     @Override
-    protected void setUp()
-        throws Exception
-    {
+    protected void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();
 
         oldLocale = Locale.getDefault();
-        Locale.setDefault( Locale.ENGLISH );
+        Locale.setDefault(Locale.ENGLISH);
 
-        artifactStubFactory = new DependencyArtifactStubFactory( getTestFile( "target" ), true, false );
+        artifactStubFactory = new DependencyArtifactStubFactory(getTestFile("target"), true, false);
         artifactStubFactory.getWorkingDir().mkdirs();
     }
 
     @Override
-    protected void tearDown()
-        throws Exception
-    {
+    protected void tearDown() throws Exception {
         super.tearDown();
 
-        Locale.setDefault( oldLocale );
+        Locale.setDefault(oldLocale);
         oldLocale = null;
     }
 
@@ -80,8 +73,7 @@ public abstract class AbstractCheckstyleTestCase
      *
      * @return the maven project
      */
-    protected MavenProject getTestMavenProject()
-    {
+    protected MavenProject getTestMavenProject() {
         return testMavenProject;
     }
 
@@ -92,15 +84,13 @@ public abstract class AbstractCheckstyleTestCase
      * @return the generated report as file
      * @throws IOException if the return file doesnt exist
      */
-    protected File getGeneratedReport( String name )
-        throws IOException
-    {
-        String outputDirectory = getBasedir() + "/target/test/test-harness/" + getTestMavenProject().getArtifactId();
+    protected File getGeneratedReport(String name) throws IOException {
+        String outputDirectory = getBasedir() + "/target/test/test-harness/"
+                + getTestMavenProject().getArtifactId();
 
-        File report = new File( outputDirectory, name );
-        if ( !report.exists() )
-        {
-            throw new IOException( "File not found. Attempted: " + report );
+        File report = new File(outputDirectory, name);
+        if (!report.exists()) {
+            throw new IOException("File not found. Attempted: " + report);
         }
 
         return report;
@@ -114,55 +104,48 @@ public abstract class AbstractCheckstyleTestCase
      * @return the generated HTML file
      * @throws Exception if any
      */
-    protected File generateReport( String goal, String pluginXml )
-        throws Exception
-    {
-        File pluginXmlFile = new File( getBasedir(), "src/test/resources/plugin-configs/" + pluginXml );
-        CheckstyleReport mojo  = createReportMojo( goal, pluginXmlFile );
-        return generateReport( mojo, pluginXmlFile );
+    protected File generateReport(String goal, String pluginXml) throws Exception {
+        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + pluginXml);
+        CheckstyleReport mojo = createReportMojo(goal, pluginXmlFile);
+        return generateReport(mojo, pluginXmlFile);
     }
 
-    protected CheckstyleReport createReportMojo( String goal, File pluginXmlFile )
-        throws Exception
-    {
-        CheckstyleReport mojo = (CheckstyleReport) lookupMojo( goal, pluginXmlFile );
-        assertNotNull( "Mojo not found.", mojo );
+    protected CheckstyleReport createReportMojo(String goal, File pluginXmlFile) throws Exception {
+        CheckstyleReport mojo = (CheckstyleReport) lookupMojo(goal, pluginXmlFile);
+        assertNotNull("Mojo not found.", mojo);
 
-        LegacySupport legacySupport = lookup( LegacySupport.class );
-        legacySupport.setSession( newMavenSession( new MavenProjectStub() ) );
+        LegacySupport legacySupport = lookup(LegacySupport.class);
+        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
         DefaultRepositorySystemSession repoSession =
-            (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-        repoSession.setLocalRepositoryManager( new SimpleLocalRepositoryManagerFactory().newInstance( repoSession, new LocalRepository( artifactStubFactory.getWorkingDir() ) ) );
+                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
 
-        setVariableValueToObject( mojo, "session", legacySupport.getSession() );
-        setVariableValueToObject( mojo, "remoteRepositories", mojo.getProject().getRemoteArtifactRepositories() );
+        setVariableValueToObject(mojo, "session", legacySupport.getSession());
+        setVariableValueToObject(mojo, "remoteRepositories", mojo.getProject().getRemoteArtifactRepositories());
         return mojo;
     }
 
-    protected File generateReport( CheckstyleReport mojo, File pluginXmlFile )
-        throws Exception
-    {
+    protected File generateReport(CheckstyleReport mojo, File pluginXmlFile) throws Exception {
         mojo.execute();
 
-        ProjectBuilder builder = lookup( ProjectBuilder.class );
+        ProjectBuilder builder = lookup(ProjectBuilder.class);
 
         ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
-        buildingRequest.setRepositorySession( lookup( LegacySupport.class ).getRepositorySession() );
+        buildingRequest.setRepositorySession(lookup(LegacySupport.class).getRepositorySession());
 
-        testMavenProject = builder.build( pluginXmlFile, buildingRequest ).getProject();
+        testMavenProject = builder.build(pluginXmlFile, buildingRequest).getProject();
 
         File outputDir = mojo.getReportOutputDirectory();
         String filename = mojo.getOutputName() + ".html";
 
-        return new File( outputDir, filename );
+        return new File(outputDir, filename);
     }
 
     /**
      * Read the contents of the specified file object into a string
      */
-    protected String readFile( File checkstyleTestDir, String fileName ) throws IOException
-    {
-        return new String( Files.readAllBytes( checkstyleTestDir.toPath().resolve( fileName ) ) );
+    protected String readFile(File checkstyleTestDir, String fileName) throws IOException {
+        return new String(Files.readAllBytes(checkstyleTestDir.toPath().resolve(fileName)));
     }
-
 }

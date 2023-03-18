@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.rss;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,9 +16,11 @@ package org.apache.maven.plugins.checkstyle.rss;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.rss;
 
 import java.io.IOException;
 
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.checkstyle.CheckstyleReport;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
@@ -34,50 +34,41 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
-import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
-
 /**
  * @author Olivier Lamy
  * @since 2.4
  */
-@Component( role = CheckstyleRssGenerator.class, hint = "default" )
+@Component(role = CheckstyleRssGenerator.class, hint = "default")
 @Deprecated
-public class DefaultCheckstyleRssGenerator
-    implements CheckstyleRssGenerator
-{
+public class DefaultCheckstyleRssGenerator implements CheckstyleRssGenerator {
     @Requirement
     private VelocityComponent velocityComponent;
 
     @Override
-    public void generateRSS( CheckstyleResults results, CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest )
-        throws MavenReportException
-    {
+    public void generateRSS(CheckstyleResults results, CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest)
+            throws MavenReportException {
 
-        VelocityTemplate vtemplate = new VelocityTemplate( velocityComponent, CheckstyleReport.PLUGIN_RESOURCES );
-        vtemplate.setLog( checkstyleRssGeneratorRequest.getLog() );
+        VelocityTemplate vtemplate = new VelocityTemplate(velocityComponent, CheckstyleReport.PLUGIN_RESOURCES);
+        vtemplate.setLog(checkstyleRssGeneratorRequest.getLog());
 
         Context context = new VelocityContext();
-        context.put( "results", results );
-        context.put( "project", checkstyleRssGeneratorRequest.getMavenProject() );
-        context.put( "copyright", checkstyleRssGeneratorRequest.getCopyright() );
-        context.put( "levelInfo", SeverityLevel.INFO );
-        context.put( "levelWarning", SeverityLevel.WARNING );
-        context.put( "levelError", SeverityLevel.ERROR );
-        context.put( "stringutils", new StringUtils() );
+        context.put("results", results);
+        context.put("project", checkstyleRssGeneratorRequest.getMavenProject());
+        context.put("copyright", checkstyleRssGeneratorRequest.getCopyright());
+        context.put("levelInfo", SeverityLevel.INFO);
+        context.put("levelWarning", SeverityLevel.WARNING);
+        context.put("levelError", SeverityLevel.ERROR);
+        context.put("stringutils", new StringUtils());
 
-        try
-        {
-            vtemplate.generate( checkstyleRssGeneratorRequest.getOutputDirectory().getPath() + "/checkstyle.rss",
-                                "checkstyle-rss.vm", context );
-        }
-        catch ( ResourceNotFoundException e )
-        {
-            throw new MavenReportException( "Unable to find checkstyle-rss.vm resource.", e );
-        }
-        catch ( MojoExecutionException | IOException | VelocityException e )
-        {
-            throw new MavenReportException( "Unable to generate checkstyle.rss.", e );
+        try {
+            vtemplate.generate(
+                    checkstyleRssGeneratorRequest.getOutputDirectory().getPath() + "/checkstyle.rss",
+                    "checkstyle-rss.vm",
+                    context);
+        } catch (ResourceNotFoundException e) {
+            throw new MavenReportException("Unable to find checkstyle-rss.vm resource.", e);
+        } catch (MojoExecutionException | IOException | VelocityException e) {
+            throw new MavenReportException("Unable to generate checkstyle.rss.", e);
         }
     }
-
 }

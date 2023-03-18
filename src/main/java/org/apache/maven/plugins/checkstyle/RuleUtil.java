@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,12 +16,12 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -32,13 +30,11 @@ import org.apache.commons.lang3.StringUtils;
  * @author Hervé Boutemy
  * @since 2.13
  */
-public final class RuleUtil
-{
-    private RuleUtil()
-    {
+public final class RuleUtil {
+    private RuleUtil() {
         // hide utility class constructor
     }
-    
+
     private static final String CHECKSTYLE_PACKAGE = "com.puppycrawl.tools.checkstyle.checks";
 
     /**
@@ -47,9 +43,8 @@ public final class RuleUtil
      * @param event the audit event
      * @return the rule name, which is the class name without package and removed eventual "Check" suffix
      */
-    public static String getName( AuditEvent event )
-    {
-        return getName( event.getSourceName() );
+    public static String getName(AuditEvent event) {
+        return getName(event.getSourceName());
     }
     /**
      * Get the rule name from an audit event source name.
@@ -57,19 +52,16 @@ public final class RuleUtil
      * @param eventSrcName the audit event source name
      * @return the rule name, which is the class name without package and removed eventual "Check" suffix
      */
-    public static String getName( String eventSrcName )
-    {
-        if ( eventSrcName == null )
-        {
+    public static String getName(String eventSrcName) {
+        if (eventSrcName == null) {
             return null;
         }
 
-        if ( eventSrcName.endsWith( "Check" ) )
-        {
-            eventSrcName = eventSrcName.substring( 0, eventSrcName.length() - 5 );
+        if (eventSrcName.endsWith("Check")) {
+            eventSrcName = eventSrcName.substring(0, eventSrcName.length() - 5);
         }
 
-        return eventSrcName.substring( eventSrcName.lastIndexOf( '.' ) + 1 );
+        return eventSrcName.substring(eventSrcName.lastIndexOf('.') + 1);
     }
 
     /**
@@ -78,9 +70,8 @@ public final class RuleUtil
      * @param event the audit event
      * @return the rule category, which is the last package name or "misc" or "extension"
      */
-    public static String getCategory( AuditEvent event )
-    {
-        return getCategory( event.getSourceName() );
+    public static String getCategory(AuditEvent event) {
+        return getCategory(event.getSourceName());
     }
 
     /**
@@ -89,64 +80,47 @@ public final class RuleUtil
      * @param eventSrcName the audit event source name
      * @return the rule category, which is the last package name or "misc" or "extension"
      */
-    public static String getCategory( String eventSrcName )
-    {
-        if ( eventSrcName == null )
-        {
+    public static String getCategory(String eventSrcName) {
+        if (eventSrcName == null) {
             return null;
         }
 
-        int end = eventSrcName.lastIndexOf( '.' );
-        eventSrcName = end == -1 ? eventSrcName : eventSrcName.substring( 0,  end );
+        int end = eventSrcName.lastIndexOf('.');
+        eventSrcName = end == -1 ? eventSrcName : eventSrcName.substring(0, end);
 
-        if ( CHECKSTYLE_PACKAGE.equals( eventSrcName ) )
-        {
+        if (CHECKSTYLE_PACKAGE.equals(eventSrcName)) {
             return "misc";
-        }
-        else if ( !eventSrcName.startsWith( CHECKSTYLE_PACKAGE ) )
-        {
+        } else if (!eventSrcName.startsWith(CHECKSTYLE_PACKAGE)) {
             return "extension";
         }
 
-        return eventSrcName.substring( eventSrcName.lastIndexOf( '.' ) + 1 );
+        return eventSrcName.substring(eventSrcName.lastIndexOf('.') + 1);
     }
 
-    public static List<Matcher> parseMatchers( String[] specs )
-    {
+    public static List<Matcher> parseMatchers(String[] specs) {
         List<Matcher> matchers = new ArrayList<>();
-        for ( String spec : specs )
-        {
-            if ( StringUtils.isBlank( spec ) )
-            {
+        for (String spec : specs) {
+            if (StringUtils.isBlank(spec)) {
                 continue;
             }
             spec = spec.trim();
             Matcher matcher;
-            if ( Character.isUpperCase( spec.charAt( 0 ) ) )
-            {
+            if (Character.isUpperCase(spec.charAt(0))) {
                 // spec starting with uppercase is a rule name
-                matcher = new RuleMatcher( spec );
-            }
-            else if ( "misc".equals( spec ) )
-            {
+                matcher = new RuleMatcher(spec);
+            } else if ("misc".equals(spec)) {
                 // "misc" is a special case
-                matcher = new PackageMatcher( CHECKSTYLE_PACKAGE );
-            }
-            else if ( "extension".equals( spec ) )
-            {
+                matcher = new PackageMatcher(CHECKSTYLE_PACKAGE);
+            } else if ("extension".equals(spec)) {
                 // "extension" is a special case
                 matcher = new ExtensionMatcher();
-            }
-            else if ( !spec.contains( "." ) )
-            {
-                matcher = new PackageMatcher( CHECKSTYLE_PACKAGE + '.' + spec );
-            }
-            else
-            {
+            } else if (!spec.contains(".")) {
+                matcher = new PackageMatcher(CHECKSTYLE_PACKAGE + '.' + spec);
+            } else {
                 // by default, spec is a package name
-                matcher = new PackageMatcher( spec );
+                matcher = new PackageMatcher(spec);
             }
-            matchers.add( matcher );
+            matchers.add(matcher);
         }
         return matchers;
     }
@@ -154,58 +128,46 @@ public final class RuleUtil
     /**
      * Audit event source name matcher.
      */
-    public interface Matcher
-    {
+    public interface Matcher {
         /**
          * Does the event source name match?
          * @param eventSrcName the event source name
          * @return boolean
          */
-        boolean match( String eventSrcName );
+        boolean match(String eventSrcName);
     }
 
-    private static class RuleMatcher
-        implements Matcher
-    {
+    private static class RuleMatcher implements Matcher {
         private final String rule;
 
-        RuleMatcher( String rule )
-        {
+        RuleMatcher(String rule) {
             this.rule = rule;
         }
 
-        public boolean match( String eventSrcName )
-        {
-            return rule.equals( getName( eventSrcName ) );
+        public boolean match(String eventSrcName) {
+            return rule.equals(getName(eventSrcName));
         }
     }
 
-    private static class PackageMatcher
-        implements Matcher
-    {
+    private static class PackageMatcher implements Matcher {
         private final String packageName;
 
-        PackageMatcher( String packageName )
-        {
+        PackageMatcher(String packageName) {
             this.packageName = packageName;
         }
 
-        public boolean match( String eventSrcName )
-        {
-            return eventSrcName.startsWith( packageName )
-                && !eventSrcName.substring( packageName.length() + 1 ).contains( "." );
+        public boolean match(String eventSrcName) {
+            return eventSrcName.startsWith(packageName)
+                    && !eventSrcName.substring(packageName.length() + 1).contains(".");
         }
     }
 
     /**
      * An extension does not start with Checkstyle package.
      */
-    private static class ExtensionMatcher
-        implements Matcher
-    {
-        public boolean match( String eventSrcName )
-        {
-            return !eventSrcName.startsWith( CHECKSTYLE_PACKAGE );
+    private static class ExtensionMatcher implements Matcher {
+        public boolean match(String eventSrcName) {
+            return !eventSrcName.startsWith(CHECKSTYLE_PACKAGE);
         }
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,6 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.SinkEventAttributes;
@@ -35,18 +38,12 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
 
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
-
 /**
  * Generate a report based on CheckstyleResults.
  *
  *
  */
-public class CheckstyleReportGenerator
-{
+public class CheckstyleReportGenerator {
     private Log log;
 
     private final File basedir;
@@ -76,15 +73,14 @@ public class CheckstyleReportGenerator
 
     private List<File> testSourceDirectories = new ArrayList<>();
 
-    private List<String> treeWalkerNames = Collections.singletonList( "TreeWalker" );
+    private List<String> treeWalkerNames = Collections.singletonList("TreeWalker");
 
     private final IconTool iconTool;
 
     private final String ruleset;
 
-    public CheckstyleReportGenerator( Sink sink, ResourceBundle bundle, File basedir, SiteTool siteTool,
-                                      String ruleset )
-    {
+    public CheckstyleReportGenerator(
+            Sink sink, ResourceBundle bundle, File basedir, SiteTool siteTool, String ruleset) {
         this.bundle = bundle;
 
         this.sink = sink;
@@ -99,72 +95,59 @@ public class CheckstyleReportGenerator
         this.enableSeveritySummary = true;
         this.enableFilesSummary = true;
         this.enableRSS = false;
-        this.iconTool = new IconTool( sink, bundle );
+        this.iconTool = new IconTool(sink, bundle);
     }
 
-    public Log getLog()
-    {
-        if ( this.log == null )
-        {
+    public Log getLog() {
+        if (this.log == null) {
             this.log = new SystemStreamLog();
         }
         return this.log;
     }
 
-    public void setLog( Log log )
-    {
+    public void setLog(Log log) {
         this.log = log;
     }
 
-    private String getTitle()
-    {
+    private String getTitle() {
         String title;
 
-        if ( getSeverityLevel() == null )
-        {
-            title = bundle.getString( "report.checkstyle.title" );
-        }
-        else
-        {
-            title = bundle.getString( "report.checkstyle.severity_title" ) + severityLevel.getName();
+        if (getSeverityLevel() == null) {
+            title = bundle.getString("report.checkstyle.title");
+        } else {
+            title = bundle.getString("report.checkstyle.severity_title") + severityLevel.getName();
         }
 
         return title;
     }
 
-    public void generateReport( CheckstyleResults results )
-    {
+    public void generateReport(CheckstyleResults results) {
         doHeading();
 
-        if ( getSeverityLevel() == null )
-        {
-            if ( enableSeveritySummary )
-            {
-                doSeveritySummary( results );
+        if (getSeverityLevel() == null) {
+            if (enableSeveritySummary) {
+                doSeveritySummary(results);
             }
 
-            if ( enableFilesSummary )
-            {
-                doFilesSummary( results );
+            if (enableFilesSummary) {
+                doFilesSummary(results);
             }
 
-            if ( enableRulesSummary )
-            {
-                doRulesSummary( results );
+            if (enableRulesSummary) {
+                doRulesSummary(results);
             }
         }
 
-        doDetails( results );
+        doDetails(results);
         sink.body_();
         sink.flush();
         sink.close();
     }
 
-    private void doHeading()
-    {
+    private void doHeading() {
         sink.head();
         sink.title();
-        sink.text( getTitle() );
+        sink.text(getTitle());
         sink.title_();
         sink.head_();
 
@@ -172,33 +155,31 @@ public class CheckstyleReportGenerator
 
         sink.section1();
         sink.sectionTitle1();
-        sink.text( getTitle() );
+        sink.text(getTitle());
         sink.sectionTitle1_();
 
         sink.paragraph();
-        sink.text( bundle.getString( "report.checkstyle.checkstylelink" ) + " " );
-        sink.link( "https://checkstyle.org/" );
-        sink.text( "Checkstyle" );
+        sink.text(bundle.getString("report.checkstyle.checkstylelink") + " ");
+        sink.link("https://checkstyle.org/");
+        sink.text("Checkstyle");
         sink.link_();
         String version = getCheckstyleVersion();
-        if ( version != null )
-        {
-            sink.text( " " );
-            sink.text( version );
+        if (version != null) {
+            sink.text(" ");
+            sink.text(version);
         }
-        sink.text( " " );
-        sink.text( String.format( bundle.getString( "report.checkstyle.ruleset" ), ruleset ) );
-        sink.text( "." );
+        sink.text(" ");
+        sink.text(String.format(bundle.getString("report.checkstyle.ruleset"), ruleset));
+        sink.text(".");
 
-        if ( enableRSS )
-        {
+        if (enableRSS) {
             sink.nonBreakingSpace();
-            sink.link( "checkstyle.rss" );
+            sink.link("checkstyle.rss");
             sink.figure();
             sink.figureCaption();
-            sink.text( "rss feed" );
+            sink.text("rss feed");
             sink.figureCaption_();
-            sink.figureGraphics( "images/rss.png" );
+            sink.figureGraphics("images/rss.png");
             sink.figure_();
             sink.link_();
         }
@@ -220,25 +201,20 @@ public class CheckstyleReportGenerator
      * @param defaultValue The default value to use if the attribute cannot be found in any configuration
      * @return The value of the specified attribute
      */
-    private String getConfigAttribute( Configuration config, ChainedItem<Configuration> parentConfiguration,
-                                       String attributeName, String defaultValue )
-    {
+    private String getConfigAttribute(
+            Configuration config,
+            ChainedItem<Configuration> parentConfiguration,
+            String attributeName,
+            String defaultValue) {
         String ret;
-        try
-        {
-            ret = config.getAttribute( attributeName );
-        }
-        catch ( CheckstyleException e )
-        {
+        try {
+            ret = config.getAttribute(attributeName);
+        } catch (CheckstyleException e) {
             // Try to find the attribute in a parent, if there are any
-            if ( parentConfiguration != null )
-            {
-                ret =
-                    getConfigAttribute( parentConfiguration.value, parentConfiguration.parent, attributeName,
-                                        defaultValue );
-            }
-            else
-            {
+            if (parentConfiguration != null) {
+                ret = getConfigAttribute(
+                        parentConfiguration.value, parentConfiguration.parent, attributeName, defaultValue);
+            } else {
                 ret = defaultValue;
             }
         }
@@ -250,56 +226,50 @@ public class CheckstyleReportGenerator
      *
      * @param results The results to summarize
      */
-    private void doRulesSummary( CheckstyleResults results )
-    {
-        if ( checkstyleConfig == null )
-        {
+    private void doRulesSummary(CheckstyleResults results) {
+        if (checkstyleConfig == null) {
             return;
         }
 
         sink.section1();
         sink.sectionTitle1();
-        sink.text( bundle.getString( "report.checkstyle.rules" ) );
+        sink.text(bundle.getString("report.checkstyle.rules"));
         sink.sectionTitle1_();
 
         sink.table();
-        sink.tableRows( null, false );
+        sink.tableRows(null, false);
 
         sink.tableRow();
         sink.tableHeaderCell();
-        sink.text( bundle.getString( "report.checkstyle.rule.category" ) );
+        sink.text(bundle.getString("report.checkstyle.rule.category"));
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        sink.text( bundle.getString( "report.checkstyle.rule" ) );
+        sink.text(bundle.getString("report.checkstyle.rule"));
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        sink.text( bundle.getString( "report.checkstyle.violations" ) );
+        sink.text(bundle.getString("report.checkstyle.violations"));
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        sink.text( bundle.getString( "report.checkstyle.column.severity" ) );
+        sink.text(bundle.getString("report.checkstyle.column.severity"));
         sink.tableHeaderCell_();
 
         sink.tableRow_();
 
         // Top level should be the checker.
-        if ( "checker".equalsIgnoreCase( checkstyleConfig.getName() ) )
-        {
+        if ("checker".equalsIgnoreCase(checkstyleConfig.getName())) {
             String category = null;
-            for ( ConfReference ref: sortConfiguration( results ) )
-            {
-                doRuleRow( ref, results, category );
+            for (ConfReference ref : sortConfiguration(results)) {
+                doRuleRow(ref, results, category);
 
                 category = ref.category;
             }
-        }
-        else
-        {
+        } else {
             sink.tableRow();
             sink.tableCell();
-            sink.text( bundle.getString( "report.checkstyle.norule" ) );
+            sink.text(bundle.getString("report.checkstyle.norule"));
             sink.tableCell_();
             sink.tableRow_();
         }
@@ -317,8 +287,7 @@ public class CheckstyleReportGenerator
      * @param results The results to summarize
      * @param previousCategory The previous row's category
      */
-    private void doRuleRow( ConfReference ref, CheckstyleResults results, String previousCategory )
-    {
+    private void doRuleRow(ConfReference ref, CheckstyleResults results, String previousCategory) {
         Configuration checkerConfig = ref.configuration;
         ChainedItem<Configuration> parentConfiguration = ref.parentConfiguration;
         String ruleName = checkerConfig.getName();
@@ -328,80 +297,65 @@ public class CheckstyleReportGenerator
         // column 1: rule category
         sink.tableCell();
         String category = ref.category;
-        if ( !category.equals( previousCategory ) )
-        {
-            sink.text( category );
+        if (!category.equals(previousCategory)) {
+            sink.text(category);
         }
         sink.tableCell_();
 
         // column 2: Rule name + configured attributes
         sink.tableCell();
-        if ( !"extension".equals( category ) )
-        {
-            sink.link( "https://checkstyle.org/config_" + category + ".html#" + ruleName );
-            sink.text( ruleName );
+        if (!"extension".equals(category)) {
+            sink.link("https://checkstyle.org/config_" + category + ".html#" + ruleName);
+            sink.text(ruleName);
             sink.link_();
-        }
-        else
-        {
-            sink.text( ruleName );
+        } else {
+            sink.text(ruleName);
         }
 
-        List<String> attribnames = new ArrayList<>( Arrays.asList( checkerConfig.getAttributeNames() ) );
-        attribnames.remove( "severity" ); // special value (deserves unique column)
-        if ( !attribnames.isEmpty() )
-        {
+        List<String> attribnames = new ArrayList<>(Arrays.asList(checkerConfig.getAttributeNames()));
+        attribnames.remove("severity"); // special value (deserves unique column)
+        if (!attribnames.isEmpty()) {
             sink.list();
-            for ( String name : attribnames )
-            {
+            for (String name : attribnames) {
                 sink.listItem();
 
-                sink.text( name );
+                sink.text(name);
 
-                String value = getConfigAttribute( checkerConfig, null, name, "" );
+                String value = getConfigAttribute(checkerConfig, null, name, "");
                 // special case, Header.header and RegexpHeader.header
-                if ( "header".equals( name ) && ( "Header".equals( ruleName ) || "RegexpHeader".equals( ruleName ) ) )
-                {
-                    String[] lines = StringUtils.split( value, "\\n" );
+                if ("header".equals(name) && ("Header".equals(ruleName) || "RegexpHeader".equals(ruleName))) {
+                    String[] lines = StringUtils.split(value, "\\n");
                     int linenum = 1;
-                    for ( String line : lines )
-                    {
+                    for (String line : lines) {
                         sink.lineBreak();
-                        sink.rawText( "<span style=\"color: gray\">" );
-                        sink.text( linenum + ":" );
-                        sink.rawText( "</span>" );
+                        sink.rawText("<span style=\"color: gray\">");
+                        sink.text(linenum + ":");
+                        sink.rawText("</span>");
                         sink.nonBreakingSpace();
                         sink.monospaced();
-                        sink.text( line );
+                        sink.text(line);
                         sink.monospaced_();
                         linenum++;
                     }
-                }
-                else if ( "headerFile".equals( name ) && "RegexpHeader".equals( ruleName ) )
-                {
-                    sink.text( ": " );
+                } else if ("headerFile".equals(name) && "RegexpHeader".equals(ruleName)) {
+                    sink.text(": ");
                     sink.monospaced();
-                    sink.text( "\"" );
-                    if ( basedir != null )
-                    {
+                    sink.text("\"");
+                    if (basedir != null) {
                         // Make the headerFile value relative to ${basedir}
-                        String path = siteTool.getRelativePath( value, basedir.getAbsolutePath() );
-                        sink.text( path.replace( '\\', '/' ) );
+                        String path = siteTool.getRelativePath(value, basedir.getAbsolutePath());
+                        sink.text(path.replace('\\', '/'));
+                    } else {
+                        sink.text(value);
                     }
-                    else
-                    {
-                        sink.text( value );
-                    }
-                    sink.text( "\"" );
+                    sink.text("\"");
                     sink.monospaced_();
-                }
-                else
-                {
-                    sink.text( ": " );
+                } else {
+                    sink.text(": ");
                     sink.monospaced();
-                    sink.text( "\"" );
-                    sink.text( value );
-                    sink.text( "\"" );
+                    sink.text("\"");
+                    sink.text(value);
+                    sink.text("\"");
                     sink.monospaced_();
                 }
                 sink.listItem_();
@@ -413,15 +367,15 @@ public class CheckstyleReportGenerator
 
         // column 3: rule violation count
         sink.tableCell();
-        sink.text( String.valueOf( ref.violations ) );
+        sink.text(String.valueOf(ref.violations));
         sink.tableCell_();
 
         // column 4: severity
         sink.tableCell();
         // Grab the severity from the rule configuration, this time use error as default value
         // Also pass along all parent configurations, so that we can try to find the severity there
-        String severity = getConfigAttribute( checkerConfig, parentConfiguration, "severity", "error" );
-        iconTool.iconSeverity( severity, IconTool.TEXT_SIMPLE );
+        String severity = getConfigAttribute(checkerConfig, parentConfiguration, "severity", "error");
+        iconTool.iconSeverity(severity, IconTool.TEXT_SIMPLE);
         sink.tableCell_();
 
         sink.tableRow_();
@@ -436,25 +390,20 @@ public class CheckstyleReportGenerator
      * @param expectedSeverity A severity that, if it's not null, will be matched to the severity from the violation
      * @return The number of rule violations
      */
-    public boolean matchRule( AuditEvent event, String ruleName, String expectedMessage, String expectedSeverity )
-    {
-        if ( !ruleName.equals( RuleUtil.getName( event ) ) )
-        {
+    public boolean matchRule(AuditEvent event, String ruleName, String expectedMessage, String expectedSeverity) {
+        if (!ruleName.equals(RuleUtil.getName(event))) {
             return false;
         }
 
         // check message too, for those that have a specific one.
         // like GenericIllegalRegexp and Regexp
-        if ( expectedMessage != null )
-        {
+        if (expectedMessage != null) {
             // event.getMessage() uses java.text.MessageFormat in its implementation.
             // Read MessageFormat Javadoc about single quote:
             // http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
-            String msgWithoutSingleQuote = StringUtils.replace( expectedMessage, "'", "" );
+            String msgWithoutSingleQuote = StringUtils.replace(expectedMessage, "'", "");
 
-            if ( ! ( expectedMessage.equals( event.getMessage() )
-                || msgWithoutSingleQuote.equals( event.getMessage() ) ) )
-            {
+            if (!(expectedMessage.equals(event.getMessage()) || msgWithoutSingleQuote.equals(event.getMessage()))) {
                 return false;
             }
         }
@@ -462,56 +411,53 @@ public class CheckstyleReportGenerator
         // different configurations for the same rule, where each
         // configuration has a different severity, like JavadocMethod.
         // See also https://issues.apache.org/jira/browse/MCHECKSTYLE-41
-        if ( expectedSeverity != null )
-        {
-            if ( !expectedSeverity.equals( event.getSeverityLevel().getName() ) )
-            {
+        if (expectedSeverity != null) {
+            if (!expectedSeverity.equals(event.getSeverityLevel().getName())) {
                 return false;
             }
         }
         return true;
     }
 
-    private void doSeveritySummary( CheckstyleResults results )
-    {
+    private void doSeveritySummary(CheckstyleResults results) {
         sink.section1();
         sink.sectionTitle1();
-        sink.text( bundle.getString( "report.checkstyle.summary" ) );
+        sink.text(bundle.getString("report.checkstyle.summary"));
         sink.sectionTitle1_();
 
         sink.table();
-        sink.tableRows( null, false );
+        sink.tableRows(null, false);
 
         sink.tableRow();
         sink.tableHeaderCell();
-        sink.text( bundle.getString( "report.checkstyle.files" ) );
+        sink.text(bundle.getString("report.checkstyle.files"));
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconTool.iconInfo( IconTool.TEXT_TITLE );
+        iconTool.iconInfo(IconTool.TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconTool.iconWarning( IconTool.TEXT_TITLE );
+        iconTool.iconWarning(IconTool.TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconTool.iconError( IconTool.TEXT_TITLE );
+        iconTool.iconError(IconTool.TEXT_TITLE);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
         sink.tableRow();
         sink.tableCell();
-        sink.text( String.valueOf( results.getFileCount() ) );
+        sink.text(String.valueOf(results.getFileCount()));
         sink.tableCell_();
         sink.tableCell();
-        sink.text( String.valueOf( results.getSeverityCount( SeverityLevel.INFO ) ) );
+        sink.text(String.valueOf(results.getSeverityCount(SeverityLevel.INFO)));
         sink.tableCell_();
         sink.tableCell();
-        sink.text( String.valueOf( results.getSeverityCount( SeverityLevel.WARNING ) ) );
+        sink.text(String.valueOf(results.getSeverityCount(SeverityLevel.WARNING)));
         sink.tableCell_();
         sink.tableCell();
-        sink.text( String.valueOf( results.getSeverityCount( SeverityLevel.ERROR ) ) );
+        sink.text(String.valueOf(results.getSeverityCount(SeverityLevel.ERROR)));
         sink.tableCell_();
         sink.tableRow_();
 
@@ -521,40 +467,37 @@ public class CheckstyleReportGenerator
         sink.section1_();
     }
 
-    private void doFilesSummary( CheckstyleResults results )
-    {
+    private void doFilesSummary(CheckstyleResults results) {
         sink.section1();
         sink.sectionTitle1();
-        sink.text( bundle.getString( "report.checkstyle.files" ) );
+        sink.text(bundle.getString("report.checkstyle.files"));
         sink.sectionTitle1_();
 
         sink.table();
-        sink.tableRows( null, false );
+        sink.tableRows(null, false);
 
         sink.tableRow();
         sink.tableHeaderCell();
-        sink.text( bundle.getString( "report.checkstyle.file" ) );
+        sink.text(bundle.getString("report.checkstyle.file"));
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconTool.iconInfo( IconTool.TEXT_ABBREV );
+        iconTool.iconInfo(IconTool.TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconTool.iconWarning( IconTool.TEXT_ABBREV );
+        iconTool.iconWarning(IconTool.TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconTool.iconError( IconTool.TEXT_ABBREV );
+        iconTool.iconError(IconTool.TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
         // Sort the files before writing them to the report
-        List<String> fileList = new ArrayList<>( results.getFiles().keySet() );
-        Collections.sort( fileList );
+        List<String> fileList = new ArrayList<>(results.getFiles().keySet());
+        Collections.sort(fileList);
 
-        for ( String filename : fileList )
-        {
-            List<AuditEvent> violations = results.getFileViolations( filename );
-            if ( violations.isEmpty() )
-            {
+        for (String filename : fileList) {
+            List<AuditEvent> violations = results.getFileViolations(filename);
+            if (violations.isEmpty()) {
                 // skip files without violations
                 continue;
             }
@@ -562,21 +505,21 @@ public class CheckstyleReportGenerator
             sink.tableRow();
 
             sink.tableCell();
-            sink.link( "#" + filename.replace( '/', '.' ) );
-            sink.text( filename );
+            sink.link("#" + filename.replace('/', '.'));
+            sink.text(filename);
             sink.link_();
             sink.tableCell_();
 
             sink.tableCell();
-            sink.text( String.valueOf( results.getSeverityCount( violations, SeverityLevel.INFO ) ) );
+            sink.text(String.valueOf(results.getSeverityCount(violations, SeverityLevel.INFO)));
             sink.tableCell_();
 
             sink.tableCell();
-            sink.text( String.valueOf( results.getSeverityCount( violations, SeverityLevel.WARNING ) ) );
+            sink.text(String.valueOf(results.getSeverityCount(violations, SeverityLevel.WARNING)));
             sink.tableCell_();
 
             sink.tableCell();
-            sink.text( String.valueOf( results.getSeverityCount( violations, SeverityLevel.ERROR ) ) );
+            sink.text(String.valueOf(results.getSeverityCount(violations, SeverityLevel.ERROR)));
             sink.tableCell_();
 
             sink.tableRow_();
@@ -588,57 +531,54 @@ public class CheckstyleReportGenerator
         sink.section1_();
     }
 
-    private void doDetails( CheckstyleResults results )
-    {
+    private void doDetails(CheckstyleResults results) {
 
         sink.section1();
         sink.sectionTitle1();
-        sink.text( bundle.getString( "report.checkstyle.details" ) );
+        sink.text(bundle.getString("report.checkstyle.details"));
         sink.sectionTitle1_();
 
         // Sort the files before writing their details to the report
-        List<String> fileList = new ArrayList<>( results.getFiles().keySet() );
-        Collections.sort( fileList );
+        List<String> fileList = new ArrayList<>(results.getFiles().keySet());
+        Collections.sort(fileList);
 
-        for ( String file : fileList )
-        {
-            List<AuditEvent> violations = results.getFileViolations( file );
+        for (String file : fileList) {
+            List<AuditEvent> violations = results.getFileViolations(file);
 
-            if ( violations.isEmpty() )
-            {
+            if (violations.isEmpty()) {
                 // skip files without violations
                 continue;
             }
 
             sink.section2();
             SinkEventAttributes attrs = new SinkEventAttributeSet();
-            attrs.addAttribute( SinkEventAttributes.ID, file.replace( '/', '.' ) );
-            sink.sectionTitle( Sink.SECTION_LEVEL_2, attrs );
-            sink.text( file );
-            sink.sectionTitle_( Sink.SECTION_LEVEL_2 );
+            attrs.addAttribute(SinkEventAttributes.ID, file.replace('/', '.'));
+            sink.sectionTitle(Sink.SECTION_LEVEL_2, attrs);
+            sink.text(file);
+            sink.sectionTitle_(Sink.SECTION_LEVEL_2);
 
             sink.table();
-            sink.tableRows( null, false );
+            sink.tableRows(null, false);
 
             sink.tableRow();
             sink.tableHeaderCell();
-            sink.text( bundle.getString( "report.checkstyle.column.severity" ) );
+            sink.text(bundle.getString("report.checkstyle.column.severity"));
             sink.tableHeaderCell_();
             sink.tableHeaderCell();
-            sink.text( bundle.getString( "report.checkstyle.rule.category" ) );
+            sink.text(bundle.getString("report.checkstyle.rule.category"));
             sink.tableHeaderCell_();
             sink.tableHeaderCell();
-            sink.text( bundle.getString( "report.checkstyle.rule" ) );
+            sink.text(bundle.getString("report.checkstyle.rule"));
             sink.tableHeaderCell_();
             sink.tableHeaderCell();
-            sink.text( bundle.getString( "report.checkstyle.column.message" ) );
+            sink.text(bundle.getString("report.checkstyle.column.message"));
             sink.tableHeaderCell_();
             sink.tableHeaderCell();
-            sink.text( bundle.getString( "report.checkstyle.column.line" ) );
+            sink.text(bundle.getString("report.checkstyle.column.line"));
             sink.tableHeaderCell_();
             sink.tableRow_();
 
-            doFileEvents( violations, file );
+            doFileEvents(violations, file);
 
             sink.tableRows_();
             sink.table_();
@@ -649,57 +589,48 @@ public class CheckstyleReportGenerator
         sink.section1_();
     }
 
-    private void doFileEvents( List<AuditEvent> eventList, String filename )
-    {
-        for ( AuditEvent event : eventList )
-        {
+    private void doFileEvents(List<AuditEvent> eventList, String filename) {
+        for (AuditEvent event : eventList) {
             SeverityLevel level = event.getSeverityLevel();
 
-            if ( ( getSeverityLevel() != null ) && !( getSeverityLevel() != level ) )
-            {
+            if ((getSeverityLevel() != null) && !(getSeverityLevel() != level)) {
                 continue;
             }
 
             sink.tableRow();
 
             sink.tableCell();
-            iconTool.iconSeverity( level.getName(), IconTool.TEXT_SIMPLE );
+            iconTool.iconSeverity(level.getName(), IconTool.TEXT_SIMPLE);
             sink.tableCell_();
 
             sink.tableCell();
-            String category = RuleUtil.getCategory( event );
-            if ( category != null )
-            {
-                sink.text( category );
+            String category = RuleUtil.getCategory(event);
+            if (category != null) {
+                sink.text(category);
             }
             sink.tableCell_();
 
             sink.tableCell();
-            String ruleName = RuleUtil.getName( event );
-            if ( ruleName != null )
-            {
-                sink.text( ruleName );
+            String ruleName = RuleUtil.getName(event);
+            if (ruleName != null) {
+                sink.text(ruleName);
             }
             sink.tableCell_();
 
             sink.tableCell();
-            sink.text( event.getMessage() );
+            sink.text(event.getMessage());
             sink.tableCell_();
 
             sink.tableCell();
 
             int line = event.getLine();
-            String effectiveXrefLocation = getEffectiveXrefLocation( eventList );
-            if ( effectiveXrefLocation != null && line != 0 )
-            {
-                sink.link( effectiveXrefLocation + "/" + filename.replaceAll( "\\.java$", ".html" ) + "#L"
-                    + line );
-                sink.text( String.valueOf( line ) );
+            String effectiveXrefLocation = getEffectiveXrefLocation(eventList);
+            if (effectiveXrefLocation != null && line != 0) {
+                sink.link(effectiveXrefLocation + "/" + filename.replaceAll("\\.java$", ".html") + "#L" + line);
+                sink.text(String.valueOf(line));
                 sink.link_();
-            }
-            else if ( line != 0 )
-            {
-                sink.text( String.valueOf( line ) );
+            } else if (line != 0) {
+                sink.text(String.valueOf(line));
             }
             sink.tableCell_();
 
@@ -707,25 +638,18 @@ public class CheckstyleReportGenerator
         }
     }
 
-    private String getEffectiveXrefLocation( List<AuditEvent> eventList )
-    {
-        String absoluteFilename = eventList.get( 0 ).getFileName();
-        if ( isTestSource( absoluteFilename ) )
-        {
+    private String getEffectiveXrefLocation(List<AuditEvent> eventList) {
+        String absoluteFilename = eventList.get(0).getFileName();
+        if (isTestSource(absoluteFilename)) {
             return getXrefTestLocation();
-        }
-        else
-        {
+        } else {
             return getXrefLocation();
         }
     }
 
-    private boolean isTestSource( final String absoluteFilename )
-    {
-        for ( File testSourceDirectory : testSourceDirectories )
-        {
-            if ( absoluteFilename.startsWith( testSourceDirectory.getAbsolutePath() ) )
-            {
+    private boolean isTestSource(final String absoluteFilename) {
+        for (File testSourceDirectory : testSourceDirectories) {
+            if (absoluteFilename.startsWith(testSourceDirectory.getAbsolutePath())) {
                 return true;
             }
         }
@@ -733,105 +657,85 @@ public class CheckstyleReportGenerator
         return false;
     }
 
-    public SeverityLevel getSeverityLevel()
-    {
+    public SeverityLevel getSeverityLevel() {
         return severityLevel;
     }
 
-    public void setSeverityLevel( SeverityLevel severityLevel )
-    {
+    public void setSeverityLevel(SeverityLevel severityLevel) {
         this.severityLevel = severityLevel;
     }
 
-    public boolean isEnableRulesSummary()
-    {
+    public boolean isEnableRulesSummary() {
         return enableRulesSummary;
     }
 
-    public void setEnableRulesSummary( boolean enableRulesSummary )
-    {
+    public void setEnableRulesSummary(boolean enableRulesSummary) {
         this.enableRulesSummary = enableRulesSummary;
     }
 
-    public boolean isEnableSeveritySummary()
-    {
+    public boolean isEnableSeveritySummary() {
         return enableSeveritySummary;
     }
 
-    public void setEnableSeveritySummary( boolean enableSeveritySummary )
-    {
+    public void setEnableSeveritySummary(boolean enableSeveritySummary) {
         this.enableSeveritySummary = enableSeveritySummary;
     }
 
-    public boolean isEnableFilesSummary()
-    {
+    public boolean isEnableFilesSummary() {
         return enableFilesSummary;
     }
 
-    public void setEnableFilesSummary( boolean enableFilesSummary )
-    {
+    public void setEnableFilesSummary(boolean enableFilesSummary) {
         this.enableFilesSummary = enableFilesSummary;
     }
 
     @Deprecated
-    public boolean isEnableRSS()
-    {
+    public boolean isEnableRSS() {
         return enableRSS;
     }
 
     @Deprecated
-    public void setEnableRSS( boolean enableRSS )
-    {
+    public void setEnableRSS(boolean enableRSS) {
         this.enableRSS = enableRSS;
     }
 
-    public String getXrefLocation()
-    {
+    public String getXrefLocation() {
         return xrefLocation;
     }
 
-    public void setXrefLocation( String xrefLocation )
-    {
+    public void setXrefLocation(String xrefLocation) {
         this.xrefLocation = xrefLocation;
     }
 
-    public String getXrefTestLocation()
-    {
+    public String getXrefTestLocation() {
         return xrefTestLocation;
     }
 
-    public void setXrefTestLocation( String xrefTestLocation )
-    {
+    public void setXrefTestLocation(String xrefTestLocation) {
         this.xrefTestLocation = xrefTestLocation;
     }
 
-    public List<File> getTestSourceDirectories()
-    {
+    public List<File> getTestSourceDirectories() {
         return testSourceDirectories;
     }
 
-    public void setTestSourceDirectories( List<File> testSourceDirectories )
-    {
+    public void setTestSourceDirectories(List<File> testSourceDirectories) {
         this.testSourceDirectories = testSourceDirectories;
     }
 
-    public Configuration getCheckstyleConfig()
-    {
+    public Configuration getCheckstyleConfig() {
         return checkstyleConfig;
     }
 
-    public void setCheckstyleConfig( Configuration config )
-    {
+    public void setCheckstyleConfig(Configuration config) {
         this.checkstyleConfig = config;
     }
 
-    public void setTreeWalkerNames( List<String> treeWalkerNames )
-    {
+    public void setTreeWalkerNames(List<String> treeWalkerNames) {
         this.treeWalkerNames = treeWalkerNames;
     }
 
-    public List<String> getTreeWalkerNames()
-    {
+    public List<String> getTreeWalkerNames() {
         return treeWalkerNames;
     }
 
@@ -839,81 +743,75 @@ public class CheckstyleReportGenerator
      * Get the effective Checkstyle version at runtime.
      * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
      */
-    private String getCheckstyleVersion()
-    {
+    private String getCheckstyleVersion() {
         Package checkstyleApiPackage = Configuration.class.getPackage();
 
-        return ( checkstyleApiPackage == null ) ? null : checkstyleApiPackage.getImplementationVersion();
+        return (checkstyleApiPackage == null) ? null : checkstyleApiPackage.getImplementationVersion();
     }
 
-    public List<ConfReference> sortConfiguration( CheckstyleResults results )
-    {
+    public List<ConfReference> sortConfiguration(CheckstyleResults results) {
         List<ConfReference> result = new ArrayList<>();
 
-        sortConfiguration( result, checkstyleConfig, null, results );
+        sortConfiguration(result, checkstyleConfig, null, results);
 
-        Collections.sort( result );
+        Collections.sort(result);
 
         return result;
     }
 
-    private void sortConfiguration( List<ConfReference> result, Configuration config,
-                                    ChainedItem<Configuration> parent, CheckstyleResults results )
-    {
-        for ( Configuration childConfig : config.getChildren() )
-        {
+    private void sortConfiguration(
+            List<ConfReference> result,
+            Configuration config,
+            ChainedItem<Configuration> parent,
+            CheckstyleResults results) {
+        for (Configuration childConfig : config.getChildren()) {
             String ruleName = childConfig.getName();
 
-            if ( treeWalkerNames.contains( ruleName ) )
-            {
+            if (treeWalkerNames.contains(ruleName)) {
                 // special sub-case: TreeWalker is the parent of multiple rules, not an effective rule
-                sortConfiguration( result, childConfig, new ChainedItem<>( config, parent ), results );
-            }
-            else
-            {
-                String fixedmessage = getConfigAttribute( childConfig, null, "message", null );
+                sortConfiguration(result, childConfig, new ChainedItem<>(config, parent), results);
+            } else {
+                String fixedmessage = getConfigAttribute(childConfig, null, "message", null);
                 // Grab the severity from the rule configuration. Do not set default value here as
                 // it breaks our rule aggregate section entirely.  The counts are off but this is
                 // not appropriate fix location per MCHECKSTYLE-365.
-                String configSeverity = getConfigAttribute( childConfig, null, "severity", null );
+                String configSeverity = getConfigAttribute(childConfig, null, "severity", null);
 
                 // count rule violations
                 long violations = 0;
                 AuditEvent lastMatchedEvent = null;
-                for ( List<AuditEvent> errors : results.getFiles().values() )
-                {
-                    for ( AuditEvent event : errors )
-                    {
-                        if ( matchRule( event, ruleName, fixedmessage, configSeverity ) )
-                        {
+                for (List<AuditEvent> errors : results.getFiles().values()) {
+                    for (AuditEvent event : errors) {
+                        if (matchRule(event, ruleName, fixedmessage, configSeverity)) {
                             lastMatchedEvent = event;
                             violations++;
                         }
                     }
                 }
 
-                if ( violations > 0 ) // forget rules without violations
+                if (violations > 0) // forget rules without violations
                 {
-                    String category = RuleUtil.getCategory( lastMatchedEvent );
+                    String category = RuleUtil.getCategory(lastMatchedEvent);
 
-                    result.add( new ConfReference( category, childConfig, parent, violations, result.size() ) );
+                    result.add(new ConfReference(category, childConfig, parent, violations, result.size()));
                 }
             }
         }
     }
 
-    private static class ConfReference
-        implements Comparable<ConfReference>
-    {
+    private static class ConfReference implements Comparable<ConfReference> {
         private final String category;
         private final Configuration configuration;
         private final ChainedItem<Configuration> parentConfiguration;
         private final long violations;
         private final int count;
 
-        ConfReference( String category, Configuration configuration,
-                              ChainedItem<Configuration> parentConfiguration, long violations, int count )
-        {
+        ConfReference(
+                String category,
+                Configuration configuration,
+                ChainedItem<Configuration> parentConfiguration,
+                long violations,
+                int count) {
             this.category = category;
             this.configuration = configuration;
             this.parentConfiguration = parentConfiguration;
@@ -921,28 +819,23 @@ public class CheckstyleReportGenerator
             this.count = count;
         }
 
-        public int compareTo( ConfReference o )
-        {
-            int compare = category.compareTo( o.category );
-            if ( compare == 0 )
-            {
-                compare = configuration.getName().compareTo( o.configuration.getName() );
+        public int compareTo(ConfReference o) {
+            int compare = category.compareTo(o.category);
+            if (compare == 0) {
+                compare = configuration.getName().compareTo(o.configuration.getName());
             }
-            return ( compare == 0 ) ? ( o.count - count ) : compare;
+            return (compare == 0) ? (o.count - count) : compare;
         }
     }
 
-    private static class ChainedItem<T>
-    {
+    private static class ChainedItem<T> {
         private final ChainedItem<T> parent;
 
         private final T value;
 
-        ChainedItem( T value, ChainedItem<T> parent )
-        {
+        ChainedItem(T value, ChainedItem<T> parent) {
             this.parent = parent;
             this.value = value;
         }
     }
-
 }

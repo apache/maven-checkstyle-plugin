@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,12 +16,13 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.codehaus.plexus.util.FileUtils;
+package org.apache.maven.plugins.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Generic Report Resource management.
@@ -31,46 +30,37 @@ import java.net.URL;
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
  *
  */
-public class ReportResource
-{
+public class ReportResource {
     private String resourcePathBase;
 
     private File outputDirectory;
 
-    public ReportResource( String resourcePathBase, File outputDirectory )
-    {
+    public ReportResource(String resourcePathBase, File outputDirectory) {
         this.resourcePathBase = resourcePathBase;
         this.outputDirectory = outputDirectory;
     }
 
-    public void copy( String resourceName ) throws IOException
-    {
-        File resource = new File( outputDirectory, resourceName );
-        if ( !resource.exists() )
-        {
-            URL url =
-                Thread.currentThread().getContextClassLoader().getResource( resourcePathBase + "/" + resourceName );
-            FileUtils.copyURLToFile( url, resource );
+    public void copy(String resourceName) throws IOException {
+        File resource = new File(outputDirectory, resourceName);
+        if (!resource.exists()) {
+            URL url = Thread.currentThread().getContextClassLoader().getResource(resourcePathBase + "/" + resourceName);
+            FileUtils.copyURLToFile(url, resource);
         }
     }
 
-    public File getOutputDirectory()
-    {
+    public File getOutputDirectory() {
         return outputDirectory;
     }
 
-    public void setOutputDirectory( File outputDirectory )
-    {
+    public void setOutputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
-    public String getResourcePathBase()
-    {
+    public String getResourcePathBase() {
         return resourcePathBase;
     }
 
-    public void setResourcePathBase( String resourcePathBase )
-    {
+    public void setResourcePathBase(String resourcePathBase) {
         this.resourcePathBase = resourcePathBase;
     }
 }

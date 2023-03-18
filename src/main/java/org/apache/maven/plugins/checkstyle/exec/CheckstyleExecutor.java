@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.exec;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle.exec;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.exec;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
@@ -27,8 +26,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
  * @since 2.5
  *
  */
-public interface CheckstyleExecutor
-{
+public interface CheckstyleExecutor {
 
     /**
      * @param request {@link CheckstyleExecutorRequest}
@@ -36,9 +34,8 @@ public interface CheckstyleExecutor
      * @throws CheckstyleExecutorException in case of an error during plugin execution.
      * @throws CheckstyleException in case of an error raised by Checkstyle.
      */
-    CheckstyleResults executeCheckstyle( CheckstyleExecutorRequest request )
-        throws CheckstyleExecutorException, CheckstyleException;
+    CheckstyleResults executeCheckstyle(CheckstyleExecutorRequest request)
+            throws CheckstyleExecutorException, CheckstyleException;
 
-    Configuration getConfiguration( CheckstyleExecutorRequest request )
-        throws CheckstyleExecutorException;
+    Configuration getConfiguration(CheckstyleExecutorRequest request) throws CheckstyleExecutorException;
 }

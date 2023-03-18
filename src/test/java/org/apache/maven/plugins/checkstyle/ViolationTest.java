@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.plugins.checkstyle;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,16 +16,14 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import junit.framework.TestCase;
 
-public class ViolationTest
-    extends TestCase
-{
-    public void testEquals()
-    {
-        Violation v1 = new Violation( "", null, null, "", "", "", "" );
-        Violation v2 = new Violation( "", null, null, "", "", "", "" );
-        assertEquals( v1, v2 );
+public class ViolationTest extends TestCase {
+    public void testEquals() {
+        Violation v1 = new Violation("", null, null, "", "", "", "");
+        Violation v2 = new Violation("", null, null, "", "", "", "");
+        assertEquals(v1, v2);
     }
 }

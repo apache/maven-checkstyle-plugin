@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.stubs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.plugins.checkstyle.stubs;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,101 +16,88 @@ package org.apache.maven.plugins.checkstyle.stubs;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.stubs;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Organization;
 import org.apache.maven.model.ReportPlugin;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.codehaus.plexus.PlexusTestCase;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.io.File;
 
 /**
  * @author Edwin Punzalan
  *
  */
-public class MinMavenProjectStub
-    extends CheckstyleProjectStub
-{
+public class MinMavenProjectStub extends CheckstyleProjectStub {
     /** {@inheritDoc} */
-    public List<String> getCompileClasspathElements()
-        throws DependencyResolutionRequiredException
-    {
+    public List<String> getCompileClasspathElements() throws DependencyResolutionRequiredException {
         return getCompileSourceRoots();
     }
 
     /** {@inheritDoc} */
-    public List<String> getTestClasspathElements()
-        throws DependencyResolutionRequiredException
-    {
-        List<String> list = new ArrayList<>( getCompileClasspathElements() );
-        list.add( PlexusTestCase.getBasedir() + "/target/test-classes" );
+    public List<String> getTestClasspathElements() throws DependencyResolutionRequiredException {
+        List<String> list = new ArrayList<>(getCompileClasspathElements());
+        list.add(PlexusTestCase.getBasedir() + "/target/test-classes");
         return list;
     }
 
     /** {@inheritDoc} */
-    public List<String> getCompileSourceRoots()
-    {
-        return Collections.singletonList( PlexusTestCase.getBasedir() + "/target/classes" );
+    public List<String> getCompileSourceRoots() {
+        return Collections.singletonList(PlexusTestCase.getBasedir() + "/target/classes");
     }
 
     /** {@inheritDoc} */
-    public List<String> getTestCompileSourceRoots()
-    {
-        List<String> list = new ArrayList<>( getCompileSourceRoots() );
-        list.add( PlexusTestCase.getBasedir() + "/target/test-classes" );
+    public List<String> getTestCompileSourceRoots() {
+        List<String> list = new ArrayList<>(getCompileSourceRoots());
+        list.add(PlexusTestCase.getBasedir() + "/target/test-classes");
         return list;
     }
 
     /** {@inheritDoc} */
-    public File getBasedir()
-    {
-        return new File( PlexusTestCase.getBasedir() );
+    public File getBasedir() {
+        return new File(PlexusTestCase.getBasedir());
     }
 
     /** {@inheritDoc} */
-    public List<ReportPlugin> getReportPlugins()
-    {
+    public List<ReportPlugin> getReportPlugins() {
         ReportPlugin jxrPlugin = new ReportPlugin();
 
-        jxrPlugin.setArtifactId( "maven-jxr-plugin" );
+        jxrPlugin.setArtifactId("maven-jxr-plugin");
 
-        return Collections.singletonList( jxrPlugin );
+        return Collections.singletonList(jxrPlugin);
     }
 
     /** {@inheritDoc} */
-    public Organization getOrganization()
-    {
+    public Organization getOrganization() {
         Organization organization = new Organization();
 
-        organization.setName( "maven-plugin-tests" );
+        organization.setName("maven-plugin-tests");
 
         return organization;
     }
 
     /** {@inheritDoc} */
-    public String getInceptionYear()
-    {
+    public String getInceptionYear() {
         return "2006";
     }
 
     /** {@inheritDoc} */
-    public Build getBuild()
-    {
+    public Build getBuild() {
         Build build = new Build();
 
-        build.setDirectory( PlexusTestCase.getBasedir() + "/target/test-harness/checkstyle/min" );
+        build.setDirectory(PlexusTestCase.getBasedir() + "/target/test-harness/checkstyle/min");
 
         return build;
     }
 
     /** {@inheritDoc} */
-    public File getFile()
-    {
-        File file = new File( getBasedir(), "pom.xml" );
+    public File getFile() {
+        File file = new File(getBasedir(), "pom.xml");
 
         return file;
     }

@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.exec;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,15 +16,16 @@ package org.apache.maven.plugins.checkstyle.exec;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+package org.apache.maven.plugins.checkstyle.exec;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 /**
  * Object holding the references to the CheckstyleResults.
@@ -35,96 +34,77 @@ import java.util.Map;
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
  *
  */
-public class CheckstyleResults
-{
+public class CheckstyleResults {
     private Map<String, List<AuditEvent>> files;
 
     private Configuration configuration;
 
-    public CheckstyleResults()
-    {
+    public CheckstyleResults() {
         files = new HashMap<>();
     }
 
-    public List<AuditEvent> getFileViolations( String file )
-    {
+    public List<AuditEvent> getFileViolations(String file) {
         List<AuditEvent> violations;
 
-        if ( this.files.containsKey( file ) )
-        {
-            violations = this.files.get( file );
-        }
-        else
-        {
+        if (this.files.containsKey(file)) {
+            violations = this.files.get(file);
+        } else {
             violations = new LinkedList<>();
-            if ( file != null )
-            {
-                this.files.put( file, violations );
+            if (file != null) {
+                this.files.put(file, violations);
             }
         }
 
         return violations;
     }
 
-    public void setFileViolations( String file, List<AuditEvent> violations )
-    {
-        if ( file != null )
-        {
-            this.files.put( file, violations );
+    public void setFileViolations(String file, List<AuditEvent> violations) {
+        if (file != null) {
+            this.files.put(file, violations);
         }
     }
 
-    public Map<String, List<AuditEvent>> getFiles()
-    {
+    public Map<String, List<AuditEvent>> getFiles() {
         return files;
     }
 
-    public void setFiles( Map<String, List<AuditEvent>> files )
-    {
+    public void setFiles(Map<String, List<AuditEvent>> files) {
         this.files = files;
     }
 
-    public int getFileCount()
-    {
+    public int getFileCount() {
         return this.files.size();
     }
 
-    public long getSeverityCount( SeverityLevel level )
-    {
+    public long getSeverityCount(SeverityLevel level) {
         long count = 0;
 
-        for ( List<AuditEvent> errors : this.files.values() )
-        {
-            count = count + getSeverityCount( errors, level );
+        for (List<AuditEvent> errors : this.files.values()) {
+            count = count + getSeverityCount(errors, level);
         }
 
         return count;
     }
 
-    public long getSeverityCount( String file, SeverityLevel level )
-    {
+    public long getSeverityCount(String file, SeverityLevel level) {
         long count = 0;
 
-        if ( !this.files.containsKey( file ) )
-        {
+        if (!this.files.containsKey(file)) {
             return count;
         }
 
-        List<AuditEvent> violations = this.files.get( file );
+        List<AuditEvent> violations = this.files.get(file);
 
-        count = getSeverityCount( violations, level );
+        count = getSeverityCount(violations, level);
 
         return count;
     }
 
-    public long getSeverityCount( List<AuditEvent> violations, SeverityLevel level )
-    {
+    public long getSeverityCount(List<AuditEvent> violations, SeverityLevel level) {
         long count = 0;
 
-        for ( AuditEvent event : violations )
-        {
-            if ( event.getSeverityLevel().equals( level ) )
-            {
+        for (AuditEvent event : violations) {
+            if (event.getSeverityLevel().equals(level)) {
                 count++;
             }
         }
@@ -132,13 +112,11 @@ public class CheckstyleResults
         return count;
     }
 
-    public Configuration getConfiguration()
-    {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration( Configuration configuration )
-    {
+    public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
 }

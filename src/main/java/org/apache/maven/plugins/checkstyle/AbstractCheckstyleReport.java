@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,6 +31,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.puppycrawl.tools.checkstyle.DefaultLogger;
+import com.puppycrawl.tools.checkstyle.XMLLogger;
+import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
@@ -57,33 +61,25 @@ import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.PathTool;
 
-import com.puppycrawl.tools.checkstyle.DefaultLogger;
-import com.puppycrawl.tools.checkstyle.XMLLogger;
-import com.puppycrawl.tools.checkstyle.api.AuditListener;
-import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-
 /**
  * Base abstract class for Checkstyle reports.
  *
  *
  */
-public abstract class AbstractCheckstyleReport
-    extends AbstractMavenReport
-{
+public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     public static final String PLUGIN_RESOURCES = "org/apache/maven/plugins/checkstyle";
 
     protected static final String JAVA_FILES = "**\\/*.java";
 
     private static final String DEFAULT_CONFIG_LOCATION = "sun_checks.xml";
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     private MavenSession session;
 
     /**
      * Specifies the cache file used to speed up Checkstyle on successive runs.
      */
-    @Parameter( defaultValue = "${project.build.directory}/checkstyle-cachefile" )
+    @Parameter(defaultValue = "${project.build.directory}/checkstyle-cachefile")
     protected String cacheFile;
 
     /**
@@ -107,19 +103,19 @@ public abstract class AbstractCheckstyleReport
      * <li><code>google_checks.xml</code>: Google Checks.</li>
      * </ul>
      */
-    @Parameter( property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION )
+    @Parameter(property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION)
     protected String configLocation;
 
     /**
      * Output errors to console.
      */
-    @Parameter( property = "checkstyle.consoleOutput", defaultValue = "false" )
+    @Parameter(property = "checkstyle.consoleOutput", defaultValue = "false")
     protected boolean consoleOutput;
 
     /**
      * Specifies if the build should fail upon a violation.
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     protected boolean failsOnError;
 
     /**
@@ -140,7 +136,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.0-beta-2
      */
-    @Parameter( property = "checkstyle.header.file", defaultValue = "LICENSE.txt" )
+    @Parameter(property = "checkstyle.header.file", defaultValue = "LICENSE.txt")
     protected String headerLocation;
 
     /**
@@ -148,7 +144,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.2
      */
-    @Parameter( property = "checkstyle.skip", defaultValue = "false" )
+    @Parameter(property = "checkstyle.skip", defaultValue = "false")
     protected boolean skip;
 
     /**
@@ -156,7 +152,7 @@ public abstract class AbstractCheckstyleReport
      * of the output file is determined by the <code>outputFileFormat</code>
      * parameter.
      */
-    @Parameter( property = "checkstyle.output.file", defaultValue = "${project.build.directory}/checkstyle-result.xml" )
+    @Parameter(property = "checkstyle.output.file", defaultValue = "${project.build.directory}/checkstyle-result.xml")
     private File outputFile;
 
     /**
@@ -175,7 +171,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.0-beta-2
      */
-    @Parameter( property = "checkstyle.properties.location" )
+    @Parameter(property = "checkstyle.properties.location")
     protected String propertiesLocation;
 
     /**
@@ -189,7 +185,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.10
      */
-    @Parameter( defaultValue = "${project.resources}", readonly = true )
+    @Parameter(defaultValue = "${project.resources}", readonly = true)
     protected List<Resource> resources;
 
     /**
@@ -197,27 +193,27 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.11
      */
-    @Parameter( defaultValue = "${project.testResources}", readonly = true )
+    @Parameter(defaultValue = "${project.testResources}", readonly = true)
     protected List<Resource> testResources;
 
     /**
      * Specifies the names filter of the source files to be used for Checkstyle.
      */
-    @Parameter( property = "checkstyle.includes", defaultValue = JAVA_FILES, required = true )
+    @Parameter(property = "checkstyle.includes", defaultValue = JAVA_FILES, required = true)
     protected String includes;
 
     /**
      * Specifies the names filter of the source files to be excluded for
      * Checkstyle.
      */
-    @Parameter( property = "checkstyle.excludes" )
+    @Parameter(property = "checkstyle.excludes")
     protected String excludes;
 
     /**
      * Specifies the names filter of the resource files to be used for Checkstyle.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true )
+    @Parameter(property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true)
     protected String resourceIncludes;
 
     /**
@@ -225,21 +221,21 @@ public abstract class AbstractCheckstyleReport
      * Checkstyle.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.resourceExcludes" )
+    @Parameter(property = "checkstyle.resourceExcludes")
     protected String resourceExcludes;
 
     /**
      * Specifies whether to include the resource directories in the check.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.includeResources", defaultValue = "true", required = true )
+    @Parameter(property = "checkstyle.includeResources", defaultValue = "true", required = true)
     protected boolean includeResources;
 
     /**
      * Specifies whether to include the test resource directories in the check.
      * @since 2.11
      */
-    @Parameter( property = "checkstyle.includeTestResources", defaultValue = "true", required = true )
+    @Parameter(property = "checkstyle.includeTestResources", defaultValue = "true", required = true)
     protected boolean includeTestResources;
 
     /**
@@ -286,7 +282,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.2
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     protected boolean includeTestSourceDirectory;
 
     /**
@@ -294,7 +290,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.1
      */
-    @Parameter( property = "checkstyle.suppression.expression", defaultValue = "checkstyle.suppressions.file" )
+    @Parameter(property = "checkstyle.suppression.expression", defaultValue = "checkstyle.suppressions.file")
     protected String suppressionsFileExpression;
 
     /**
@@ -311,7 +307,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.0-beta-2
      */
-    @Parameter( property = "checkstyle.suppressions.location" )
+    @Parameter(property = "checkstyle.suppressions.location")
     protected String suppressionsLocation;
 
     /**
@@ -325,25 +321,25 @@ public abstract class AbstractCheckstyleReport
      * Specifies the format of the output to be used when writing to the output
      * file. Valid values are "<code>plain</code>" and "<code>xml</code>".
      */
-    @Parameter( property = "checkstyle.output.format", defaultValue = "xml" )
+    @Parameter(property = "checkstyle.output.format", defaultValue = "xml")
     private String outputFileFormat;
 
     /**
      * Specifies if the Rules summary should be enabled or not.
      */
-    @Parameter( property = "checkstyle.enable.rules.summary", defaultValue = "true" )
+    @Parameter(property = "checkstyle.enable.rules.summary", defaultValue = "true")
     private boolean enableRulesSummary;
 
     /**
      * Specifies if the Severity summary should be enabled or not.
      */
-    @Parameter( property = "checkstyle.enable.severity.summary", defaultValue = "true" )
+    @Parameter(property = "checkstyle.enable.severity.summary", defaultValue = "true")
     private boolean enableSeveritySummary;
 
     /**
      * Specifies if the Files summary should be enabled or not.
      */
-    @Parameter( property = "checkstyle.enable.files.summary", defaultValue = "true" )
+    @Parameter(property = "checkstyle.enable.files.summary", defaultValue = "true")
     private boolean enableFilesSummary;
 
     /**
@@ -351,14 +347,14 @@ public abstract class AbstractCheckstyleReport
      *
      * @deprecated This feature will be removed in a future version.
      */
-    @Parameter( property = "checkstyle.enable.rss", defaultValue = "false" )
+    @Parameter(property = "checkstyle.enable.rss", defaultValue = "false")
     @Deprecated
     private boolean enableRSS;
 
     /**
      * The Plugin Descriptor
      */
-    @Parameter( defaultValue = "${plugin}", readonly = true, required = true )
+    @Parameter(defaultValue = "${plugin}", readonly = true, required = true)
     private PluginDescriptor plugin;
 
     /**
@@ -367,19 +363,19 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.1
      */
-    @Parameter( property = "linkXRef", defaultValue = "true" )
+    @Parameter(property = "linkXRef", defaultValue = "true")
     private boolean linkXRef;
 
     /**
      * Location of the Xrefs to link to.
      */
-    @Parameter( defaultValue = "${project.reporting.outputDirectory}/xref" )
+    @Parameter(defaultValue = "${project.reporting.outputDirectory}/xref")
     private File xrefLocation;
 
     /**
      * Location of the XrefTests to link to.
      */
-    @Parameter( defaultValue = "${project.reporting.outputDirectory}/xref-test" )
+    @Parameter(defaultValue = "${project.reporting.outputDirectory}/xref-test")
     private File xrefTestLocation;
 
     /**
@@ -397,7 +393,7 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 3.0.0
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean omitIgnoredModules;
 
     /**
@@ -430,17 +426,19 @@ public abstract class AbstractCheckstyleReport
     /**
      * Dump file for inlined Checkstyle rules.
      */
-    @Parameter( property = "checkstyle.output.rules.file",
-                    defaultValue = "${project.build.directory}/checkstyle-rules.xml" )
+    @Parameter(
+            property = "checkstyle.output.rules.file",
+            defaultValue = "${project.build.directory}/checkstyle-rules.xml")
     private File rulesFiles;
 
     /**
      * The header to use for the inline configuration.
      * Only used when you specify {@code checkstyleRules}.
      */
-    @Parameter( defaultValue = "<?xml version=\"1.0\"?>\n"
-            + "<!DOCTYPE module PUBLIC \"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\"\n"
-            + "        \"https://checkstyle.org/dtds/configuration_1_3.dtd\">\n" )
+    @Parameter(
+            defaultValue = "<?xml version=\"1.0\"?>\n"
+                    + "<!DOCTYPE module PUBLIC \"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\"\n"
+                    + "        \"https://checkstyle.org/dtds/configuration_1_3.dtd\">\n")
     private String checkstyleRulesHeader;
 
     /**
@@ -453,116 +451,98 @@ public abstract class AbstractCheckstyleReport
      *
      * @since 2.4
      */
-    @Component( role = CheckstyleRssGenerator.class, hint = "default" )
+    @Component(role = CheckstyleRssGenerator.class, hint = "default")
     @Deprecated
     protected CheckstyleRssGenerator checkstyleRssGenerator;
 
     /**
      * @since 2.5
      */
-    @Component( role = CheckstyleExecutor.class, hint = "default" )
+    @Component(role = CheckstyleExecutor.class, hint = "default")
     protected CheckstyleExecutor checkstyleExecutor;
 
     protected ByteArrayOutputStream stringOutputStream;
 
     /** {@inheritDoc} */
-    public String getName( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.checkstyle.name" );
+    public String getName(Locale locale) {
+        return getBundle(locale).getString("report.checkstyle.name");
     }
 
     /** {@inheritDoc} */
-    public String getDescription( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.checkstyle.description" );
+    public String getDescription(Locale locale) {
+        return getBundle(locale).getString("report.checkstyle.description");
     }
 
     /** {@inheritDoc} */
-    public void executeReport( Locale locale )
-        throws MavenReportException
-    {
-        checkDeprecatedParameterUsage( sourceDirectory, "sourceDirectory", "sourceDirectories" );
-        checkDeprecatedParameterUsage( testSourceDirectory, "testSourceDirectory", "testSourceDirectories" );
+    public void executeReport(Locale locale) throws MavenReportException {
+        checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
+        checkDeprecatedParameterUsage(testSourceDirectory, "testSourceDirectory", "testSourceDirectories");
 
-        locator.addSearchPath( FileResourceLoader.ID, project.getFile().getParentFile().getAbsolutePath() );
-        locator.addSearchPath( "url", "" );
+        locator.addSearchPath(
+                FileResourceLoader.ID, project.getFile().getParentFile().getAbsolutePath());
+        locator.addSearchPath("url", "");
 
-        locator.setOutputDirectory( new File( project.getBuild().getDirectory() ) );
+        locator.setOutputDirectory(new File(project.getBuild().getDirectory()));
 
         // for when we start using maven-shared-io and maven-shared-monitor...
         // locator = new Locator( new MojoLogMonitorAdaptor( getLog() ) );
 
         // locator = new Locator( getLog(), new File( project.getBuild().getDirectory() ) );
         String effectiveConfigLocation = configLocation;
-        if ( checkstyleRules != null )
-        {
-            if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
-            {
-                throw new MavenReportException( "If you use inline configuration for rules, don't specify "
-                        + "a configLocation" );
+        if (checkstyleRules != null) {
+            if (!DEFAULT_CONFIG_LOCATION.equals(configLocation)) {
+                throw new MavenReportException(
+                        "If you use inline configuration for rules, don't specify " + "a configLocation");
             }
-            if ( checkstyleRules.getChildCount() > 1 )
-            {
-                throw new MavenReportException( "Currently only one root module is supported" );
+            if (checkstyleRules.getChildCount() > 1) {
+                throw new MavenReportException("Currently only one root module is supported");
             }
-            PlexusConfiguration checkerModule = checkstyleRules.getChild( 0 );
+            PlexusConfiguration checkerModule = checkstyleRules.getChild(0);
 
-            try
-            {
-                FileUtils.forceMkdir( rulesFiles.getParentFile() );
-                FileUtils.fileWrite( rulesFiles, checkstyleRulesHeader + checkerModule.toString() );
-            }
-            catch ( final IOException e )
-            {
-                throw new MavenReportException( e.getMessage(), e );
+            try {
+                FileUtils.forceMkdir(rulesFiles.getParentFile());
+                FileUtils.fileWrite(rulesFiles, checkstyleRulesHeader + checkerModule.toString());
+            } catch (final IOException e) {
+                throw new MavenReportException(e.getMessage(), e);
             }
             effectiveConfigLocation = rulesFiles.getAbsolutePath();
         }
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
-        try
-        {
-            CheckstyleExecutorRequest request = createRequest().setLicenseArtifacts( collectArtifacts( "license" ) )
-                            .setConfigurationArtifacts( collectArtifacts( "configuration" ) )
-                            .setOmitIgnoredModules( omitIgnoredModules )
-                            .setConfigLocation( effectiveConfigLocation );
+        try {
+            CheckstyleExecutorRequest request = createRequest()
+                    .setLicenseArtifacts(collectArtifacts("license"))
+                    .setConfigurationArtifacts(collectArtifacts("configuration"))
+                    .setOmitIgnoredModules(omitIgnoredModules)
+                    .setConfigLocation(effectiveConfigLocation);
 
-            CheckstyleResults results = checkstyleExecutor.executeCheckstyle( request );
+            CheckstyleResults results = checkstyleExecutor.executeCheckstyle(request);
 
-            ResourceBundle bundle = getBundle( locale );
+            ResourceBundle bundle = getBundle(locale);
             generateReportStatics();
-            generateMainReport( results, bundle, effectiveConfigLocation );
-            if ( enableRSS )
-            {
+            generateMainReport(results, bundle, effectiveConfigLocation);
+            if (enableRSS) {
                 CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest =
-                    new CheckstyleRssGeneratorRequest( this.project, this.getCopyright(), outputDirectory, getLog() );
-                checkstyleRssGenerator.generateRSS( results, checkstyleRssGeneratorRequest );
+                        new CheckstyleRssGeneratorRequest(this.project, this.getCopyright(), outputDirectory, getLog());
+                checkstyleRssGenerator.generateRSS(results, checkstyleRssGeneratorRequest);
             }
 
-        }
-        catch ( CheckstyleException e )
-        {
-            throw new MavenReportException( "Failed during checkstyle configuration", e );
-        }
-        catch ( CheckstyleExecutorException e )
-        {
-            throw new MavenReportException( "Failed during checkstyle execution", e );
-        }
-        finally
-        {
-            //be sure to restore original context classloader
-            Thread.currentThread().setContextClassLoader( currentClassLoader );
+        } catch (CheckstyleException e) {
+            throw new MavenReportException("Failed during checkstyle configuration", e);
+        } catch (CheckstyleExecutorException e) {
+            throw new MavenReportException("Failed during checkstyle execution", e);
+        } finally {
+            // be sure to restore original context classloader
+            Thread.currentThread().setContextClassLoader(currentClassLoader);
         }
     }
 
-    private void checkDeprecatedParameterUsage( Object parameter, String name, String replacement )
-        throws MavenReportException
-    {
-        if ( parameter != null )
-        {
-            throw new MavenReportException( "You are using '" + name + "' which has been removed"
-                + " from the maven-checkstyle-plugin. " + "Please use '" + replacement
-                + "' and refer to the >>Major Version Upgrade to version 3.0.0<< " + "on the plugin site." );
+    private void checkDeprecatedParameterUsage(Object parameter, String name, String replacement)
+            throws MavenReportException {
+        if (parameter != null) {
+            throw new MavenReportException("You are using '" + name + "' which has been removed"
+                    + " from the maven-checkstyle-plugin. " + "Please use '" + replacement
+                    + "' and refer to the >>Major Version Upgrade to version 3.0.0<< " + "on the plugin site.");
         }
     }
 
@@ -572,36 +552,31 @@ public abstract class AbstractCheckstyleReport
      * @return The executor request.
      * @throws MavenReportException If something goes wrong during creation.
      */
-    protected abstract CheckstyleExecutorRequest createRequest()
-            throws MavenReportException;
+    protected abstract CheckstyleExecutorRequest createRequest() throws MavenReportException;
 
-    private List<Artifact> collectArtifacts( String hint )
-    {
+    private List<Artifact> collectArtifacts(String hint) {
         List<Artifact> artifacts = new ArrayList<>();
 
         PluginManagement pluginManagement = project.getBuild().getPluginManagement();
-        if ( pluginManagement != null )
-        {
-            artifacts.addAll( getCheckstylePluginDependenciesAsArtifacts( pluginManagement.getPluginsAsMap(), hint ) );
+        if (pluginManagement != null) {
+            artifacts.addAll(getCheckstylePluginDependenciesAsArtifacts(pluginManagement.getPluginsAsMap(), hint));
         }
 
-        artifacts.addAll( getCheckstylePluginDependenciesAsArtifacts( project.getBuild().getPluginsAsMap(), hint ) );
+        artifacts.addAll(
+                getCheckstylePluginDependenciesAsArtifacts(project.getBuild().getPluginsAsMap(), hint));
 
         return artifacts;
     }
 
-    private List<Artifact> getCheckstylePluginDependenciesAsArtifacts( Map<String, Plugin> plugins, String hint )
-    {
+    private List<Artifact> getCheckstylePluginDependenciesAsArtifacts(Map<String, Plugin> plugins, String hint) {
         List<Artifact> artifacts = new ArrayList<>();
 
-        Plugin checkstylePlugin = plugins.get( plugin.getGroupId() + ":" + plugin.getArtifactId() );
-        if ( checkstylePlugin != null )
-        {
-            for ( Dependency dep : checkstylePlugin.getDependencies() )
-            {
-             // @todo if we can filter on hints, it should be done here...
+        Plugin checkstylePlugin = plugins.get(plugin.getGroupId() + ":" + plugin.getArtifactId());
+        if (checkstylePlugin != null) {
+            for (Dependency dep : checkstylePlugin.getDependencies()) {
+                // @todo if we can filter on hints, it should be done here...
                 String depKey = dep.getGroupId() + ":" + dep.getArtifactId();
-                artifacts.add( plugin.getArtifactMap().get( depKey ) );
+                artifacts.add(plugin.getArtifactMap().get(depKey));
             }
         }
         return artifacts;
@@ -613,54 +588,40 @@ public abstract class AbstractCheckstyleReport
      * @return The audit listener.
      * @throws MavenReportException If something goes wrong.
      */
-    protected AuditListener getListener()
-        throws MavenReportException
-    {
+    protected AuditListener getListener() throws MavenReportException {
         AuditListener listener = null;
 
-        if ( StringUtils.isNotEmpty( outputFileFormat ) )
-        {
+        if (StringUtils.isNotEmpty(outputFileFormat)) {
             File resultFile = outputFile;
 
-            OutputStream out = getOutputStream( resultFile );
+            OutputStream out = getOutputStream(resultFile);
 
-            if ( "xml".equals( outputFileFormat ) )
-            {
-                listener = new XMLLogger( out, OutputStreamOptions.CLOSE );
-            }
-            else if ( "plain".equals( outputFileFormat ) )
-            {
-                listener = new DefaultLogger( out, OutputStreamOptions.CLOSE );
-            }
-            else
-            {
+            if ("xml".equals(outputFileFormat)) {
+                listener = new XMLLogger(out, OutputStreamOptions.CLOSE);
+            } else if ("plain".equals(outputFileFormat)) {
+                listener = new DefaultLogger(out, OutputStreamOptions.CLOSE);
+            } else {
                 // TODO: failure if not a report
-                throw new MavenReportException( "Invalid output file format: (" + outputFileFormat
-                    + "). Must be 'plain' or 'xml'." );
+                throw new MavenReportException(
+                        "Invalid output file format: (" + outputFileFormat + "). Must be 'plain' or 'xml'.");
             }
         }
 
         return listener;
     }
 
-    private OutputStream getOutputStream( File file )
-        throws MavenReportException
-    {
+    private OutputStream getOutputStream(File file) throws MavenReportException {
         File parentFile = file.getAbsoluteFile().getParentFile();
 
-        if ( !parentFile.exists() )
-        {
+        if (!parentFile.exists()) {
             parentFile.mkdirs();
         }
 
         FileOutputStream fileOutputStream;
-        try
-        {
-            fileOutputStream = new FileOutputStream( file );
-        }
-        catch ( FileNotFoundException e )
-        {
-            throw new MavenReportException( "Unable to create output stream: " + file, e );
+        try {
+            fileOutputStream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new MavenReportException("Unable to create output stream: " + file, e);
         }
         return fileOutputStream;
     }
@@ -671,136 +632,107 @@ public abstract class AbstractCheckstyleReport
      * @return The console listener.
      * @throws MavenReportException If something goes wrong.
      */
-    protected DefaultLogger getConsoleListener()
-        throws MavenReportException
-    {
+    protected DefaultLogger getConsoleListener() throws MavenReportException {
         DefaultLogger consoleListener;
 
-        if ( useFile == null )
-        {
+        if (useFile == null) {
             stringOutputStream = new ByteArrayOutputStream();
-            consoleListener = new DefaultLogger( stringOutputStream, OutputStreamOptions.NONE );
-        }
-        else
-        {
-            OutputStream out = getOutputStream( useFile );
+            consoleListener = new DefaultLogger(stringOutputStream, OutputStreamOptions.NONE);
+        } else {
+            OutputStream out = getOutputStream(useFile);
 
-            consoleListener = new DefaultLogger( out, OutputStreamOptions.CLOSE );
+            consoleListener = new DefaultLogger(out, OutputStreamOptions.CLOSE);
         }
 
         return consoleListener;
     }
 
-    private void generateReportStatics()
-        throws MavenReportException
-    {
-        ReportResource rresource = new ReportResource( PLUGIN_RESOURCES, outputDirectory );
-        try
-        {
-            rresource.copy( "images/rss.png" );
-        }
-        catch ( IOException e )
-        {
-            throw new MavenReportException( "Unable to copy static resources.", e );
+    private void generateReportStatics() throws MavenReportException {
+        ReportResource rresource = new ReportResource(PLUGIN_RESOURCES, outputDirectory);
+        try {
+            rresource.copy("images/rss.png");
+        } catch (IOException e) {
+            throw new MavenReportException("Unable to copy static resources.", e);
         }
     }
 
-
-    private String getCopyright()
-    {
+    private String getCopyright() {
         String copyright;
-        int currentYear = Calendar.getInstance().get( Calendar.YEAR );
-        if ( StringUtils.isNotEmpty( project.getInceptionYear() )
-            && !String.valueOf( currentYear ).equals( project.getInceptionYear() ) )
-        {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        if (StringUtils.isNotEmpty(project.getInceptionYear())
+                && !String.valueOf(currentYear).equals(project.getInceptionYear())) {
             copyright = project.getInceptionYear() + " - " + currentYear;
-        }
-        else
-        {
-            copyright = String.valueOf( currentYear );
+        } else {
+            copyright = String.valueOf(currentYear);
         }
 
-        if ( ( project.getOrganization() != null ) && StringUtils.isNotEmpty( project.getOrganization().getName() ) )
-        {
+        if ((project.getOrganization() != null)
+                && StringUtils.isNotEmpty(project.getOrganization().getName())) {
             copyright = copyright + " " + project.getOrganization().getName();
         }
         return copyright;
     }
 
-    private void generateMainReport( CheckstyleResults results, ResourceBundle bundle, String configLocation )
-    {
+    private void generateMainReport(CheckstyleResults results, ResourceBundle bundle, String configLocation) {
         CheckstyleReportGenerator generator =
-            new CheckstyleReportGenerator( getSink(), bundle, project.getBasedir(), siteTool, configLocation );
+                new CheckstyleReportGenerator(getSink(), bundle, project.getBasedir(), siteTool, configLocation);
 
-        generator.setLog( getLog() );
-        generator.setEnableRulesSummary( enableRulesSummary );
-        generator.setEnableSeveritySummary( enableSeveritySummary );
-        generator.setEnableFilesSummary( enableFilesSummary );
-        generator.setEnableRSS( enableRSS );
-        generator.setCheckstyleConfig( results.getConfiguration() );
-        if ( linkXRef )
-        {
-            initializeXrefLocation( generator );
-            if ( generator.getXrefLocation() == null && results.getFileCount() > 0 )
-            {
-                getLog().warn( "Unable to locate Source XRef to link to - DISABLED" );
+        generator.setLog(getLog());
+        generator.setEnableRulesSummary(enableRulesSummary);
+        generator.setEnableSeveritySummary(enableSeveritySummary);
+        generator.setEnableFilesSummary(enableFilesSummary);
+        generator.setEnableRSS(enableRSS);
+        generator.setCheckstyleConfig(results.getConfiguration());
+        if (linkXRef) {
+            initializeXrefLocation(generator);
+            if (generator.getXrefLocation() == null && results.getFileCount() > 0) {
+                getLog().warn("Unable to locate Source XRef to link to - DISABLED");
             }
 
-            initializeXrefTestLocation( generator );
-            if ( generator.getXrefTestLocation() == null && results.getFileCount() > 0 )
-            {
-                getLog().warn( "Unable to locate Test Source XRef to link to - DISABLED" );
+            initializeXrefTestLocation(generator);
+            if (generator.getXrefTestLocation() == null && results.getFileCount() > 0) {
+                getLog().warn("Unable to locate Test Source XRef to link to - DISABLED");
             }
 
-            generator.setTestSourceDirectories( getTestSourceDirectories() );
+            generator.setTestSourceDirectories(getTestSourceDirectories());
         }
-        if ( treeWalkerNames != null )
-        {
-            generator.setTreeWalkerNames( treeWalkerNames );
+        if (treeWalkerNames != null) {
+            generator.setTreeWalkerNames(treeWalkerNames);
         }
-        generator.generateReport( results );
+        generator.generateReport(results);
     }
 
-    private void initializeXrefLocation( CheckstyleReportGenerator generator )
-    {
-      String relativePath = determineRelativePath( xrefLocation );
-      if ( xrefLocation.exists() || checkMavenJxrPluginIsConfigured() )
-      {
-          // XRef was already generated by manual execution of a lifecycle binding
-          // the report is on its way
-          generator.setXrefLocation( relativePath );
-      }
+    private void initializeXrefLocation(CheckstyleReportGenerator generator) {
+        String relativePath = determineRelativePath(xrefLocation);
+        if (xrefLocation.exists() || checkMavenJxrPluginIsConfigured()) {
+            // XRef was already generated by manual execution of a lifecycle binding
+            // the report is on its way
+            generator.setXrefLocation(relativePath);
+        }
     }
 
-    private void initializeXrefTestLocation( CheckstyleReportGenerator generator )
-    {
-      String relativePath = determineRelativePath( xrefTestLocation );
-      if ( xrefTestLocation.exists() || checkMavenJxrPluginIsConfigured() )
-      {
-          // XRef was already generated by manual execution of a lifecycle binding
-          // the report is on its way
-          generator.setXrefTestLocation( relativePath );
-      }
+    private void initializeXrefTestLocation(CheckstyleReportGenerator generator) {
+        String relativePath = determineRelativePath(xrefTestLocation);
+        if (xrefTestLocation.exists() || checkMavenJxrPluginIsConfigured()) {
+            // XRef was already generated by manual execution of a lifecycle binding
+            // the report is on its way
+            generator.setXrefTestLocation(relativePath);
+        }
     }
 
-    private String determineRelativePath( File location )
-    {
-      String relativePath = PathTool.getRelativePath( getOutputDirectory(), location.getAbsolutePath() );
-      if ( relativePath == null || relativePath.trim().isEmpty() )
-      {
-          relativePath = ".";
-      }
+    private String determineRelativePath(File location) {
+        String relativePath = PathTool.getRelativePath(getOutputDirectory(), location.getAbsolutePath());
+        if (relativePath == null || relativePath.trim().isEmpty()) {
+            relativePath = ".";
+        }
 
-      return relativePath + "/" + location.getName();
+        return relativePath + "/" + location.getName();
     }
 
-    private boolean checkMavenJxrPluginIsConfigured()
-    {
-        for ( ReportPlugin report : (Iterable<ReportPlugin>) getProject().getReportPlugins() )
-        {
+    private boolean checkMavenJxrPluginIsConfigured() {
+        for (ReportPlugin report : (Iterable<ReportPlugin>) getProject().getReportPlugins()) {
             String artifactId = report.getArtifactId();
-            if ( "maven-jxr-plugin".equals( artifactId ) || "jxr-maven-plugin".equals( artifactId ) )
-            {
+            if ("maven-jxr-plugin".equals(artifactId) || "jxr-maven-plugin".equals(artifactId)) {
                 return true;
             }
         }
@@ -808,35 +740,28 @@ public abstract class AbstractCheckstyleReport
         return false;
     }
 
-    private static ResourceBundle getBundle( Locale locale )
-    {
-        return ResourceBundle.getBundle( "checkstyle-report", locale, AbstractCheckstyleReport.class.getClassLoader() );
+    private static ResourceBundle getBundle(Locale locale) {
+        return ResourceBundle.getBundle("checkstyle-report", locale, AbstractCheckstyleReport.class.getClassLoader());
     }
 
-    protected List<File> getSourceDirectories()
-    {
-        if ( sourceDirectories == null )
-        {
+    protected List<File> getSourceDirectories() {
+        if (sourceDirectories == null) {
             sourceDirectories = project.getCompileSourceRoots();
         }
-        List<File> sourceDirs = new ArrayList<>( sourceDirectories.size() );
-        for ( String sourceDir : sourceDirectories )
-        {
-            sourceDirs.add( FileUtils.resolveFile( project.getBasedir(), sourceDir ) );
+        List<File> sourceDirs = new ArrayList<>(sourceDirectories.size());
+        for (String sourceDir : sourceDirectories) {
+            sourceDirs.add(FileUtils.resolveFile(project.getBasedir(), sourceDir));
         }
         return sourceDirs;
     }
 
-    protected List<File> getTestSourceDirectories()
-    {
-        if ( testSourceDirectories == null )
-        {
+    protected List<File> getTestSourceDirectories() {
+        if (testSourceDirectories == null) {
             testSourceDirectories = project.getTestCompileSourceRoots();
         }
-        List<File> testSourceDirs = new ArrayList<>( testSourceDirectories.size() );
-        for ( String testSourceDir : testSourceDirectories )
-        {
-            testSourceDirs.add( FileUtils.resolveFile( project.getBasedir(), testSourceDir ) );
+        List<File> testSourceDirs = new ArrayList<>(testSourceDirectories.size());
+        for (String testSourceDir : testSourceDirectories) {
+            testSourceDirs.add(FileUtils.resolveFile(project.getBasedir(), testSourceDir));
         }
         return testSourceDirs;
     }

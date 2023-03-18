@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.exec;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,26 +16,25 @@ package org.apache.maven.plugins.checkstyle.exec;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.exec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import com.puppycrawl.tools.checkstyle.DefaultLogger;
+import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
-
-import com.puppycrawl.tools.checkstyle.DefaultLogger;
-import com.puppycrawl.tools.checkstyle.api.AuditListener;
 
 /**
  * @author Olivier Lamy
  * @since 2.5
  *
  */
-public class CheckstyleExecutorRequest
-{
+public class CheckstyleExecutorRequest {
 
     /**
      * Specifies the names filter of the source files to be used for Checkstyle.
@@ -112,7 +109,7 @@ public class CheckstyleExecutorRequest
      * @since 2.8
      */
     private List<MavenProject> reactorProjects;
-    
+
     /**
      * @since 2.12.1
      */
@@ -131,9 +128,8 @@ public class CheckstyleExecutorRequest
     /**
      * Constructor.
      */
-    public CheckstyleExecutorRequest( )
-    {
-        //nothing
+    public CheckstyleExecutorRequest() {
+        // nothing
     }
 
     /**
@@ -141,255 +137,209 @@ public class CheckstyleExecutorRequest
      *
      * @return The includes parameter.
      */
-    public String getIncludes()
-    {
+    public String getIncludes() {
         return includes;
     }
 
-    public CheckstyleExecutorRequest setIncludes( String includes )
-    {
+    public CheckstyleExecutorRequest setIncludes(String includes) {
         this.includes = includes;
         return this;
     }
 
-    public String getExcludes()
-    {
+    public String getExcludes() {
         return excludes;
     }
 
-    public CheckstyleExecutorRequest setExcludes( String excludes )
-    {
+    public CheckstyleExecutorRequest setExcludes(String excludes) {
         this.excludes = excludes;
         return this;
     }
 
-    public String getResourceIncludes()
-    {
+    public String getResourceIncludes() {
         return resourceIncludes;
     }
 
-    public CheckstyleExecutorRequest setResourceIncludes( String resourceIncludes )
-    {
+    public CheckstyleExecutorRequest setResourceIncludes(String resourceIncludes) {
         this.resourceIncludes = resourceIncludes;
         return this;
     }
 
-    public String getResourceExcludes()
-    {
+    public String getResourceExcludes() {
         return resourceExcludes;
     }
 
-    public CheckstyleExecutorRequest setResourceExcludes( String resourceExcludes )
-    {
+    public CheckstyleExecutorRequest setResourceExcludes(String resourceExcludes) {
         this.resourceExcludes = resourceExcludes;
         return this;
     }
 
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 
-    public CheckstyleExecutorRequest setProject( MavenProject project )
-    {
+    public CheckstyleExecutorRequest setProject(MavenProject project) {
         this.project = project;
         return this;
     }
 
-    public String getSuppressionsLocation()
-    {
+    public String getSuppressionsLocation() {
         return suppressionsLocation;
     }
 
-    public CheckstyleExecutorRequest setSuppressionsLocation( String suppressionsLocation )
-    {
+    public CheckstyleExecutorRequest setSuppressionsLocation(String suppressionsLocation) {
         this.suppressionsLocation = suppressionsLocation;
         return this;
     }
 
-    public boolean isIncludeTestSourceDirectory()
-    {
+    public boolean isIncludeTestSourceDirectory() {
         return includeTestSourceDirectory;
     }
 
-    public CheckstyleExecutorRequest setIncludeTestSourceDirectory( boolean includeTestSourceDirectory )
-    {
+    public CheckstyleExecutorRequest setIncludeTestSourceDirectory(boolean includeTestSourceDirectory) {
         this.includeTestSourceDirectory = includeTestSourceDirectory;
         return this;
     }
-    
-    public Collection<File> getTestSourceDirectories()
-    {
+
+    public Collection<File> getTestSourceDirectories() {
         return testSourceDirectories;
     }
-    
-    public CheckstyleExecutorRequest setTestSourceDirectories( Collection<File> testSourceDirectories )
-    {
+
+    public CheckstyleExecutorRequest setTestSourceDirectories(Collection<File> testSourceDirectories) {
         this.testSourceDirectories = testSourceDirectories;
         return this;
     }
-    
-    public Collection<File> getSourceDirectories()
-    {
+
+    public Collection<File> getSourceDirectories() {
         return sourceDirectories;
     }
-    
-    public CheckstyleExecutorRequest setSourceDirectories( Collection<File> sourceDirectories )
-    {
+
+    public CheckstyleExecutorRequest setSourceDirectories(Collection<File> sourceDirectories) {
         this.sourceDirectories = sourceDirectories;
         return this;
     }
 
-    public List<Resource> getResources()
-    {
+    public List<Resource> getResources() {
         return resources;
     }
 
-    public CheckstyleExecutorRequest setResources( List<Resource> resources )
-    {
+    public CheckstyleExecutorRequest setResources(List<Resource> resources) {
         this.resources = resources;
         return this;
     }
 
-    public List<Resource> getTestResources()
-    {
+    public List<Resource> getTestResources() {
         return testResources;
     }
 
-    public CheckstyleExecutorRequest setTestResources( List<Resource> testResources )
-    {
+    public CheckstyleExecutorRequest setTestResources(List<Resource> testResources) {
         this.testResources = testResources;
         return this;
     }
 
-    public boolean isFailsOnError()
-    {
+    public boolean isFailsOnError() {
         return failsOnError;
     }
 
-    public CheckstyleExecutorRequest setFailsOnError( boolean failsOnError )
-    {
+    public CheckstyleExecutorRequest setFailsOnError(boolean failsOnError) {
         this.failsOnError = failsOnError;
         return this;
     }
 
-    public AuditListener getListener()
-    {
+    public AuditListener getListener() {
         return listener;
     }
 
-    public CheckstyleExecutorRequest setListener( AuditListener listener )
-    {
+    public CheckstyleExecutorRequest setListener(AuditListener listener) {
         this.listener = listener;
         return this;
     }
 
-    public boolean isConsoleOutput()
-    {
+    public boolean isConsoleOutput() {
         return consoleOutput;
     }
 
-    public CheckstyleExecutorRequest setConsoleOutput( boolean consoleOutput )
-    {
+    public CheckstyleExecutorRequest setConsoleOutput(boolean consoleOutput) {
         this.consoleOutput = consoleOutput;
         return this;
     }
 
-    public CheckstyleExecutorRequest setConsoleListener( DefaultLogger defaultLogger )
-    {
+    public CheckstyleExecutorRequest setConsoleListener(DefaultLogger defaultLogger) {
         this.defaultLogger = defaultLogger;
         return this;
     }
 
-    public DefaultLogger getConsoleListener()
-    {
+    public DefaultLogger getConsoleListener() {
         return this.defaultLogger;
     }
 
-    public ByteArrayOutputStream getStringOutputStream()
-    {
+    public ByteArrayOutputStream getStringOutputStream() {
         return stringOutputStream;
     }
 
-    public CheckstyleExecutorRequest setStringOutputStream( ByteArrayOutputStream stringOutputStream )
-    {
+    public CheckstyleExecutorRequest setStringOutputStream(ByteArrayOutputStream stringOutputStream) {
         this.stringOutputStream = stringOutputStream;
         return this;
     }
 
-    public String getConfigLocation()
-    {
+    public String getConfigLocation() {
         return configLocation;
     }
 
-    public CheckstyleExecutorRequest setConfigLocation( String configLocation )
-    {
+    public CheckstyleExecutorRequest setConfigLocation(String configLocation) {
         this.configLocation = configLocation;
         return this;
     }
 
-    public String getPropertyExpansion()
-    {
+    public String getPropertyExpansion() {
         return propertyExpansion;
     }
 
-    public CheckstyleExecutorRequest setPropertyExpansion( String propertyExpansion )
-    {
+    public CheckstyleExecutorRequest setPropertyExpansion(String propertyExpansion) {
         this.propertyExpansion = propertyExpansion;
         return this;
     }
 
-    public String getHeaderLocation()
-    {
+    public String getHeaderLocation() {
         return headerLocation;
     }
 
-    public CheckstyleExecutorRequest setHeaderLocation( String headerLocation )
-    {
+    public CheckstyleExecutorRequest setHeaderLocation(String headerLocation) {
         this.headerLocation = headerLocation;
         return this;
     }
 
-    public String getCacheFile()
-    {
+    public String getCacheFile() {
         return cacheFile;
     }
 
-    public CheckstyleExecutorRequest setCacheFile( String cacheFile )
-    {
+    public CheckstyleExecutorRequest setCacheFile(String cacheFile) {
         this.cacheFile = cacheFile;
         return this;
     }
 
-    public String getSuppressionsFileExpression()
-    {
+    public String getSuppressionsFileExpression() {
         return suppressionsFileExpression;
     }
 
-    public CheckstyleExecutorRequest setSuppressionsFileExpression( String suppressionsFileExpression )
-    {
+    public CheckstyleExecutorRequest setSuppressionsFileExpression(String suppressionsFileExpression) {
         this.suppressionsFileExpression = suppressionsFileExpression;
         return this;
     }
 
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return encoding;
     }
 
-    public CheckstyleExecutorRequest setEncoding( String encoding )
-    {
+    public CheckstyleExecutorRequest setEncoding(String encoding) {
         this.encoding = encoding;
         return this;
     }
 
-    public String getPropertiesLocation()
-    {
+    public String getPropertiesLocation() {
         return propertiesLocation;
     }
 
-    public CheckstyleExecutorRequest setPropertiesLocation( String propertiesLocation )
-    {
+    public CheckstyleExecutorRequest setPropertiesLocation(String propertiesLocation) {
         this.propertiesLocation = propertiesLocation;
         return this;
     }
@@ -399,8 +349,7 @@ public class CheckstyleExecutorRequest
      *
      * @return <code>true</code> if the report is aggregated.
      */
-    public boolean isAggregate()
-    {
+    public boolean isAggregate() {
         return aggregate;
     }
 
@@ -410,8 +359,7 @@ public class CheckstyleExecutorRequest
      * @param pAggregate <code>true</code> if an aggregated report is desired.
      * @return This object.
      */
-    public CheckstyleExecutorRequest setAggregate( boolean pAggregate )
-    {
+    public CheckstyleExecutorRequest setAggregate(boolean pAggregate) {
         this.aggregate = pAggregate;
         return this;
     }
@@ -421,8 +369,7 @@ public class CheckstyleExecutorRequest
      *
      * @return The reactor projects.
      */
-    public List<MavenProject> getReactorProjects()
-    {
+    public List<MavenProject> getReactorProjects() {
         return reactorProjects;
     }
 
@@ -432,58 +379,52 @@ public class CheckstyleExecutorRequest
      * @param pReactorProjects The reactor projects.
      * @return This object.
      */
-    public CheckstyleExecutorRequest setReactorProjects( List<MavenProject> pReactorProjects )
-    {
+    public CheckstyleExecutorRequest setReactorProjects(List<MavenProject> pReactorProjects) {
         this.reactorProjects = pReactorProjects;
         return this;
     }
 
     /**
      * Returns a list of license artifacts, which may contain the license.
-     * 
+     *
      * @return the license artifacts
      */
-    public List<Artifact> getLicenseArtifacts()
-    {
+    public List<Artifact> getLicenseArtifacts() {
         return licenseArtifacts;
     }
 
     /**
      * Sets a list of license artifacts, which may contain the license.
-     * 
+     *
      * @param licenseArtifacts List of license artifacts.
      * @return This object.
      */
-    public CheckstyleExecutorRequest setLicenseArtifacts( List<Artifact> licenseArtifacts )
-    {
+    public CheckstyleExecutorRequest setLicenseArtifacts(List<Artifact> licenseArtifacts) {
         this.licenseArtifacts = licenseArtifacts;
         return this;
     }
-    
+
     /**
      * Returns a list of artifacts, which may contain the checkstyle configuration.
-     * 
+     *
      * @return the license artifacts
      */
-    public List<Artifact> getConfigurationArtifacts()
-    {
+    public List<Artifact> getConfigurationArtifacts() {
         return configurationArtifacts;
     }
 
     /**
      * Sets a list of artifacts, which may contain the checkstyle configuration.
-     * 
+     *
      * @param configArtifacts List of artifacts.
      * @return This object.
      */
-    public CheckstyleExecutorRequest setConfigurationArtifacts( List<Artifact> configArtifacts )
-    {
+    public CheckstyleExecutorRequest setConfigurationArtifacts(List<Artifact> configArtifacts) {
         this.configurationArtifacts = configArtifacts;
         return this;
     }
-    
-    public boolean isIncludeResources()
-    {
+
+    public boolean isIncludeResources() {
         return includeResources;
     }
 
@@ -491,14 +432,12 @@ public class CheckstyleExecutorRequest
      * @param includeResources whether to include the resource directories in the checks.
      * @return This object.
      */
-    public CheckstyleExecutorRequest setIncludeResources( boolean includeResources )
-    {
+    public CheckstyleExecutorRequest setIncludeResources(boolean includeResources) {
         this.includeResources = includeResources;
         return this;
     }
 
-    public boolean isIncludeTestResources()
-    {
+    public boolean isIncludeTestResources() {
         return includeTestResources;
     }
 
@@ -506,8 +445,7 @@ public class CheckstyleExecutorRequest
      * @param includeTestResources whether to set the test resource directories in the checks.
      * @return This object.
      */
-    public CheckstyleExecutorRequest setIncludeTestResources( boolean includeTestResources )
-    {
+    public CheckstyleExecutorRequest setIncludeTestResources(boolean includeTestResources) {
         this.includeTestResources = includeTestResources;
         return this;
     }
@@ -517,8 +455,7 @@ public class CheckstyleExecutorRequest
      *
      * @return <code>true</code> if ignored modules should be omitted.
      */
-    public boolean isOmitIgnoredModules()
-    {
+    public boolean isOmitIgnoredModules() {
         return omitIgnoredModules;
     }
 
@@ -526,8 +463,7 @@ public class CheckstyleExecutorRequest
      * @param omitIgnoredModules Whether to omit ignored modules (modules with severity 'ignore').
      * @return This object.
      */
-    public CheckstyleExecutorRequest setOmitIgnoredModules( boolean omitIgnoredModules )
-    {
+    public CheckstyleExecutorRequest setOmitIgnoredModules(boolean omitIgnoredModules) {
         this.omitIgnoredModules = omitIgnoredModules;
         return this;
     }

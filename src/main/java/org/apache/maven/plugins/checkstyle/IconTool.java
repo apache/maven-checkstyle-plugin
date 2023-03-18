@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
 
 import java.util.ResourceBundle;
 
@@ -28,8 +27,7 @@ import org.apache.maven.doxia.sink.Sink;
  *
  * @since 2.13
  */
-public class IconTool
-{
+public class IconTool {
     public static final String INFO = "info";
 
     public static final String WARNING = "warning";
@@ -45,8 +43,7 @@ public class IconTool
 
     private final ResourceBundle bundle;
 
-    public IconTool( Sink sink, ResourceBundle bundle )
-    {
+    public IconTool(Sink sink, ResourceBundle bundle) {
         this.sink = sink;
         this.bundle = bundle;
     }
@@ -55,9 +52,8 @@ public class IconTool
      * Render a simple icon of given level.
      * @param level one of <code>INFO</code>, <code>WARNING</code> or <code>ERROR</code> constants
      */
-    public void iconSeverity( String level )
-    {
-        sink.figureGraphics( "images/icon_" + level + "_sml.gif" );
+    public void iconSeverity(String level) {
+        sink.figureGraphics("images/icon_" + level + "_sml.gif");
     }
 
     /**
@@ -66,24 +62,21 @@ public class IconTool
      * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
      * <code>TEXT_ABBREV</code> constants
      */
-    public void iconSeverity( String level, int textType )
-    {
-        sink.figureGraphics( "images/icon_" + level + "_sml.gif" );
+    public void iconSeverity(String level, int textType) {
+        sink.figureGraphics("images/icon_" + level + "_sml.gif");
 
-        if ( textType > 0 )
-        {
+        if (textType > 0) {
             sink.nonBreakingSpace();
 
-            sink.text( bundle.getString( "report.checkstyle." + level + suffix( textType ) ) );
+            sink.text(bundle.getString("report.checkstyle." + level + suffix(textType)));
         }
     }
 
     /**
      * Render an info icon.
      */
-    public void iconInfo()
-    {
-        iconSeverity( INFO );
+    public void iconInfo() {
+        iconSeverity(INFO);
     }
 
     /**
@@ -91,17 +84,15 @@ public class IconTool
      * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
      * <code>TEXT_ABBREV</code> constants
      */
-    public void iconInfo( int textType )
-    {
-        iconSeverity( INFO, textType );
+    public void iconInfo(int textType) {
+        iconSeverity(INFO, textType);
     }
 
     /**
      * Render a warning icon.
      */
-    public void iconWarning()
-    {
-        iconSeverity( WARNING );
+    public void iconWarning() {
+        iconSeverity(WARNING);
     }
 
     /**
@@ -109,17 +100,15 @@ public class IconTool
      * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
      * <code>TEXT_ABBREV</code> constants
      */
-    public void iconWarning( int textType )
-    {
-        iconSeverity( WARNING, textType );
+    public void iconWarning(int textType) {
+        iconSeverity(WARNING, textType);
     }
 
     /**
      * Render an error icon.
      */
-    public void iconError()
-    {
-        iconSeverity( ERROR );
+    public void iconError() {
+        iconSeverity(ERROR);
     }
 
     /**
@@ -127,15 +116,12 @@ public class IconTool
      * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
      * <code>TEXT_ABBREV</code> constants
      */
-    public void iconError( int textType )
-    {
-        iconSeverity( ERROR, textType );
+    public void iconError(int textType) {
+        iconSeverity(ERROR, textType);
     }
 
-    private String suffix( int textType )
-    {
-        switch ( textType )
-        {
+    private String suffix(int textType) {
+        switch (textType) {
             case TEXT_TITLE:
                 return "s";
             case TEXT_ABBREV:

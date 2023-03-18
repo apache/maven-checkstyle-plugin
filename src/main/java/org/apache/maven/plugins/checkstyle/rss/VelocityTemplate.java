@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.rss;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,14 @@ package org.apache.maven.plugins.checkstyle.rss;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.rss;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -26,13 +32,6 @@ import org.apache.velocity.context.Context;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
 import org.codehaus.plexus.velocity.VelocityComponent;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 
 /**
  * <p>
@@ -52,27 +51,23 @@ import java.nio.charset.StandardCharsets;
  *
  */
 @Deprecated
-public class VelocityTemplate
-{
+public class VelocityTemplate {
     private String templateDirectory;
 
     private Log log;
 
     private VelocityComponent velocity;
 
-    public VelocityTemplate( VelocityComponent velocityComponent, String templateBaseDirectory )
-    {
+    public VelocityTemplate(VelocityComponent velocityComponent, String templateBaseDirectory) {
         this.velocity = velocityComponent;
         this.templateDirectory = templateBaseDirectory;
     }
 
-    public String getTemplateDirectory()
-    {
+    public String getTemplateDirectory() {
         return templateDirectory;
     }
 
-    public VelocityComponent getVelocity()
-    {
+    public VelocityComponent getVelocity() {
         return velocity;
     }
 
@@ -86,52 +81,39 @@ public class VelocityTemplate
      * @throws MojoExecutionException if merging the velocity template failed
      * @throws IOException if there was an error writing to the output file
      */
-    public void generate( String outputFilename, String template, Context context )
-        throws VelocityException, MojoExecutionException, IOException
-    {
+    public void generate(String outputFilename, String template, Context context)
+            throws VelocityException, MojoExecutionException, IOException {
 
-        File outputFile = new File( outputFilename );
-        if ( !outputFile.getParentFile().exists() )
-        {
+        File outputFile = new File(outputFilename);
+        if (!outputFile.getParentFile().exists()) {
             outputFile.getParentFile().mkdirs();
         }
 
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), StandardCharsets.UTF_8 ) )
-        {
-            getVelocity().getEngine().mergeTemplate( templateDirectory + "/" + template, context, writer );
-        }
-        catch ( ResourceNotFoundException e )
-        {
-            throw new ResourceNotFoundException( "Template not found: " + templateDirectory + "/" + template, e );
-        }
-        catch ( RuntimeException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
+            getVelocity().getEngine().mergeTemplate(templateDirectory + "/" + template, context, writer);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Template not found: " + templateDirectory + "/" + template, e);
+        } catch (RuntimeException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
-    public void setTemplateDirectory( String templateDirectory )
-    {
+    public void setTemplateDirectory(String templateDirectory) {
         this.templateDirectory = templateDirectory;
     }
 
-    public void setVelocity( VelocityComponent velocity )
-    {
+    public void setVelocity(VelocityComponent velocity) {
         this.velocity = velocity;
     }
 
-    public Log getLog()
-    {
-        if ( this.log == null )
-        {
+    public Log getLog() {
+        if (this.log == null) {
             this.log = new SystemStreamLog();
         }
         return log;
     }
 
-    public void setLog( Log log )
-    {
+    public void setLog(Log log) {
         this.log = log;
     }
-
 }

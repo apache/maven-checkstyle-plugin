@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,9 @@ package org.apache.maven.plugins.checkstyle;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle;
+
+import java.util.List;
 
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -26,8 +27,6 @@ import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.MavenReportException;
 
-import java.util.List;
-
 /**
  * A reporting task that performs Checkstyle analysis and generates an aggregate
  * HTML report on the violations that Checkstyle finds in a multi-module reactor
@@ -35,61 +34,66 @@ import java.util.List;
  *
  *
  */
-@Mojo( name = "checkstyle-aggregate", aggregator = true, requiresDependencyResolution = ResolutionScope.COMPILE,
-       threadSafe = true )
-public class CheckstyleAggregateReport
-    extends AbstractCheckstyleReport
-{
+@Mojo(
+        name = "checkstyle-aggregate",
+        aggregator = true,
+        requiresDependencyResolution = ResolutionScope.COMPILE,
+        threadSafe = true)
+public class CheckstyleAggregateReport extends AbstractCheckstyleReport {
     /**
      * The projects in the reactor for aggregation report.
      *
      * @since 2.8
      */
-    @Parameter( property = "reactorProjects", readonly = true )
+    @Parameter(property = "reactorProjects", readonly = true)
     private List<MavenProject> reactorProjects;
 
     /** {@inheritDoc} */
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return project;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected CheckstyleExecutorRequest createRequest()
-            throws MavenReportException
-    {
+    protected CheckstyleExecutorRequest createRequest() throws MavenReportException {
         CheckstyleExecutorRequest request = new CheckstyleExecutorRequest();
-        request.setAggregate( true )
-            .setReactorProjects( reactorProjects )
-            .setConsoleListener( getConsoleListener() ).setConsoleOutput( consoleOutput )
-            .setExcludes( excludes ).setFailsOnError( failsOnError ).setIncludes( includes )
-            .setIncludeResources( includeResources )
-            .setIncludeTestResources( includeTestResources )
-            .setResourceIncludes( resourceIncludes )
-            .setResourceExcludes( resourceExcludes )
-            .setIncludeTestSourceDirectory( includeTestSourceDirectory ).setListener( getListener() )
-            .setProject( project ).setSourceDirectories( getSourceDirectories() )
-            .setResources( resources ).setTestResources( testResources )
-            .setStringOutputStream( stringOutputStream ).setSuppressionsLocation( suppressionsLocation )
-            .setTestSourceDirectories( getTestSourceDirectories() )
-            .setPropertyExpansion( propertyExpansion ).setHeaderLocation( headerLocation )
-            .setCacheFile( cacheFile ).setSuppressionsFileExpression( suppressionsFileExpression )
-            .setEncoding( getInputEncoding() ).setPropertiesLocation( propertiesLocation );
+        request.setAggregate(true)
+                .setReactorProjects(reactorProjects)
+                .setConsoleListener(getConsoleListener())
+                .setConsoleOutput(consoleOutput)
+                .setExcludes(excludes)
+                .setFailsOnError(failsOnError)
+                .setIncludes(includes)
+                .setIncludeResources(includeResources)
+                .setIncludeTestResources(includeTestResources)
+                .setResourceIncludes(resourceIncludes)
+                .setResourceExcludes(resourceExcludes)
+                .setIncludeTestSourceDirectory(includeTestSourceDirectory)
+                .setListener(getListener())
+                .setProject(project)
+                .setSourceDirectories(getSourceDirectories())
+                .setResources(resources)
+                .setTestResources(testResources)
+                .setStringOutputStream(stringOutputStream)
+                .setSuppressionsLocation(suppressionsLocation)
+                .setTestSourceDirectories(getTestSourceDirectories())
+                .setPropertyExpansion(propertyExpansion)
+                .setHeaderLocation(headerLocation)
+                .setCacheFile(cacheFile)
+                .setSuppressionsFileExpression(suppressionsFileExpression)
+                .setEncoding(getInputEncoding())
+                .setPropertiesLocation(propertiesLocation);
         return request;
     }
 
-
     /** {@inheritDoc} */
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return "checkstyle-aggregate";
     }
 
     /** {@inheritDoc} */
-    public boolean canGenerateReport()
-    {
+    public boolean canGenerateReport() {
         // TODO: would be good to scan the files here
         return !skip && project.isExecutionRoot() && reactorProjects.size() > 1;
     }

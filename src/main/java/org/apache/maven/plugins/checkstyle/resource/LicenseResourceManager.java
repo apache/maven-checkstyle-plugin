@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.resource;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle.resource;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.resource;
 
 import java.util.Map;
 
@@ -35,56 +34,46 @@ import org.codehaus.plexus.resource.loader.ThreadContextClasspathResourceLoader;
  *
  * @since 2.12
  */
-@Component( role = ResourceManager.class, hint = "license", instantiationStrategy = "per-lookup" )
-public class LicenseResourceManager
-    extends DefaultResourceManager
-{
+@Component(role = ResourceManager.class, hint = "license", instantiationStrategy = "per-lookup")
+public class LicenseResourceManager extends DefaultResourceManager {
 
-    @Requirement( role = ResourceLoader.class )
+    @Requirement(role = ResourceLoader.class)
     private Map<String, ResourceLoader> resourceLoaders;
 
     @Override
-    public void addSearchPath( String id, String path )
-    {
-        ResourceLoader loader = resourceLoaders.get( id );
+    public void addSearchPath(String id, String path) {
+        ResourceLoader loader = resourceLoaders.get(id);
 
-        if ( loader == null )
-        {
-            throw new IllegalArgumentException( "unknown resource loader: " + id );
+        if (loader == null) {
+            throw new IllegalArgumentException("unknown resource loader: " + id);
         }
 
-        loader.addSearchPath( path );
+        loader.addSearchPath(path);
     }
 
     @Override
-    public PlexusResource getResource( String name )
-        throws ResourceNotFoundException
-    {
-        for ( ResourceLoader resourceLoader : resourceLoaders.values() )
-        {
-            if ( resourceLoader instanceof ThreadContextClasspathResourceLoader
-                && !"config/maven-header.txt".equals( name ) )
-            {
+    public PlexusResource getResource(String name) throws ResourceNotFoundException {
+        for (ResourceLoader resourceLoader : resourceLoaders.values()) {
+            if (resourceLoader instanceof ThreadContextClasspathResourceLoader
+                    && !"config/maven-header.txt".equals(name)) {
                 // MCHECKSTYLE-219: Don't load the license from the plugin
                 // classloader, only allow config/maven-header.txt
                 continue;
             }
 
-            try
-            {
-                PlexusResource resource = resourceLoader.getResource( name );
+            try {
+                PlexusResource resource = resourceLoader.getResource(name);
 
-                getLogger().debug( "The resource '" + name + "' was found as " + resource.getName() + "." );
+                getLogger().debug("The resource '" + name + "' was found as " + resource.getName() + ".");
 
                 return resource;
-            }
-            catch ( ResourceNotFoundException e )
-            {
-                getLogger().debug( "The resource '" + name + "' was not found with resourceLoader "
-                                       + resourceLoader.getClass().getName() + "." );
+            } catch (ResourceNotFoundException e) {
+                getLogger()
+                        .debug("The resource '" + name + "' was not found with resourceLoader "
+                                + resourceLoader.getClass().getName() + ".");
             }
         }
 
-        throw new ResourceNotFoundException( name );
+        throw new ResourceNotFoundException(name);
     }
 }

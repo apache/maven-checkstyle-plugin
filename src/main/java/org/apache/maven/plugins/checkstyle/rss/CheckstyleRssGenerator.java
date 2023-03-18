@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.rss;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.checkstyle.rss;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.rss;
 
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
 import org.apache.maven.reporting.MavenReportException;
@@ -27,8 +26,7 @@ import org.apache.maven.reporting.MavenReportException;
  * @since 2.4
  */
 @Deprecated
-public interface CheckstyleRssGenerator
-{
-    void generateRSS( CheckstyleResults results, CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest )
-        throws MavenReportException;
+public interface CheckstyleRssGenerator {
+    void generateRSS(CheckstyleResults results, CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest)
+            throws MavenReportException;
 }

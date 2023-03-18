@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.exec;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,11 @@ package org.apache.maven.plugins.checkstyle.exec;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.exec;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
@@ -25,12 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
-
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Listener in charge of receiving events from the Checker.
@@ -39,10 +37,7 @@ import java.util.List;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  *
  */
-public class CheckstyleCheckerListener
-    extends AutomaticBean
-    implements AuditListener
-{
+public class CheckstyleCheckerListener extends AutomaticBean implements AuditListener {
     private final List<File> sourceDirectories;
 
     private CheckstyleResults results;
@@ -58,20 +53,18 @@ public class CheckstyleCheckerListener
     /**
      * @param sourceDirectory assume that is <code>sourceDirectory</code> is a not null directory and exists
      */
-    public CheckstyleCheckerListener( File sourceDirectory )
-    {
+    public CheckstyleCheckerListener(File sourceDirectory) {
         this.sourceDirectories = new ArrayList<>();
-        this.sourceDirectories.add( sourceDirectory );
+        this.sourceDirectories.add(sourceDirectory);
     }
     /**
      * @param sourceDirectory assume that is <code>sourceDirectory</code> is a not null directory and exists
      * @param configuration Checkstyle configuration
      * @since 2.5
      */
-    public CheckstyleCheckerListener( File sourceDirectory, Configuration configuration )
-    {
+    public CheckstyleCheckerListener(File sourceDirectory, Configuration configuration) {
         this.sourceDirectories = new ArrayList<>();
-        this.sourceDirectories.add( sourceDirectory );
+        this.sourceDirectories.add(sourceDirectory);
         this.checkstyleConfiguration = configuration;
     }
 
@@ -79,8 +72,7 @@ public class CheckstyleCheckerListener
      * @param configuration Checkstyle configuration
      * @since 2.5
      */
-    public CheckstyleCheckerListener( Configuration configuration )
-    {
+    public CheckstyleCheckerListener(Configuration configuration) {
         this.sourceDirectories = new ArrayList<>();
         this.checkstyleConfiguration = configuration;
     }
@@ -88,118 +80,101 @@ public class CheckstyleCheckerListener
     /**
      * @param sourceDirectory assume that is <code>sourceDirectory</code> is a not null directory and exists
      */
-    public void addSourceDirectory( File sourceDirectory )
-    {
-        this.sourceDirectories.add( sourceDirectory );
+    public void addSourceDirectory(File sourceDirectory) {
+        this.sourceDirectories.add(sourceDirectory);
     }
 
     /**
      * @param severityLevel The severity level of the events to listen to.
      */
-    public void setSeverityLevelFilter( SeverityLevel severityLevel )
-    {
+    public void setSeverityLevelFilter(SeverityLevel severityLevel) {
         this.severityLevel = severityLevel;
     }
 
     /**
      * @return The severity level of the events to listen to.
      */
-    public SeverityLevel getSeverityLevelFilter()
-    {
+    public SeverityLevel getSeverityLevelFilter() {
         return severityLevel;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void auditStarted( AuditEvent event )
-    {
-        setResults( new CheckstyleResults() );
+    public void auditStarted(AuditEvent event) {
+        setResults(new CheckstyleResults());
     }
 
     /** {@inheritDoc} */
     @Override
-    public void auditFinished( AuditEvent event )
-    {
-        //do nothing
+    public void auditFinished(AuditEvent event) {
+        // do nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    public void fileStarted( AuditEvent event )
-    {
-        final String fileName = StringUtils.replace( event.getFileName(), "\\", "/" );
+    public void fileStarted(AuditEvent event) {
+        final String fileName = StringUtils.replace(event.getFileName(), "\\", "/");
 
-        for ( File sourceDirectory : sourceDirectories )
-        {
-            String sourceDirectoryPath = StringUtils.replace( sourceDirectory.getPath(), "\\", "/" );
-            
-            if ( fileName.startsWith( sourceDirectoryPath + "/" ) )
-            {
-                currentFile = StringUtils.substring( fileName, sourceDirectoryPath.length() + 1 );
+        for (File sourceDirectory : sourceDirectories) {
+            String sourceDirectoryPath = StringUtils.replace(sourceDirectory.getPath(), "\\", "/");
 
-                events = getResults().getFileViolations( currentFile );
-                
+            if (fileName.startsWith(sourceDirectoryPath + "/")) {
+                currentFile = StringUtils.substring(fileName, sourceDirectoryPath.length() + 1);
+
+                events = getResults().getFileViolations(currentFile);
+
                 break;
             }
         }
 
-        if ( events == null )
-        {
+        if (events == null) {
             events = new ArrayList<>();
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void fileFinished( AuditEvent event )
-    {
-        getResults().setFileViolations( currentFile, events );
+    public void fileFinished(AuditEvent event) {
+        getResults().setFileViolations(currentFile, events);
         currentFile = null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addError( AuditEvent event )
-    {
-        if ( SeverityLevel.IGNORE.equals( event.getSeverityLevel() ) )
-        {
+    public void addError(AuditEvent event) {
+        if (SeverityLevel.IGNORE.equals(event.getSeverityLevel())) {
             return;
         }
 
-        if ( severityLevel == null || severityLevel.equals( event.getSeverityLevel() ) )
-        {
-            events.add( event );
+        if (severityLevel == null || severityLevel.equals(event.getSeverityLevel())) {
+            events.add(event);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addException( AuditEvent event, Throwable throwable )
-    {
-        //Do Nothing
+    public void addException(AuditEvent event, Throwable throwable) {
+        // Do Nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void finishLocalSetup() throws CheckstyleException
-    {
-        //Do Nothing
+    protected void finishLocalSetup() throws CheckstyleException {
+        // Do Nothing
     }
 
     /**
      * @return The results of Checkstyle invocation.
      */
-    public CheckstyleResults getResults()
-    {
-        results.setConfiguration( checkstyleConfiguration );
+    public CheckstyleResults getResults() {
+        results.setConfiguration(checkstyleConfiguration);
         return results;
     }
 
     /**
      * @param results The results of Checkstyle invocation.
      */
-    public void setResults( CheckstyleResults results )
-    {
+    public void setResults(CheckstyleResults results) {
         this.results = results;
     }
 
@@ -207,8 +182,7 @@ public class CheckstyleCheckerListener
      * @since 2.5
      * @return The configuration of Checkstyle to use.
      */
-    public Configuration getCheckstyleConfiguration()
-    {
+    public Configuration getCheckstyleConfiguration() {
         return checkstyleConfiguration;
     }
 
@@ -216,10 +190,7 @@ public class CheckstyleCheckerListener
      * @param checkstyleConfiguration The configuration of Checkstyle to use.
      * @since 2.5
      */
-    public void setCheckstyleConfiguration( Configuration checkstyleConfiguration )
-    {
+    public void setCheckstyleConfiguration(Configuration checkstyleConfiguration) {
         this.checkstyleConfiguration = checkstyleConfiguration;
     }
-
 }
-

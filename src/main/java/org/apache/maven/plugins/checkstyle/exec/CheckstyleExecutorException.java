@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.checkstyle.exec;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,49 +16,43 @@ package org.apache.maven.plugins.checkstyle.exec;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.checkstyle.exec;
 
 /**
  * @author Olivier Lamy
  * @since 2.5
  *
  */
-public class CheckstyleExecutorException
-    extends Exception
-{
+public class CheckstyleExecutorException extends Exception {
 
     private static final long serialVersionUID = 3239899539232498912L;
 
     /**
-     * 
+     *
      */
-    public CheckstyleExecutorException()
-    {
+    public CheckstyleExecutorException() {
         // nothing
     }
 
     /**
      * @param message Message of the exception.
      */
-    public CheckstyleExecutorException( String message )
-    {
-        super( message );
+    public CheckstyleExecutorException(String message) {
+        super(message);
     }
 
     /**
      * @param cause Cause of the exception.
      */
-    public CheckstyleExecutorException( Throwable cause )
-    {
-        super( cause );
+    public CheckstyleExecutorException(Throwable cause) {
+        super(cause);
     }
 
     /**
      * @param message Message of the exception.
      * @param cause Cause of the exception.
      */
-    public CheckstyleExecutorException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public CheckstyleExecutorException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }
