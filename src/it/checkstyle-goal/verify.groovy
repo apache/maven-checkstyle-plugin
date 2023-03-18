@@ -17,6 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import groovy.xml.XmlParser
 
 assert new File( basedir, 'target/checkstyle-cachefile' ).exists();
 assert new File( basedir, 'target/checkstyle-checker.xml' ).exists();

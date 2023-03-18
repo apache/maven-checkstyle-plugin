@@ -17,6 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import groovy.xml.XmlSlurper
+
 def buildLog = new File( basedir, 'build.log' )
 
 // LICENSE.txt has 2 errors, src/main/resources/README.txt has 1 error
