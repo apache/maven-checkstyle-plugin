@@ -22,9 +22,9 @@ package org.apache.maven.plugins.checkstyle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.plexus.util.StringUtils;
-
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Tooling for Checkstyle rules conventions: names, categories.
