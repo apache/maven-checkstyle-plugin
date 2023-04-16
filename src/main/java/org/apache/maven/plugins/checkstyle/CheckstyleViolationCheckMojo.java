@@ -496,7 +496,8 @@ public class CheckstyleViolationCheckMojo
         {
             if ( checkstyleRules != null )
             {
-                if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
+                if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation )
+                        && ( rulesFiles != null && !rulesFiles.getAbsolutePath().equals( configLocation ) ) )
                 {
                     throw new MojoExecutionException( "If you use inline configuration for rules, don't specify "
                         + "a configLocation" );
