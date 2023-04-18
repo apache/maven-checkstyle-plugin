@@ -494,6 +494,7 @@ public class CheckstyleViolationCheckMojo
 
         if ( !skipExec )
         {
+            String effectiveConfigLocation = configLocation;
             if ( checkstyleRules != null )
             {
                 if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
@@ -517,7 +518,7 @@ public class CheckstyleViolationCheckMojo
                 {
                     throw new MojoExecutionException( e.getMessage(), e );
                 }
-                configLocation = rulesFiles.getAbsolutePath();
+                effectiveConfigLocation = rulesFiles.getAbsolutePath();
             }
 
             ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
@@ -535,7 +536,7 @@ public class CheckstyleViolationCheckMojo
                     .setProject( project ).setSourceDirectories( getSourceDirectories() )
                     .setResources( resources ).setTestResources( testResources )
                     .setStringOutputStream( stringOutputStream ).setSuppressionsLocation( suppressionsLocation )
-                    .setTestSourceDirectories( getTestSourceDirectories() ).setConfigLocation( configLocation )
+                    .setTestSourceDirectories( getTestSourceDirectories() ).setConfigLocation( effectiveConfigLocation )
                     .setConfigurationArtifacts( collectArtifacts( "config" ) )
                     .setPropertyExpansion( propertyExpansion )
                     .setHeaderLocation( headerLocation ).setLicenseArtifacts( collectArtifacts( "license" ) )

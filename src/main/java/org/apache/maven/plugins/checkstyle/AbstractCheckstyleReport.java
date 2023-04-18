@@ -493,6 +493,7 @@ public abstract class AbstractCheckstyleReport
         // locator = new Locator( new MojoLogMonitorAdaptor( getLog() ) );
 
         // locator = new Locator( getLog(), new File( project.getBuild().getDirectory() ) );
+        String effectiveConfigLocation = configLocation;
         if ( checkstyleRules != null )
         {
             if ( !DEFAULT_CONFIG_LOCATION.equals( configLocation ) )
@@ -515,7 +516,7 @@ public abstract class AbstractCheckstyleReport
             {
                 throw new MavenReportException( e.getMessage(), e );
             }
-            configLocation = rulesFiles.getAbsolutePath();
+            effectiveConfigLocation = rulesFiles.getAbsolutePath();
         }
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -523,13 +524,14 @@ public abstract class AbstractCheckstyleReport
         {
             CheckstyleExecutorRequest request = createRequest().setLicenseArtifacts( collectArtifacts( "license" ) )
                             .setConfigurationArtifacts( collectArtifacts( "configuration" ) )
-                            .setOmitIgnoredModules( omitIgnoredModules );
+                            .setOmitIgnoredModules( omitIgnoredModules )
+                            .setConfigLocation( effectiveConfigLocation );
 
             CheckstyleResults results = checkstyleExecutor.executeCheckstyle( request );
 
             ResourceBundle bundle = getBundle( locale );
             generateReportStatics();
-            generateMainReport( results, bundle );
+            generateMainReport( results, bundle, effectiveConfigLocation );
             if ( enableRSS )
             {
                 CheckstyleRssGeneratorRequest checkstyleRssGeneratorRequest =
@@ -725,7 +727,7 @@ public abstract class AbstractCheckstyleReport
         return copyright;
     }
 
-    private void generateMainReport( CheckstyleResults results, ResourceBundle bundle )
+    private void generateMainReport( CheckstyleResults results, ResourceBundle bundle, String configLocation )
     {
         CheckstyleReportGenerator generator =
             new CheckstyleReportGenerator( getSink(), bundle, project.getBasedir(), siteTool, configLocation );
