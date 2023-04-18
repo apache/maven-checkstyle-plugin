@@ -30,7 +30,7 @@ under the License.
   </parent>
 
   <artifactId>maven-checkstyle-plugin</artifactId>
-  <version>3.2.2-SNAPSHOT</version>
+  <version>3.2.2</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Maven Checkstyle Plugin</name>
@@ -45,7 +45,7 @@ under the License.
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-checkstyle-plugin.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-checkstyle-plugin.git</developerConnection>
     <url>https://github.com/apache/maven-checkstyle-plugin/tree/${project.scm.tag}</url>
-    <tag>HEAD</tag>
+    <tag>maven-checkstyle-plugin-3.2.2</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -71,7 +71,7 @@ under the License.
     <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
     <sitePluginVersion>3.12.1</sitePluginVersion>
     <jxrPluginVersion>3.3.0</jxrPluginVersion>
-    <project.build.outputTimestamp>2023-01-06T22:31:05Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-04-18T14:48:00Z</project.build.outputTimestamp>
   </properties>
 
   <contributors>
