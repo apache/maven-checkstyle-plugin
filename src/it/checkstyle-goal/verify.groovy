@@ -24,19 +24,6 @@ assert new File( basedir, 'target/checkstyle-checker.xml' ).exists();
 assert new File( basedir, 'target/checkstyle-header.txt' ).exists();
 assert new File( basedir, 'target/checkstyle-result.xml' ).exists();
 
-File rssFile = new File( basedir, 'target/site/checkstyle.rss' );
-assert rssFile.exists();
-
-def rss = new XmlParser().parse( rssFile );
-
-def channel = rss.channel[0]
-
-assert channel.title.text() == 'check-pass - Checkstyle report'
-
-def item = channel.item[0]
-assert item != null
-assert item.title.text().startsWith('File: 1,')
-
 def html = new File( basedir, 'target/site/checkstyle.html' ).text;
 assert html.contains( '<meta charset="UTF-8" />' );
 

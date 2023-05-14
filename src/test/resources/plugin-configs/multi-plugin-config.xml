@@ -27,7 +27,6 @@ under the License.
           <enableRulesSummary>true</enableRulesSummary>
           <enableSeveritySummary>true</enableSeveritySummary>
           <enableFilesSummary>true</enableFilesSummary>
-          <enableRSS>true</enableRSS>
           <includes>**/*.java</includes>
           <configLocation>sun_checks.xml</configLocation>
           <headerLocation>${basedir}/src/test/test-sources/LICENSE.txt</headerLocation>

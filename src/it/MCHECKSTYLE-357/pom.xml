@@ -172,9 +172,6 @@
         <plugins>
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <enableRSS>true</enableRSS>
-                </configuration>
                 <reportSets>
                      <reportSet>
                          <reports>

@@ -137,12 +137,6 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
 
         File outputDir = mojo.getReportOutputDirectory();
 
-        Boolean rss = (Boolean) getVariableValueFromObject(mojo, "enableRSS");
-        if (rss) {
-            File rssFile = new File(outputDir, "checkstyle.rss");
-            assertTrue("Test rss file exists", rssFile.exists());
-        }
-
         File useFile = (File) getVariableValueFromObject(mojo, "useFile");
         if (useFile != null) {
             assertTrue("Test useFile exists", useFile.exists());

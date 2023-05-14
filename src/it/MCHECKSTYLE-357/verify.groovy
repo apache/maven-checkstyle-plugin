@@ -24,7 +24,4 @@ assert new File(basedir, 'target/checkstyle-checker.xml').exists();
 assert new File(basedir, 'target/checkstyle-result.xml').exists();
 assert new File(basedir, 'target/checkstyle-rules.xml').exists();
 
-File rssFile = new File( basedir, 'target/site/checkstyle.rss' );
-assert rssFile.exists();
-
 return true;

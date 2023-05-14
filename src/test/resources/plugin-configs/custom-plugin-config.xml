@@ -32,7 +32,6 @@ under the License.
           <enableRulesSummary>true</enableRulesSummary>
           <enableSeveritySummary>true</enableSeveritySummary>
           <enableFilesSummary>true</enableFilesSummary>
-          <enableRSS>true</enableRSS>
           <includes>**/*.java</includes>
           <configLocation>google_checks.xml</configLocation>
           <headerLocation>LICENSE.txt</headerLocation>
