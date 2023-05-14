@@ -46,7 +46,7 @@ public class CheckstyleViolationCheckMojoTest
 
         mojoSetup( mojo );
 
-        assertNotNull( "Mojo found.", mojo );
+        assertNotNull( "Mojo not found.", mojo );
 
         assertNotNull( "project null.", mojo.project );
 
@@ -69,7 +69,7 @@ public class CheckstyleViolationCheckMojoTest
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
-        assertNotNull( "Mojo found.", mojo );
+        assertNotNull( "Mojo not found.", mojo );
 
         mojoSetup( mojo );
 
@@ -94,7 +94,7 @@ public class CheckstyleViolationCheckMojoTest
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
-        assertNotNull( "Mojo found.", mojo );
+        assertNotNull( "Mojo not found.", mojo );
 
         mojoSetup( mojo );
 
@@ -110,7 +110,7 @@ public class CheckstyleViolationCheckMojoTest
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
-        assertNotNull( "Mojo found.", mojo );
+        assertNotNull( "Mojo not found.", mojo );
 
         PluginDescriptor descriptorStub = new PluginDescriptor();
         descriptorStub.setGroupId( "org.apache.maven.plugins" );
@@ -150,7 +150,7 @@ public class CheckstyleViolationCheckMojoTest
 
         Mojo mojo = lookupMojo( "check", pluginXmlFile );
 
-        assertNotNull( "Mojo found.", mojo );
+        assertNotNull( "Mojo not found.", mojo );
 
         mojoSetup( mojo );
 
