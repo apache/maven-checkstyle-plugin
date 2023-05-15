@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
@@ -53,6 +52,7 @@ import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.util.FileUtils;
@@ -438,16 +438,31 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     @Component(role = CheckstyleExecutor.class, hint = "default")
     protected CheckstyleExecutor checkstyleExecutor;
 
+    /**
+     * Internationalization component
+     */
+    @Component
+    private I18N i18n;
+
     protected ByteArrayOutputStream stringOutputStream;
 
     /** {@inheritDoc} */
     public String getName(Locale locale) {
-        return getBundle(locale).getString("report.checkstyle.name");
+        return getI18nString(locale, "name");
     }
 
     /** {@inheritDoc} */
     public String getDescription(Locale locale) {
-        return getBundle(locale).getString("report.checkstyle.description");
+        return getI18nString(locale, "description");
+    }
+
+    /**
+     * @param locale The locale
+     * @param key The key to search for
+     * @return The text appropriate for the locale.
+     */
+    protected String getI18nString(Locale locale, String key) {
+        return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
     }
 
     /** {@inheritDoc} */
@@ -495,8 +510,34 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
             CheckstyleResults results = checkstyleExecutor.executeCheckstyle(request);
 
-            ResourceBundle bundle = getBundle(locale);
-            generateMainReport(results, bundle, effectiveConfigLocation);
+            CheckstyleReportRenderer r = new CheckstyleReportRenderer(
+                    getSink(),
+                    i18n,
+                    locale,
+                    project,
+                    siteTool,
+                    effectiveConfigLocation,
+                    enableRulesSummary,
+                    enableSeveritySummary,
+                    enableFilesSummary,
+                    results);
+            if (linkXRef) {
+                initializeXrefLocation(r);
+                if (r.getXrefLocation() == null && results.getFileCount() > 0) {
+                    getLog().warn("Unable to locate Source XRef to link to - DISABLED");
+                }
+
+                initializeXrefTestLocation(r);
+                if (r.getXrefTestLocation() == null && results.getFileCount() > 0) {
+                    getLog().warn("Unable to locate Test Source XRef to link to - DISABLED");
+                }
+
+                r.setTestSourceDirectories(getTestSourceDirectories());
+            }
+            if (treeWalkerNames != null) {
+                r.setTreeWalkerNames(treeWalkerNames);
+            }
+            r.render();
         } catch (CheckstyleException e) {
             throw new MavenReportException("Failed during checkstyle configuration", e);
         } catch (CheckstyleExecutorException e) {
@@ -617,49 +658,21 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         return consoleListener;
     }
 
-    private void generateMainReport(CheckstyleResults results, ResourceBundle bundle, String configLocation) {
-        CheckstyleReportGenerator generator =
-                new CheckstyleReportGenerator(getSink(), bundle, project.getBasedir(), siteTool, configLocation);
-
-        generator.setLog(getLog());
-        generator.setEnableRulesSummary(enableRulesSummary);
-        generator.setEnableSeveritySummary(enableSeveritySummary);
-        generator.setEnableFilesSummary(enableFilesSummary);
-        generator.setCheckstyleConfig(results.getConfiguration());
-        if (linkXRef) {
-            initializeXrefLocation(generator);
-            if (generator.getXrefLocation() == null && results.getFileCount() > 0) {
-                getLog().warn("Unable to locate Source XRef to link to - DISABLED");
-            }
-
-            initializeXrefTestLocation(generator);
-            if (generator.getXrefTestLocation() == null && results.getFileCount() > 0) {
-                getLog().warn("Unable to locate Test Source XRef to link to - DISABLED");
-            }
-
-            generator.setTestSourceDirectories(getTestSourceDirectories());
-        }
-        if (treeWalkerNames != null) {
-            generator.setTreeWalkerNames(treeWalkerNames);
-        }
-        generator.generateReport(results);
-    }
-
-    private void initializeXrefLocation(CheckstyleReportGenerator generator) {
+    private void initializeXrefLocation(CheckstyleReportRenderer renderer) {
         String relativePath = determineRelativePath(xrefLocation);
         if (xrefLocation.exists() || checkMavenJxrPluginIsConfigured()) {
             // XRef was already generated by manual execution of a lifecycle binding
             // the report is on its way
-            generator.setXrefLocation(relativePath);
+            renderer.setXrefLocation(relativePath);
         }
     }
 
-    private void initializeXrefTestLocation(CheckstyleReportGenerator generator) {
+    private void initializeXrefTestLocation(CheckstyleReportRenderer renderer) {
         String relativePath = determineRelativePath(xrefTestLocation);
         if (xrefTestLocation.exists() || checkMavenJxrPluginIsConfigured()) {
             // XRef was already generated by manual execution of a lifecycle binding
             // the report is on its way
-            generator.setXrefTestLocation(relativePath);
+            renderer.setXrefTestLocation(relativePath);
         }
     }
 
@@ -681,10 +694,6 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         }
 
         return false;
-    }
-
-    private static ResourceBundle getBundle(Locale locale) {
-        return ResourceBundle.getBundle("checkstyle-report", locale, AbstractCheckstyleReport.class.getClassLoader());
     }
 
     protected List<File> getSourceDirectories() {

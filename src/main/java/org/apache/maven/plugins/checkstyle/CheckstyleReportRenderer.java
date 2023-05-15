@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Locale;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -31,36 +31,37 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.SinkEventAttributes;
-import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
 import org.apache.maven.doxia.tools.SiteTool;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.maven.doxia.util.DoxiaUtils;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.reporting.AbstractMavenReportRenderer;
+import org.codehaus.plexus.i18n.I18N;
 
 /**
  * Generate a report based on CheckstyleResults.
  *
  *
  */
-public class CheckstyleReportGenerator {
-    private Log log;
+public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
+    private static final int NO_TEXT = 0;
+    private static final int TEXT_SIMPLE = 1;
+    private static final int TEXT_TITLE = 2;
+    private static final int TEXT_ABBREV = 3;
 
-    private final File basedir;
+    private final I18N i18n;
 
-    private final ResourceBundle bundle;
+    private final Locale locale;
 
-    private final Sink sink;
+    private final MavenProject project;
 
-    private SeverityLevel severityLevel;
+    private final Configuration checkstyleConfig;
 
-    private Configuration checkstyleConfig;
+    private final boolean enableRulesSummary;
 
-    private boolean enableRulesSummary;
+    private final boolean enableSeveritySummary;
 
-    private boolean enableSeveritySummary;
-
-    private boolean enableFilesSummary;
+    private final boolean enableFilesSummary;
 
     private final SiteTool siteTool;
 
@@ -72,90 +73,52 @@ public class CheckstyleReportGenerator {
 
     private List<String> treeWalkerNames = Collections.singletonList("TreeWalker");
 
-    private final IconTool iconTool;
-
     private final String ruleset;
 
-    public CheckstyleReportGenerator(
-            Sink sink, ResourceBundle bundle, File basedir, SiteTool siteTool, String ruleset) {
-        this.bundle = bundle;
+    private final CheckstyleResults results;
 
-        this.sink = sink;
-
-        this.basedir = basedir;
-
+    public CheckstyleReportRenderer(
+            Sink sink,
+            I18N i18n,
+            Locale locale,
+            MavenProject project,
+            SiteTool siteTool,
+            String ruleset,
+            boolean enableRulesSummary,
+            boolean enableSeveritySummary,
+            boolean enableFilesSummary,
+            CheckstyleResults results) {
+        super(sink);
+        this.i18n = i18n;
+        this.locale = locale;
+        this.project = project;
         this.siteTool = siteTool;
-
         this.ruleset = ruleset;
-
-        this.enableRulesSummary = true;
-        this.enableSeveritySummary = true;
-        this.enableFilesSummary = true;
-        this.iconTool = new IconTool(sink, bundle);
+        this.enableRulesSummary = enableRulesSummary;
+        this.enableSeveritySummary = enableSeveritySummary;
+        this.enableFilesSummary = enableFilesSummary;
+        this.results = results;
+        this.checkstyleConfig = results.getConfiguration();
     }
 
-    public Log getLog() {
-        if (this.log == null) {
-            this.log = new SystemStreamLog();
-        }
-        return this.log;
+    @Override
+    public String getTitle() {
+        return getI18nString("title");
     }
 
-    public void setLog(Log log) {
-        this.log = log;
+    /**
+     * @param key The key.
+     * @return The translated string.
+     */
+    private String getI18nString(String key) {
+        return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
     }
 
-    private String getTitle() {
-        String title;
-
-        if (getSeverityLevel() == null) {
-            title = bundle.getString("report.checkstyle.title");
-        } else {
-            title = bundle.getString("report.checkstyle.severity_title") + severityLevel.getName();
-        }
-
-        return title;
-    }
-
-    public void generateReport(CheckstyleResults results) {
-        doHeading();
-
-        if (getSeverityLevel() == null) {
-            if (enableSeveritySummary) {
-                doSeveritySummary(results);
-            }
-
-            if (enableFilesSummary) {
-                doFilesSummary(results);
-            }
-
-            if (enableRulesSummary) {
-                doRulesSummary(results);
-            }
-        }
-
-        doDetails(results);
-        sink.body_();
-        sink.flush();
-        sink.close();
-    }
-
-    private void doHeading() {
-        sink.head();
-        sink.title();
-        sink.text(getTitle());
-        sink.title_();
-        sink.head_();
-
-        sink.body();
-
-        sink.section1();
-        sink.sectionTitle1();
-        sink.text(getTitle());
-        sink.sectionTitle1_();
+    protected void renderBody() {
+        startSection(getTitle());
 
         sink.paragraph();
-        sink.text(bundle.getString("report.checkstyle.checkstylelink") + " ");
+        sink.text(getI18nString("checkstylelink") + " ");
         sink.link("https://checkstyle.org/");
         sink.text("Checkstyle");
         sink.link_();
@@ -165,11 +128,19 @@ public class CheckstyleReportGenerator {
             sink.text(version);
         }
         sink.text(" ");
-        sink.text(String.format(bundle.getString("report.checkstyle.ruleset"), ruleset));
+        sink.text(String.format(getI18nString("ruleset"), ruleset));
         sink.text(".");
-
         sink.paragraph_();
-        sink.section1_();
+
+        renderSeveritySummarySection();
+
+        renderFilesSummarySection();
+
+        renderRulesSummarySection();
+
+        renderDetailsSection();
+
+        endSection();
     }
 
     /**
@@ -210,58 +181,40 @@ public class CheckstyleReportGenerator {
      *
      * @param results The results to summarize
      */
-    private void doRulesSummary(CheckstyleResults results) {
+    private void renderRulesSummarySection() {
+        if (!enableRulesSummary) {
+            return;
+        }
         if (checkstyleConfig == null) {
             return;
         }
 
-        sink.section1();
-        sink.sectionTitle1();
-        sink.text(bundle.getString("report.checkstyle.rules"));
-        sink.sectionTitle1_();
+        startSection(getI18nString("rules"));
 
-        sink.table();
-        sink.tableRows(null, false);
+        startTable();
 
-        sink.tableRow();
-        sink.tableHeaderCell();
-        sink.text(bundle.getString("report.checkstyle.rule.category"));
-        sink.tableHeaderCell_();
-
-        sink.tableHeaderCell();
-        sink.text(bundle.getString("report.checkstyle.rule"));
-        sink.tableHeaderCell_();
-
-        sink.tableHeaderCell();
-        sink.text(bundle.getString("report.checkstyle.violations"));
-        sink.tableHeaderCell_();
-
-        sink.tableHeaderCell();
-        sink.text(bundle.getString("report.checkstyle.column.severity"));
-        sink.tableHeaderCell_();
-
-        sink.tableRow_();
+        tableHeader(new String[] {
+            getI18nString("rule.category"),
+            getI18nString("rule"),
+            getI18nString("violations"),
+            getI18nString("column.severity")
+        });
 
         // Top level should be the checker.
         if ("checker".equalsIgnoreCase(checkstyleConfig.getName())) {
             String category = null;
             for (ConfReference ref : sortConfiguration(results)) {
-                doRuleRow(ref, results, category);
+                renderRuleRow(ref, results, category);
 
                 category = ref.category;
             }
         } else {
-            sink.tableRow();
-            sink.tableCell();
-            sink.text(bundle.getString("report.checkstyle.norule"));
-            sink.tableCell_();
-            sink.tableRow_();
+            tableRow(new String[] {getI18nString("norule")});
         }
 
-        sink.tableRows_();
-        sink.table_();
+        endTable();
 
-        sink.section1_();
+        endSection();
     }
 
     /**
@@ -271,7 +224,7 @@ public class CheckstyleReportGenerator {
      * @param results The results to summarize
      * @param previousCategory The previous row's category
      */
-    private void doRuleRow(ConfReference ref, CheckstyleResults results, String previousCategory) {
+    private void renderRuleRow(ConfReference ref, CheckstyleResults results, String previousCategory) {
         Configuration checkerConfig = ref.configuration;
         ChainedItem<Configuration> parentConfiguration = ref.parentConfiguration;
         String ruleName = checkerConfig.getName();
@@ -325,13 +278,11 @@ public class CheckstyleReportGenerator {
                     sink.text(": ");
                     sink.monospaced();
                     sink.text("\"");
-                    if (basedir != null) {
-                        // Make the headerFile value relative to ${basedir}
-                        String path = siteTool.getRelativePath(value, basedir.getAbsolutePath());
-                        sink.text(path.replace('\\', '/'));
-                    } else {
-                        sink.text(value);
-                    }
+                    // Make the headerFile value relative to ${basedir}
+                    String path =
+                            siteTool.getRelativePath(value, project.getBasedir().getAbsolutePath());
+                    sink.text(path.replace('\\', '/'));
+                    sink.text(value);
                     sink.text("\"");
                     sink.monospaced_();
                 } else {
@@ -359,7 +310,7 @@ public class CheckstyleReportGenerator {
         // Grab the severity from the rule configuration, this time use error as default value
         // Also pass along all parent configurations, so that we can try to find the severity there
         String severity = getConfigAttribute(checkerConfig, parentConfiguration, "severity", "error");
-        iconTool.iconSeverity(severity, IconTool.TEXT_SIMPLE);
+        iconSeverity(severity, TEXT_SIMPLE);
         sink.tableCell_();
 
         sink.tableRow_();
@@ -403,75 +354,66 @@ public class CheckstyleReportGenerator {
         return true;
     }
 
-    private void doSeveritySummary(CheckstyleResults results) {
-        sink.section1();
-        sink.sectionTitle1();
-        sink.text(bundle.getString("report.checkstyle.summary"));
-        sink.sectionTitle1_();
+    private void renderSeveritySummarySection() {
+        if (!enableSeveritySummary) {
+            return;
+        }
 
-        sink.table();
-        sink.tableRows(null, false);
+        startSection(getI18nString("summary"));
+
+        startTable();
 
         sink.tableRow();
         sink.tableHeaderCell();
-        sink.text(bundle.getString("report.checkstyle.files"));
+        sink.text(getI18nString("files"));
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconTool.iconInfo(IconTool.TEXT_TITLE);
+        iconSeverity("info", TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconTool.iconWarning(IconTool.TEXT_TITLE);
+        iconSeverity("warning", TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconTool.iconError(IconTool.TEXT_TITLE);
+        iconSeverity("error", TEXT_TITLE);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
-        sink.tableRow();
-        sink.tableCell();
-        sink.text(String.valueOf(results.getFileCount()));
-        sink.tableCell_();
-        sink.tableCell();
-        sink.text(String.valueOf(results.getSeverityCount(SeverityLevel.INFO)));
-        sink.tableCell_();
-        sink.tableCell();
-        sink.text(String.valueOf(results.getSeverityCount(SeverityLevel.WARNING)));
-        sink.tableCell_();
-        sink.tableCell();
-        sink.text(String.valueOf(results.getSeverityCount(SeverityLevel.ERROR)));
-        sink.tableCell_();
-        sink.tableRow_();
+        tableRow(new String[] {
+            String.valueOf(results.getFileCount()),
+            String.valueOf(results.getSeverityCount(SeverityLevel.INFO)),
+            String.valueOf(results.getSeverityCount(SeverityLevel.WARNING)),
+            String.valueOf(results.getSeverityCount(SeverityLevel.ERROR))
+        });
 
-        sink.tableRows_();
-        sink.table_();
+        endTable();
 
-        sink.section1_();
+        endSection();
     }
 
-    private void doFilesSummary(CheckstyleResults results) {
-        sink.section1();
-        sink.sectionTitle1();
-        sink.text(bundle.getString("report.checkstyle.files"));
-        sink.sectionTitle1_();
+    private void renderFilesSummarySection() {
+        if (!enableFilesSummary) {
+            return;
+        }
 
-        sink.table();
-        sink.tableRows(null, false);
+        startSection(getI18nString("files"));
+
+        startTable();
 
         sink.tableRow();
         sink.tableHeaderCell();
-        sink.text(bundle.getString("report.checkstyle.file"));
+        sink.text(getI18nString("file"));
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconTool.iconInfo(IconTool.TEXT_ABBREV);
+        iconSeverity("info", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconTool.iconWarning(IconTool.TEXT_ABBREV);
+        iconSeverity("warning", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconTool.iconError(IconTool.TEXT_ABBREV);
+        iconSeverity("error", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
@@ -489,7 +431,7 @@ public class CheckstyleReportGenerator {
             sink.tableRow();
 
             sink.tableCell();
-            sink.link("#" + filename.replace('/', '.'));
+            sink.link("#" + DoxiaUtils.encodeId(filename));
             sink.text(filename);
             sink.link_();
             sink.tableCell_();
@@ -509,18 +451,13 @@ public class CheckstyleReportGenerator {
             sink.tableRow_();
         }
 
-        sink.tableRows_();
-        sink.table_();
+        endTable();
 
-        sink.section1_();
+        endSection();
     }
 
-    private void doDetails(CheckstyleResults results) {
-
-        sink.section1();
-        sink.sectionTitle1();
-        sink.text(bundle.getString("report.checkstyle.details"));
-        sink.sectionTitle1_();
+    private void renderDetailsSection() {
+        startSection(getI18nString("details"));
 
         // Sort the files before writing their details to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
@@ -534,57 +471,36 @@ public class CheckstyleReportGenerator {
                 continue;
             }
 
-            sink.section2();
-            SinkEventAttributes attrs = new SinkEventAttributeSet();
-            attrs.addAttribute(SinkEventAttributes.ID, file.replace('/', '.'));
-            sink.sectionTitle(Sink.SECTION_LEVEL_2, attrs);
-            sink.text(file);
-            sink.sectionTitle_(Sink.SECTION_LEVEL_2);
+            startSection(file);
 
-            sink.table();
-            sink.tableRows(null, false);
+            startTable();
 
-            sink.tableRow();
-            sink.tableHeaderCell();
-            sink.text(bundle.getString("report.checkstyle.column.severity"));
-            sink.tableHeaderCell_();
-            sink.tableHeaderCell();
-            sink.text(bundle.getString("report.checkstyle.rule.category"));
-            sink.tableHeaderCell_();
-            sink.tableHeaderCell();
-            sink.text(bundle.getString("report.checkstyle.rule"));
-            sink.tableHeaderCell_();
-            sink.tableHeaderCell();
-            sink.text(bundle.getString("report.checkstyle.column.message"));
-            sink.tableHeaderCell_();
-            sink.tableHeaderCell();
-            sink.text(bundle.getString("report.checkstyle.column.line"));
-            sink.tableHeaderCell_();
-            sink.tableRow_();
+            tableHeader(new String[] {
+                getI18nString("column.severity"),
+                getI18nString("rule.category"),
+                getI18nString("rule"),
+                getI18nString("column.message"),
+                getI18nString("column.line")
+            });
 
-            doFileEvents(violations, file);
+            renderFileEvents(violations, file);
 
-            sink.tableRows_();
-            sink.table_();
+            endTable();
 
-            sink.section2_();
+            endSection();
         }
 
-        sink.section1_();
+        endSection();
     }
 
-    private void doFileEvents(List<AuditEvent> eventList, String filename) {
+    private void renderFileEvents(List<AuditEvent> eventList, String filename) {
         for (AuditEvent event : eventList) {
             SeverityLevel level = event.getSeverityLevel();
-
-            if ((getSeverityLevel() != null) && !(getSeverityLevel() != level)) {
-                continue;
-            }
 
             sink.tableRow();
 
             sink.tableCell();
-            iconTool.iconSeverity(level.getName(), IconTool.TEXT_SIMPLE);
+            iconSeverity(level.getName(), TEXT_SIMPLE);
             sink.tableCell_();
 
             sink.tableCell();
@@ -641,38 +557,6 @@ public class CheckstyleReportGenerator {
         return false;
     }
 
-    public SeverityLevel getSeverityLevel() {
-        return severityLevel;
-    }
-
-    public void setSeverityLevel(SeverityLevel severityLevel) {
-        this.severityLevel = severityLevel;
-    }
-
-    public boolean isEnableRulesSummary() {
-        return enableRulesSummary;
-    }
-
-    public void setEnableRulesSummary(boolean enableRulesSummary) {
-        this.enableRulesSummary = enableRulesSummary;
-    }
-
-    public boolean isEnableSeveritySummary() {
-        return enableSeveritySummary;
-    }
-
-    public void setEnableSeveritySummary(boolean enableSeveritySummary) {
-        this.enableSeveritySummary = enableSeveritySummary;
-    }
-
-    public boolean isEnableFilesSummary() {
-        return enableFilesSummary;
-    }
-
-    public void setEnableFilesSummary(boolean enableFilesSummary) {
-        this.enableFilesSummary = enableFilesSummary;
-    }
-
     public String getXrefLocation() {
         return xrefLocation;
     }
@@ -689,28 +573,38 @@ public class CheckstyleReportGenerator {
         this.xrefTestLocation = xrefTestLocation;
     }
 
-    public List<File> getTestSourceDirectories() {
-        return testSourceDirectories;
-    }
-
     public void setTestSourceDirectories(List<File> testSourceDirectories) {
         this.testSourceDirectories = testSourceDirectories;
-    }
-
-    public Configuration getCheckstyleConfig() {
-        return checkstyleConfig;
-    }
-
-    public void setCheckstyleConfig(Configuration config) {
-        this.checkstyleConfig = config;
     }
 
     public void setTreeWalkerNames(List<String> treeWalkerNames) {
         this.treeWalkerNames = treeWalkerNames;
     }
 
-    public List<String> getTreeWalkerNames() {
-        return treeWalkerNames;
+    /**
+     * Render an icon of given level with associated text.
+     * @param level one of <code>INFO</code>, <code>WARNING</code> or <code>ERROR</code> constants
+     * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
+     * <code>TEXT_ABBREV</code> constants
+     */
+    private void iconSeverity(String level, int textType) {
+        sink.figureGraphics("images/icon_" + level + "_sml.gif");
+
+        if (textType > NO_TEXT) {
+            sink.nonBreakingSpace();
+            String suffix;
+            switch (textType) {
+                case TEXT_TITLE:
+                    suffix = "s";
+                    break;
+                case TEXT_ABBREV:
+                    suffix = "s.abbrev";
+                    break;
+                default:
+                    suffix = "";
+            }
+            sink.text(getI18nString(level + suffix));
+        }
     }
 
     /**

@@ -170,6 +170,6 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     }
 
     private static String getHtmlHeader(String s) {
-        return ">" + s + "</h2>";
+        return ">" + s + "</h3>";
     }
 }
