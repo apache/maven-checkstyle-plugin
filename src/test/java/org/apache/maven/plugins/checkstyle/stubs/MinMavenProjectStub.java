@@ -58,11 +58,6 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
-    public File getBasedir() {
-        return new File(".");
-    }
-
-    /** {@inheritDoc} */
     public List<ReportPlugin> getReportPlugins() {
         ReportPlugin jxrPlugin = new ReportPlugin();
 
