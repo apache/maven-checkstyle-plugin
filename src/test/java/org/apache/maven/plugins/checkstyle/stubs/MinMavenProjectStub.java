@@ -27,7 +27,6 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Organization;
 import org.apache.maven.model.ReportPlugin;
-import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author Edwin Punzalan
@@ -42,25 +41,25 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     /** {@inheritDoc} */
     public List<String> getTestClasspathElements() throws DependencyResolutionRequiredException {
         List<String> list = new ArrayList<>(getCompileClasspathElements());
-        list.add(PlexusTestCase.getBasedir() + "/target/test-classes");
+        list.add("target/test-classes");
         return list;
     }
 
     /** {@inheritDoc} */
     public List<String> getCompileSourceRoots() {
-        return Collections.singletonList(PlexusTestCase.getBasedir() + "/target/classes");
+        return Collections.singletonList("target/classes");
     }
 
     /** {@inheritDoc} */
     public List<String> getTestCompileSourceRoots() {
         List<String> list = new ArrayList<>(getCompileSourceRoots());
-        list.add(PlexusTestCase.getBasedir() + "/target/test-classes");
+        list.add("target/test-classes");
         return list;
     }
 
     /** {@inheritDoc} */
     public File getBasedir() {
-        return new File(PlexusTestCase.getBasedir());
+        return new File(".");
     }
 
     /** {@inheritDoc} */
@@ -90,7 +89,7 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     public Build getBuild() {
         Build build = new Build();
 
-        build.setDirectory(PlexusTestCase.getBasedir() + "/target/test-harness/checkstyle/min");
+        build.setDirectory("target/test-harness/checkstyle/min");
 
         return build;
     }
