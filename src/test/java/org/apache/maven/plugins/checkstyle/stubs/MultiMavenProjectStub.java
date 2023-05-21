@@ -27,7 +27,6 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Organization;
 import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.PlexusTestCase;
 
 /**
  *
@@ -64,11 +63,6 @@ public class MultiMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
-    public File getBasedir() {
-        return new File(PlexusTestCase.getBasedir());
-    }
-
-    /** {@inheritDoc} */
     public List<ReportPlugin> getReportPlugins() {
         ReportPlugin jxrPlugin = new ReportPlugin();
 
@@ -95,7 +89,7 @@ public class MultiMavenProjectStub extends CheckstyleProjectStub {
     public Build getBuild() {
         Build build = new Build();
 
-        build.setDirectory(PlexusTestCase.getBasedir() + "/target/test-harness/checkstyle/multi");
+        build.setDirectory("target/test-harness/checkstyle/multi");
 
         return build;
     }

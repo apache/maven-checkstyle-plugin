@@ -44,7 +44,7 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
     private ArtifactStubFactory artifactStubFactory;
 
     /**
-     * The current project to be test.
+     * The project to test.
      */
     private MavenProject testMavenProject;
 
@@ -80,9 +80,9 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
     /**
      * Get the generated report as file in the test maven project.
      *
-     * @param name the name of the report.
+     * @param name the name of the report
      * @return the generated report as file
-     * @throws IOException if the return file doesnt exist
+     * @throws IOException if the return file doesn't exist
      */
     protected File getGeneratedReport(String name) throws IOException {
         String outputDirectory = getBasedir() + "/target/test/test-harness/"
