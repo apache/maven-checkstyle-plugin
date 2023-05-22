@@ -34,7 +34,6 @@ import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
@@ -602,7 +601,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     protected AuditListener getListener() throws MavenReportException {
         AuditListener listener = null;
 
-        if (StringUtils.isNotEmpty(outputFileFormat)) {
+        if (outputFileFormat != null && !outputFileFormat.isEmpty()) {
             File resultFile = outputFile;
 
             OutputStream out = getOutputStream(resultFile);

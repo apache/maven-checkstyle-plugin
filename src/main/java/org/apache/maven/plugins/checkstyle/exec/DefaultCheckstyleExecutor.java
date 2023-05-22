@@ -402,7 +402,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                 getLogger().debug("headerLocation " + headerLocation);
             }
 
-            if (StringUtils.isNotEmpty(headerLocation)) {
+            if (headerLocation != null && !headerLocation.isEmpty()) {
                 try {
                     File headerFile = licenseLocator.getResourceAsFile(headerLocation, "checkstyle-header.txt");
 
@@ -551,7 +551,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     if (resourcesDirectory.equals(request.getProject().getBasedir())) {
                         String resourceIncludes =
                                 StringUtils.join(resource.getIncludes().iterator(), ",");
-                        if (StringUtils.isEmpty(includes)) {
+                        if (includes == null || includes.isEmpty()) {
                             includes = resourceIncludes;
                         } else {
                             includes += "," + resourceIncludes;
@@ -559,7 +559,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
 
                         String resourceExcludes =
                                 StringUtils.join(resource.getExcludes().iterator(), ",");
-                        if (StringUtils.isEmpty(excludes)) {
+                        if (excludes == null || excludes.isEmpty()) {
                             excludes = resourceExcludes;
                         } else {
                             excludes += "," + resourceExcludes;
@@ -594,7 +594,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
 
     private String getSuppressionsFilePath(final CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
         final String suppressionsLocation = request.getSuppressionsLocation();
-        if (StringUtils.isEmpty(suppressionsLocation)) {
+        if (suppressionsLocation == null || suppressionsLocation.isEmpty()) {
             return null;
         }
 
