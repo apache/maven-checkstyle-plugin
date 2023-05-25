@@ -32,7 +32,12 @@
 <tr><th>release date</th><th>maven-checkstyle-plugin version</th><th>minimum Java version</th>
     <th>default <a href="https://checkstyle.org/">Checkstyle</a> version</th></tr>
 <tr><td>$dateFormat.format( $currentDate )</td><td>${project.version}</td><td>${javaVersion}</td><td>#release( ${checkstyleVersion} )</td></tr>
-<tr><td>2020-02-08</td><td>3.1.1 </td><td rowspan="2"> 8</td><td>#release( "8.29" )</td></tr>
+<tr><td>2023-05-19</td><td>3.3.0 </td><td rowspan="7"> 8</td><td rowspan="4">#release( "9.3" )</td></tr>
+<tr><td>2023-04-18</td><td>3.2.2 </td></tr>
+<tr><td>2023-01-06</td><td>3.2.1 </td></tr>
+<tr><td>2022-08-20</td><td>3.2.0 </td></tr>
+<tr><td>2021-01-23</td><td>3.1.2 </td>                       <td rowspan="2">#release( "8.29" )</td></tr>
+<tr><td>2020-02-08</td><td>3.1.1 </td></tr>
 <tr><td>2019-05-20</td><td>3.1.0 </td>                       <td>#release( "8.19" )</td></tr>
 <tr><td>2018-01-04</td><td>3.0.0 </td><td rowspan="3"> 7</td><td>#release( "8.18" )</td></tr>
 <tr><td>2015-10-15</td><td>2.17  </td>                       <td>#release( "6.11.2" )</td></tr>
