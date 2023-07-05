@@ -42,7 +42,7 @@ Using Custom Developed Checkstyle Checks
 
 * Structuring your project
 
- First we set up the directory structure for the custom ckecks project. It
+ First we set up the directory structure for the custom checks project. It
  looks like this:
 
 +-----+
