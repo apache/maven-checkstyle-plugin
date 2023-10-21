@@ -28,7 +28,7 @@ under the License.
   </parent>
 
   <artifactId>maven-checkstyle-plugin</artifactId>
-  <version>3.3.1-SNAPSHOT</version>
+  <version>3.3.1</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Maven Checkstyle Plugin</name>
@@ -54,7 +54,7 @@ under the License.
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-checkstyle-plugin.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-checkstyle-plugin.git</developerConnection>
-    <tag>maven-checkstyle-plugin-3.3.0</tag>
+    <tag>maven-checkstyle-plugin-3.3.1</tag>
     <url>https://github.com/apache/maven-checkstyle-plugin/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
@@ -81,7 +81,7 @@ under the License.
     <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
     <sitePluginVersion>3.12.1</sitePluginVersion>
     <jxrPluginVersion>3.3.0</jxrPluginVersion>
-    <project.build.outputTimestamp>2023-05-19T13:39:57Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-10-21T10:35:28Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -285,6 +285,7 @@ under the License.
               <exclude>src/it/MCHECKSTYLE-225-customHeader/build-tools/src/main/resources/test/custom-header.txt</exclude>
               <exclude>src/it/MCHECKSTYLE-225-pluginManagement/build-tools/src/main/resources/test/custom-header.txt</exclude>
               <exclude>src/it/MCHECKSTYLE-225-LICENSE.txt/build-tools/src/main/resources/LICENSE.txt</exclude>
+              <exclude>src/test/resources/plugin-configs/target/test-harness/checkstyle/min/checkstyle-checker.xml</exclude>
             </excludes>
           </configuration>
         </plugin>
