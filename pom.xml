@@ -28,7 +28,7 @@ under the License.
   </parent>
 
   <artifactId>maven-checkstyle-plugin</artifactId>
-  <version>3.3.1</version>
+  <version>3.3.2-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Maven Checkstyle Plugin</name>
@@ -81,7 +81,7 @@ under the License.
     <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
     <sitePluginVersion>3.12.1</sitePluginVersion>
     <jxrPluginVersion>3.3.0</jxrPluginVersion>
-    <project.build.outputTimestamp>2023-10-21T10:35:28Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-10-21T10:39:27Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
