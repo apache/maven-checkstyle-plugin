@@ -685,7 +685,8 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     }
 
     private String determineRelativePath(File location) {
-        String relativePath = PathTool.getRelativePath(getOutputDirectory(), location.getAbsolutePath());
+        String relativePath = PathTool.getRelativePath(getReportOutputDirectory().getAbsolutePath(),
+                location.getAbsolutePath());
         if (relativePath == null || relativePath.trim().isEmpty()) {
             relativePath = ".";
         }
