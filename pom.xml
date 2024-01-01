@@ -28,7 +28,7 @@ under the License.
   </parent>
 
   <artifactId>maven-checkstyle-plugin</artifactId>
-  <version>3.3.2-SNAPSHOT</version>
+  <version>4.0.0-M1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Maven Checkstyle Plugin</name>
@@ -77,10 +77,10 @@ under the License.
     <aetherVersion>1.0.0.v20140518</aetherVersion>
     <mavenVersion>3.2.5</mavenVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
-    <doxiaVersion>1.11.1</doxiaVersion>
-    <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
-    <sitePluginVersion>3.12.1</sitePluginVersion>
-    <jxrPluginVersion>3.3.0</jxrPluginVersion>
+    <doxiaVersion>2.0.0-M8</doxiaVersion>
+    <doxiaSitetoolsVersion>2.0.0-M16</doxiaSitetoolsVersion>
+    <sitePluginVersion>4.0.0-M13</sitePluginVersion>
+    <jxrPluginVersion>4.0.0-M1-SNAPSHOT</jxrPluginVersion>
     <project.build.outputTimestamp>2023-10-21T10:39:27Z</project.build.outputTimestamp>
   </properties>
 
@@ -125,12 +125,12 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
-      <version>3.1.1</version>
+      <version>4.0.0-M9</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
-      <version>3.2.0</version>
+      <version>4.0.0-M13</version>
     </dependency>
 
     <!-- doxia -->
@@ -192,11 +192,6 @@ under the License.
       <groupId>com.puppycrawl.tools</groupId>
       <artifactId>checkstyle</artifactId>
       <version>${checkstyleVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
     </dependency>
 
     <!-- test -->

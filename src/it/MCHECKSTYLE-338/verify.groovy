@@ -25,7 +25,7 @@ assert buildLog.text.contains( 'EmptyLogging: EmptyLoggingCheck on file TestFals
 assert !buildLog.text.contains( 'EmptyLogging: EmptyLoggingCheck on file TestTrue.java' )
 
 // verify that the "checkstyle" goal does the same
-site = new File( basedir, 'omitignoredmodules-false/target/site/checkstyle.html' )
+site = new File( basedir, 'omitignoredmodules-false/target/reports/checkstyle.html' )
 assert site.text.contains( 'EmptyLoggingCheck on file TestFalse.java' )
-site = new File( basedir, 'omitignoredmodules-true/target/site/checkstyle.html' )
+site = new File( basedir, 'omitignoredmodules-true/target/reports/checkstyle.html' )
 assert !site.text.contains( 'EmptyLoggingCheck on file TestTrue.java' )
