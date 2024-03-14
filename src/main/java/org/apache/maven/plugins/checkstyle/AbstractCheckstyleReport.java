@@ -98,13 +98,13 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      * <li><code>google_checks.xml</code>: Google Checks.</li>
      * </ul>
      */
-    @Parameter(property = "checkstyle.config.location", defaultValue = DEFAULT_CONFIG_LOCATION)
+    @Parameter(defaultValue = DEFAULT_CONFIG_LOCATION)
     protected String configLocation;
 
     /**
      * Output errors to console.
      */
-    @Parameter(property = "checkstyle.consoleOutput", defaultValue = "false")
+    @Parameter(defaultValue = "false")
     protected boolean consoleOutput;
 
     /**
@@ -131,7 +131,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 2.0-beta-2
      */
-    @Parameter(property = "checkstyle.header.file", defaultValue = "LICENSE.txt")
+    @Parameter(defaultValue = "LICENSE.txt")
     protected String headerLocation;
 
     /**
@@ -139,7 +139,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 2.2
      */
-    @Parameter(property = "checkstyle.skip", defaultValue = "false")
+    @Parameter(defaultValue = "false")
     protected boolean skip;
 
     /**
@@ -147,7 +147,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      * of the output file is determined by the <code>outputFileFormat</code>
      * parameter.
      */
-    @Parameter(property = "checkstyle.output.file", defaultValue = "${project.build.directory}/checkstyle-result.xml")
+    @Parameter(defaultValue = "${project.build.directory}/checkstyle-result.xml")
     private File outputFile;
 
     /**
@@ -166,7 +166,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 2.0-beta-2
      */
-    @Parameter(property = "checkstyle.properties.location")
+    @Parameter
     protected String propertiesLocation;
 
     /**
@@ -194,21 +194,21 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Specifies the names filter of the source files to be used for Checkstyle.
      */
-    @Parameter(property = "checkstyle.includes", defaultValue = JAVA_FILES, required = true)
+    @Parameter(defaultValue = JAVA_FILES, required = true)
     protected String includes;
 
     /**
      * Specifies the names filter of the source files to be excluded for
      * Checkstyle.
      */
-    @Parameter(property = "checkstyle.excludes")
+    @Parameter
     protected String excludes;
 
     /**
      * Specifies the names filter of the resource files to be used for Checkstyle.
      * @since 2.11
      */
-    @Parameter(property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true)
+    @Parameter(defaultValue = "**/*.properties", required = true)
     protected String resourceIncludes;
 
     /**
@@ -216,21 +216,21 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      * Checkstyle.
      * @since 2.11
      */
-    @Parameter(property = "checkstyle.resourceExcludes")
+    @Parameter
     protected String resourceExcludes;
 
     /**
      * Specifies whether to include the resource directories in the check.
      * @since 2.11
      */
-    @Parameter(property = "checkstyle.includeResources", defaultValue = "true", required = true)
+    @Parameter(defaultValue = "true", required = true)
     protected boolean includeResources;
 
     /**
      * Specifies whether to include the test resource directories in the check.
      * @since 2.11
      */
-    @Parameter(property = "checkstyle.includeTestResources", defaultValue = "true", required = true)
+    @Parameter(defaultValue = "true", required = true)
     protected boolean includeTestResources;
 
     /**
@@ -285,7 +285,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 2.1
      */
-    @Parameter(property = "checkstyle.suppression.expression", defaultValue = "checkstyle.suppressions.file")
+    @Parameter(defaultValue = "checkstyle.suppressions.file")
     protected String suppressionsFileExpression;
 
     /**
@@ -302,7 +302,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 2.0-beta-2
      */
-    @Parameter(property = "checkstyle.suppressions.location")
+    @Parameter
     protected String suppressionsLocation;
 
     /**
@@ -316,25 +316,25 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      * Specifies the format of the output to be used when writing to the output
      * file. Valid values are "<code>plain</code>" and "<code>xml</code>".
      */
-    @Parameter(property = "checkstyle.output.format", defaultValue = "xml")
+    @Parameter(defaultValue = "xml")
     private String outputFileFormat;
 
     /**
      * Specifies if the Rules summary should be enabled or not.
      */
-    @Parameter(property = "checkstyle.enable.rules.summary", defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean enableRulesSummary;
 
     /**
      * Specifies if the Severity summary should be enabled or not.
      */
-    @Parameter(property = "checkstyle.enable.severity.summary", defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean enableSeveritySummary;
 
     /**
      * Specifies if the Files summary should be enabled or not.
      */
-    @Parameter(property = "checkstyle.enable.files.summary", defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean enableFilesSummary;
 
     /**
@@ -349,7 +349,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 2.1
      */
-    @Parameter(property = "linkXRef", defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean linkXRef;
 
     /**
@@ -413,7 +413,6 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      * Dump file for inlined Checkstyle rules.
      */
     @Parameter(
-            property = "checkstyle.output.rules.file",
             defaultValue = "${project.build.directory}/checkstyle-rules.xml")
     private File rulesFiles;
 
@@ -432,7 +431,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      *
      * @since 3.3.1
      */
-    @Parameter(property = "checkstyle.excludeGeneratedSources", defaultValue = "false")
+    @Parameter(defaultValue = "false")
     private boolean excludeGeneratedSources;
 
     /**
