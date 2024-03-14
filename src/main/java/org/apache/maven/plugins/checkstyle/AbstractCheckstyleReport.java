@@ -412,8 +412,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Dump file for inlined Checkstyle rules.
      */
-    @Parameter(
-            defaultValue = "${project.build.directory}/checkstyle-rules.xml")
+    @Parameter(defaultValue = "${project.build.directory}/checkstyle-rules.xml")
     private File rulesFiles;
 
     /**
