@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugins.checkstyle.resource;
 
+import javax.inject.Inject;
+
 import java.util.Map;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -28,6 +30,8 @@ import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.ResourceLoader;
 import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.codehaus.plexus.resource.loader.ThreadContextClasspathResourceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * License resource manager, to avoid defaulting license to maven-checkstyle-plugin's own license.
@@ -37,8 +41,15 @@ import org.codehaus.plexus.resource.loader.ThreadContextClasspathResourceLoader;
 @Component(role = ResourceManager.class, hint = "license", instantiationStrategy = "per-lookup")
 public class LicenseResourceManager extends DefaultResourceManager {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LicenseResourceManager.class);
+
     @Requirement(role = ResourceLoader.class)
     private Map<String, ResourceLoader> resourceLoaders;
+
+    @Inject
+    public LicenseResourceManager(Map<String, ResourceLoader> resourceLoaders) {
+        super(resourceLoaders);
+    }
 
     @Override
     public void addSearchPath(String id, String path) {
@@ -64,13 +75,12 @@ public class LicenseResourceManager extends DefaultResourceManager {
             try {
                 PlexusResource resource = resourceLoader.getResource(name);
 
-                getLogger().debug("The resource '" + name + "' was found as " + resource.getName() + ".");
+                LOGGER.debug("The resource '" + name + "' was found as " + resource.getName() + ".");
 
                 return resource;
             } catch (ResourceNotFoundException e) {
-                getLogger()
-                        .debug("The resource '" + name + "' was not found with resourceLoader "
-                                + resourceLoader.getClass().getName() + ".");
+                LOGGER.debug("The resource '" + name + "' was not found with resourceLoader "
+                        + resourceLoader.getClass().getName() + ".");
             }
         }
 
