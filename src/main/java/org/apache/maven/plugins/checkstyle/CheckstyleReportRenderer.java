@@ -242,7 +242,8 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         // column 2: Rule name + configured attributes
         sink.tableCell();
         if (!"extension".equals(category)) {
-            sink.link("https://checkstyle.org/config_" + category + ".html#" + ruleName);
+            sink.link(
+                    "https://checkstyle.org/checks/" + category + "/" + ruleName.toLowerCase(Locale.ENGLISH) + ".html");
             sink.text(ruleName);
             sink.link_();
         } else {
