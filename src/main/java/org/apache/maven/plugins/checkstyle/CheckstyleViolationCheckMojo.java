@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
+import com.puppycrawl.tools.checkstyle.SarifLogger;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
@@ -92,7 +93,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Specifies the format of the output to be used when writing to the output
-     * file. Valid values are "<code>plain</code>" and "<code>xml</code>".
+     * file. Valid values are "<code>plain</code>", "<code>sarif</code>" and "<code>xml</code>".
      */
     @Parameter(property = "checkstyle.output.format", defaultValue = "xml")
     private String outputFileFormat;
@@ -798,6 +799,21 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                     CompositeAuditListener compoundListener = new CompositeAuditListener();
                     compoundListener.addListener(new XMLLogger(xmlOut, OutputStreamOptions.CLOSE));
                     compoundListener.addListener(new DefaultLogger(out, OutputStreamOptions.CLOSE));
+                    listener = compoundListener;
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Unable to create temporary file", e);
+                }
+            } else if ("sarif".equals(outputFileFormat)) {
+                try {
+                    // Write a sarif output file to the standard output file,
+                    // and write an XML output file to the temp directory that can be used to count violations
+                    outputXmlFile =
+                            Files.createTempFile("checkstyle-result", ".xml").toFile();
+                    outputXmlFile.deleteOnExit();
+                    OutputStream xmlOut = getOutputStream(outputXmlFile);
+                    CompositeAuditListener compoundListener = new CompositeAuditListener();
+                    compoundListener.addListener(new XMLLogger(xmlOut, OutputStreamOptions.CLOSE));
+                    compoundListener.addListener(new SarifLogger(out, OutputStreamOptions.CLOSE));
                     listener = compoundListener;
                 } catch (IOException e) {
                     throw new MojoExecutionException("Unable to create temporary file", e);

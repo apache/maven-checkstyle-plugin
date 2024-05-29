@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
+import com.puppycrawl.tools.checkstyle.SarifLogger;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
@@ -314,7 +315,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
     /**
      * Specifies the format of the output to be used when writing to the output
-     * file. Valid values are "<code>plain</code>" and "<code>xml</code>".
+     * file. Valid values are "<code>plain</code>", "<code>sarif</code>" and "<code>xml</code>".
      */
     @Parameter(property = "checkstyle.output.format", defaultValue = "xml")
     private String outputFileFormat;
@@ -619,10 +620,16 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
                 listener = new XMLLogger(out, OutputStreamOptions.CLOSE);
             } else if ("plain".equals(outputFileFormat)) {
                 listener = new DefaultLogger(out, OutputStreamOptions.CLOSE);
+            } else if ("sarif".equals(outputFileFormat)) {
+                try {
+                    listener = new SarifLogger(out, OutputStreamOptions.CLOSE);
+                } catch (IOException e) {
+                    throw new MavenReportException("Failed to create SarifLogger", e);
+                }
             } else {
                 // TODO: failure if not a report
                 throw new MavenReportException(
-                        "Invalid output file format: (" + outputFileFormat + "). Must be 'plain' or 'xml'.");
+                        "Invalid output file format: (" + outputFileFormat + "). Must be 'plain', 'sarif' or 'xml'.");
             }
         }
 
