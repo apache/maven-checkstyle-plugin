@@ -77,6 +77,7 @@ under the License.
     <aetherVersion>1.0.0.v20140518</aetherVersion>
     <mavenVersion>3.2.5</mavenVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
+    <slf4jVersion>1.7.36</slf4jVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
     <sitePluginVersion>3.12.1</sitePluginVersion>
@@ -113,6 +114,12 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -181,6 +188,12 @@ under the License.
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4jVersion}</version>
+    </dependency>
+
     <!-- checkstyle -->
     <dependency>
       <groupId>com.puppycrawl.tools</groupId>
@@ -209,7 +222,7 @@ under the License.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.36</version>
+      <version>${slf4jVersion}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
