@@ -77,7 +77,7 @@ under the License.
     <mavenVersion>3.6.3</mavenVersion>
     <resolverVersion>1.4.1</resolverVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
-    <slf4jVersion>1.7.36</slf4jVersion>
+    <slf4jVersion>2.0.13</slf4jVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
     <sitePluginVersion>3.12.1</sitePluginVersion>
