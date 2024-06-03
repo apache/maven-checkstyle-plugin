@@ -75,7 +75,7 @@ under the License.
   <properties>
     <javaVersion>8</javaVersion>
     <mavenVersion>3.6.3</mavenVersion>
-    <resolverVersion>1.4.1</resolverVersion>
+    <resolverVersion>1.9.20</resolverVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
