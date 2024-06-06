@@ -76,7 +76,7 @@ under the License.
     <javaVersion>8</javaVersion>
     <mavenVersion>3.6.3</mavenVersion>
     <resolverVersion>1.4.1</resolverVersion>
-    <checkstyleVersion>9.3</checkstyleVersion>
+    <checkstyleVersion>10.17.0</checkstyleVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxiaSitetoolsVersion>1.11.1</doxiaSitetoolsVersion>
@@ -197,7 +197,7 @@ under the License.
     <!-- checkstyle -->
     <dependency>
       <groupId>com.puppycrawl.tools</groupId>
-      <artifactId>checkstyle</artifactId>
+      <artifactId>checkstyle-backport-jre8</artifactId>
       <version>${checkstyleVersion}</version>
     </dependency>
     <dependency>
