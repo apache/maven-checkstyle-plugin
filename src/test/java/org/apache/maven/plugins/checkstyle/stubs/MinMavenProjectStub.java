@@ -18,7 +18,6 @@
  */
 package org.apache.maven.plugins.checkstyle.stubs;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,19 +40,19 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     /** {@inheritDoc} */
     public List<String> getTestClasspathElements() throws DependencyResolutionRequiredException {
         List<String> list = new ArrayList<>(getCompileClasspathElements());
-        list.add("target/test-classes");
+        list.add(getBasedir() + "/target/test-classes");
         return list;
     }
 
     /** {@inheritDoc} */
     public List<String> getCompileSourceRoots() {
-        return Collections.singletonList("target/classes");
+        return Collections.singletonList(getBasedir() + "/target/classes");
     }
 
     /** {@inheritDoc} */
     public List<String> getTestCompileSourceRoots() {
         List<String> list = new ArrayList<>(getCompileSourceRoots());
-        list.add("target/test-classes");
+        list.add(getBasedir() + "/target/test-classes");
         return list;
     }
 
@@ -84,15 +83,13 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     public Build getBuild() {
         Build build = new Build();
 
-        build.setDirectory("target/test-harness/checkstyle/min");
+        build.setDirectory(getBasedir() + "/target/test-harness/checkstyle/min");
 
         return build;
     }
 
-    /** {@inheritDoc} */
-    public File getFile() {
-        File file = new File(getBasedir(), "pom.xml");
-
-        return file;
+    @Override
+    protected String getPOM() {
+        return "min-plugin-config.xml";
     }
 }
