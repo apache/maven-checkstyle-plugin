@@ -622,7 +622,10 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
                 listener = new DefaultLogger(out, OutputStreamOptions.CLOSE);
             } else if ("sarif".equals(outputFileFormat)) {
                 try {
-                    listener = new SarifLogger(out, OutputStreamOptions.CLOSE);
+                    listener = new SarifLogger(
+                            out,
+                            com.puppycrawl.tools.checkstyle.AbstractAutomaticBean.OutputStreamOptions.valueOf(
+                                    OutputStreamOptions.CLOSE.name()));
                 } catch (IOException e) {
                     throw new MavenReportException("Failed to create SarifLogger", e);
                 }

@@ -813,7 +813,10 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                     OutputStream xmlOut = getOutputStream(outputXmlFile);
                     CompositeAuditListener compoundListener = new CompositeAuditListener();
                     compoundListener.addListener(new XMLLogger(xmlOut, OutputStreamOptions.CLOSE));
-                    compoundListener.addListener(new SarifLogger(out, OutputStreamOptions.CLOSE));
+                    compoundListener.addListener(new SarifLogger(
+                            out,
+                            com.puppycrawl.tools.checkstyle.AbstractAutomaticBean.OutputStreamOptions.valueOf(
+                                    OutputStreamOptions.CLOSE.name())));
                     listener = compoundListener;
                 } catch (IOException e) {
                     throw new MojoExecutionException("Unable to create temporary file", e);
