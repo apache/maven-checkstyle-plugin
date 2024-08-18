@@ -24,7 +24,7 @@ assert new File( basedir, 'target/checkstyle-checker.xml' ).exists();
 assert new File( basedir, 'target/checkstyle-header.txt' ).exists();
 assert new File( basedir, 'target/checkstyle-result.xml' ).exists();
 
-def html = new File( basedir, 'target/site/checkstyle.html' ).text;
+def html = new File( basedir, 'target/reports/checkstyle.html' ).text;
 assert html.contains( '<meta charset="UTF-8" />' );
 
 return true;

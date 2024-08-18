@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.puppycrawl.tools.checkstyle.AbstractAutomaticBean;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.SarifLogger;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
@@ -813,7 +814,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                     OutputStream xmlOut = getOutputStream(outputXmlFile);
                     CompositeAuditListener compoundListener = new CompositeAuditListener();
                     compoundListener.addListener(new XMLLogger(xmlOut, OutputStreamOptions.CLOSE));
-                    compoundListener.addListener(new SarifLogger(out, OutputStreamOptions.CLOSE));
+                    compoundListener.addListener(new SarifLogger(
+                            out, AbstractAutomaticBean.OutputStreamOptions.valueOf(OutputStreamOptions.CLOSE.name())));
                     listener = compoundListener;
                 } catch (IOException e) {
                     throw new MojoExecutionException("Unable to create temporary file", e);
