@@ -79,7 +79,7 @@ under the License.
     <checkstyleVersion>9.3</checkstyleVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <doxiaVersion>2.0.0-M12</doxiaVersion>
-    <doxiaSitetoolsVersion>2.0.0-M19</doxiaSitetoolsVersion>
+    <doxiaSitetoolsVersion>2.0.0</doxiaSitetoolsVersion>
     <sitePluginVersion>3.20.0</sitePluginVersion>
     <jxrPluginVersion>3.4.0</jxrPluginVersion>
     <project.build.outputTimestamp>2024-08-19T15:41:42Z</project.build.outputTimestamp>
