@@ -44,6 +44,11 @@
                                 <property name="charset" value="UTF-8" />
                                 <property name="severity" value="error" />
 
+                                <!-- Sizes -->
+                                <module name="LineLength">
+                                    <property name="max" value="120" />
+                                </module>
+
                                 <module name="TreeWalker">
                                     <property name="tabWidth" value="3" />
 
@@ -55,9 +60,7 @@
 
                                     <!-- Annotations -->
                                     <module name="AnnotationUseStyle" />
-                                    <module name="MissingDeprecated">
-                                        <property name="skipNoJavadoc" value="true" />
-                                    </module>
+                                    <module name="MissingDeprecated" />
                                     <module name="MissingOverride" />
                                     <module name="PackageAnnotation" />
 
@@ -133,11 +136,6 @@
 
                                     <!-- Naming -->
                                     <module name="ConstantName" />
-
-                                    <!-- Sizes -->
-                                    <module name="LineLength">
-                                        <property name="max" value="120" />
-                                    </module>
                                 </module>
 
                                 <module name="RegexpSingleline">
@@ -169,8 +167,8 @@
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>8.15</version>
+                            <artifactId>checkstyle-backport-jre8</artifactId>
+                            <version>@checkstyleVersion@</version>
                         </dependency>
                     </dependencies>
                 </plugin>
