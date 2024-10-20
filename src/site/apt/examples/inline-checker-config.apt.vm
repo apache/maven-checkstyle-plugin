@@ -151,7 +151,7 @@ Using a different header
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.15</version>
+            <version>${checkstyleVersion}</version>
           </dependency>
         </dependencies>
       </plugin>

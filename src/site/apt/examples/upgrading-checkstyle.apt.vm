@@ -28,7 +28,7 @@
 Upgrading Checkstyle at Runtime
 
    Maven Checkstyle plugin comes with a default Checkstyle version: for <<<maven-checkstyle-plugin ${project.version}>>>,
-   Checkstyle  ${checkstyleVersion} is used by default.
+   Checkstyle ${checkstyleVersion} is used by default.
 
    Given Checkstyle generally keeps good compatibility between versions, you can override the version used at runtime to
    benefit from {{{https://checkstyle.org/releasenotes.html}Checkstyle latest bugfixes}}:
