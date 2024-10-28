@@ -18,12 +18,10 @@
  */
 package org.apache.maven.plugins.checkstyle.exec;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
@@ -80,9 +78,7 @@ public class CheckstyleExecutorRequest {
 
     private boolean consoleOutput;
 
-    private DefaultLogger defaultLogger;
-
-    private ByteArrayOutputStream stringOutputStream;
+    private AuditListener auditListener;
 
     private String propertiesLocation;
 
@@ -263,22 +259,13 @@ public class CheckstyleExecutorRequest {
         return this;
     }
 
-    public CheckstyleExecutorRequest setConsoleListener(DefaultLogger defaultLogger) {
-        this.defaultLogger = defaultLogger;
+    public CheckstyleExecutorRequest setConsoleListener(AuditListener auditListener) {
+        this.auditListener = auditListener;
         return this;
     }
 
-    public DefaultLogger getConsoleListener() {
-        return this.defaultLogger;
-    }
-
-    public ByteArrayOutputStream getStringOutputStream() {
-        return stringOutputStream;
-    }
-
-    public CheckstyleExecutorRequest setStringOutputStream(ByteArrayOutputStream stringOutputStream) {
-        this.stringOutputStream = stringOutputStream;
-        return this;
+    public AuditListener getConsoleListener() {
+        return this.auditListener;
     }
 
     public String getConfigLocation() {

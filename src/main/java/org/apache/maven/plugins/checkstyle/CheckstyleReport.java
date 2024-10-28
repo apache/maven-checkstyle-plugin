@@ -58,7 +58,6 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
                 .setSourceDirectories(getSourceDirectories())
                 .setResources(resources)
                 .setTestResources(testResources)
-                .setStringOutputStream(stringOutputStream)
                 .setSuppressionsLocation(suppressionsLocation)
                 .setTestSourceDirectories(getTestSourceDirectories())
                 .setPropertyExpansion(propertyExpansion)

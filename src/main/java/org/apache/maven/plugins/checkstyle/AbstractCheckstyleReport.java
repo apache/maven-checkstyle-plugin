@@ -661,12 +661,11 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
      * @return The console listener.
      * @throws MavenReportException If something goes wrong.
      */
-    protected DefaultLogger getConsoleListener() throws MavenReportException {
-        DefaultLogger consoleListener;
+    protected AuditListener getConsoleListener() throws MavenReportException {
+        AuditListener consoleListener;
 
         if (useFile == null) {
-            stringOutputStream = new ByteArrayOutputStream();
-            consoleListener = new DefaultLogger(stringOutputStream, OutputStreamOptions.NONE);
+            consoleListener = new MavenConsoleLogger(getLog());
         } else {
             OutputStream out = getOutputStream(useFile);
 

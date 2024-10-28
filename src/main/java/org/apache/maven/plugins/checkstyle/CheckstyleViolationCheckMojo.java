@@ -19,7 +19,6 @@
 package org.apache.maven.plugins.checkstyle;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -486,7 +485,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     @Parameter(property = "checkstyle.excludeGeneratedSources", defaultValue = "false")
     private boolean excludeGeneratedSources;
 
-    private ByteArrayOutputStream stringOutputStream;
+    private AuditListener auditListener;
 
     private File outputXmlFile;
 
@@ -541,7 +540,6 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                         .setSourceDirectories(getSourceDirectories())
                         .setResources(resources)
                         .setTestResources(testResources)
-                        .setStringOutputStream(stringOutputStream)
                         .setSuppressionsLocation(suppressionsLocation)
                         .setTestSourceDirectories(getTestSourceDirectories())
                         .setConfigLocation(effectiveConfigLocation)
@@ -747,12 +745,11 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         return false;
     }
 
-    private DefaultLogger getConsoleListener() throws MojoExecutionException {
-        DefaultLogger consoleListener;
+    private AuditListener getConsoleListener() throws MojoExecutionException {
+        AuditListener consoleListener;
 
         if (useFile == null) {
-            stringOutputStream = new ByteArrayOutputStream();
-            consoleListener = new DefaultLogger(stringOutputStream, OutputStreamOptions.NONE);
+            consoleListener = new MavenConsoleLogger(getLog());
         } else {
             OutputStream out = getOutputStream(useFile);
 

@@ -183,14 +183,6 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
 
         checker.destroy();
 
-        if (request.getStringOutputStream() != null) {
-            String message = request.getStringOutputStream().toString().trim();
-
-            if (message.length() > 0) {
-                getLogger().info(message);
-            }
-        }
-
         if (nbErrors > 0) {
             StringBuilder message = new StringBuilder("There ");
             if (nbErrors == 1) {
