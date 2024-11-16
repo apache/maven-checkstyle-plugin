@@ -51,12 +51,13 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceCreationException;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.codehaus.plexus.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Olivier Lamy
@@ -64,7 +65,8 @@ import org.codehaus.plexus.util.FileUtils;
  *
  */
 @Component(role = CheckstyleExecutor.class, hint = "default", instantiationStrategy = "per-lookup")
-public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements CheckstyleExecutor {
+public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCheckstyleExecutor.class);
     @Requirement(hint = "default")
     private ResourceManager locator;
 
@@ -73,8 +75,8 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
 
     public CheckstyleResults executeCheckstyle(CheckstyleExecutorRequest request)
             throws CheckstyleExecutorException, CheckstyleException {
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("executeCheckstyle start headerLocation : " + request.getHeaderLocation());
+        if (logger.isDebugEnabled()) {
+            logger.debug("executeCheckstyle start headerLocation : " + request.getHeaderLocation());
         }
 
         MavenProject project = request.getProject();
@@ -212,7 +214,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                 // work regardless of config), but should record this information
                 throw new CheckstyleExecutorException(message.toString());
             } else {
-                getLogger().info(message.toString());
+                logger.info(message.toString());
             }
         }
 
@@ -247,8 +249,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     File resourcesDirectory = new File(resource.getDirectory());
                     if (resourcesDirectory.exists() && resourcesDirectory.isDirectory()) {
                         sinkListener.addSourceDirectory(resourcesDirectory);
-                        getLogger()
-                                .debug("Added '" + resourcesDirectory.getAbsolutePath() + "' as a source directory.");
+                        logger.debug("Added '" + resourcesDirectory.getAbsolutePath() + "' as a source directory.");
                     }
                 }
             }
@@ -277,8 +278,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     : System.getProperty("file.encoding", "UTF-8");
 
             if (StringUtils.isEmpty(request.getEncoding())) {
-                getLogger()
-                        .warn("File encoding has not been set, using platform encoding " + effectiveEncoding
+                logger.warn("File encoding has not been set, using platform encoding " + effectiveEncoding
                                 + ", i.e. build is platform dependent!");
             }
 
@@ -289,7 +289,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     addAttributeIfNotExists((DefaultConfiguration) config, "charset", effectiveEncoding);
                     addAttributeIfNotExists((DefaultConfiguration) config, "cacheFile", request.getCacheFile());
                 } else {
-                    getLogger().warn("Failed to configure file encoding on module " + config);
+                    logger.warn("Failed to configure file encoding on module " + config);
                 }
             }
             return config;
@@ -359,8 +359,8 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
         Properties p = new Properties();
         try {
             if (request.getPropertiesLocation() != null) {
-                if (getLogger().isDebugEnabled()) {
-                    getLogger().debug("request.getPropertiesLocation() " + request.getPropertiesLocation());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("request.getPropertiesLocation() " + request.getPropertiesLocation());
                 }
 
                 File propertiesFile =
@@ -390,8 +390,8 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     headerLocation = "config/maven-header.txt";
                 }
             }
-            if (getLogger().isDebugEnabled()) {
-                getLogger().debug("headerLocation " + headerLocation);
+            if (logger.isDebugEnabled()) {
+                logger.debug("headerLocation " + headerLocation);
             }
 
             if (headerLocation != null && !headerLocation.isEmpty()) {
@@ -402,8 +402,8 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                         p.setProperty("checkstyle.header.file", headerFile.getAbsolutePath());
                     }
                 } catch (FileResourceCreationException | ResourceNotFoundException e) {
-                    getLogger().debug("Unable to process header location: " + headerLocation);
-                    getLogger().debug("Checkstyle will throw exception if ${checkstyle.header.file} is used");
+                    logger.debug("Unable to process header location: " + headerLocation);
+                    logger.debug("Checkstyle will throw exception if ${checkstyle.header.file} is used");
                 }
             }
 
@@ -477,7 +477,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     request.getTestSourceDirectories());
         }
 
-        getLogger().debug("Added " + files.size() + " files to process.");
+        logger.debug("Added " + files.size() + " files to process.");
 
         return new ArrayList<>(files);
     }
@@ -496,8 +496,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                     final List<File> sourceFiles =
                             FileUtils.getFiles(sourceDirectory, request.getIncludes(), request.getExcludes());
                     files.addAll(sourceFiles);
-                    getLogger()
-                            .debug("Added " + sourceFiles.size() + " source files found in '"
+                    logger.debug("Added " + sourceFiles.size() + " source files found in '"
                                     + sourceDirectory.getAbsolutePath() + "'.");
                 }
             }
@@ -510,8 +509,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
                             FileUtils.getFiles(testSourceDirectory, request.getIncludes(), request.getExcludes());
 
                     files.addAll(testSourceFiles);
-                    getLogger()
-                            .debug("Added " + testSourceFiles.size() + " test source files found in '"
+                    logger.debug("Added " + testSourceFiles.size() + " test source files found in '"
                                     + testSourceDirectory.getAbsolutePath() + "'.");
                 }
             }
@@ -520,13 +518,13 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
         if (resources != null && request.isIncludeResources()) {
             addResourceFilesToProcess(request, resources, files);
         } else {
-            getLogger().debug("No resources found in this project.");
+            logger.debug("No resources found in this project.");
         }
 
         if (testResources != null && request.isIncludeTestResources()) {
             addResourceFilesToProcess(request, testResources, files);
         } else {
-            getLogger().debug("No test resources found in this project.");
+            logger.debug("No test resources found in this project.");
         }
     }
 
@@ -560,12 +558,10 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
 
                     List<File> resourceFiles = FileUtils.getFiles(resourcesDirectory, includes, excludes);
                     files.addAll(resourceFiles);
-                    getLogger()
-                            .debug("Added " + resourceFiles.size() + " resource files found in '"
+                    logger.debug("Added " + resourceFiles.size() + " resource files found in '"
                                     + resourcesDirectory.getAbsolutePath() + "'.");
                 } else {
-                    getLogger()
-                            .debug("The resources directory '" + resourcesDirectory.getAbsolutePath()
+                    logger.debug("The resources directory '" + resourcesDirectory.getAbsolutePath()
                                     + "' does not exist or is not a directory.");
                 }
             }
@@ -604,8 +600,8 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
 
     private String getConfigFile(CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
         try {
-            if (getLogger().isDebugEnabled()) {
-                getLogger().debug("request.getConfigLocation() " + request.getConfigLocation());
+            if (logger.isDebugEnabled()) {
+                logger.debug("request.getConfigLocation() " + request.getConfigLocation());
             }
 
             File configFile = locator.getResourceAsFile(request.getConfigLocation(), "checkstyle-checker.xml");
