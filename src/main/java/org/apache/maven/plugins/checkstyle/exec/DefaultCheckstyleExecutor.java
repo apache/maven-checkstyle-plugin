@@ -65,9 +65,9 @@ import org.codehaus.plexus.util.FileUtils;
  */
 @Named
 public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements CheckstyleExecutor {
-    private ResourceManager locator;
+    private final ResourceManager locator;
 
-    private ResourceManager licenseLocator;
+    private final ResourceManager licenseLocator;
 
     @Inject
     public DefaultCheckstyleExecutor(
