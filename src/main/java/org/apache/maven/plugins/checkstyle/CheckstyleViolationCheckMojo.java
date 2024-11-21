@@ -485,11 +485,10 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     @Parameter(property = "checkstyle.excludeGeneratedSources", defaultValue = "false")
     private boolean excludeGeneratedSources;
 
-    private AuditListener auditListener;
-
     private File outputXmlFile;
 
     /** {@inheritDoc} */
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
         checkDeprecatedParameterUsage(testSourceDirectory, "testSourceDirectory", "testSourceDirectories");
