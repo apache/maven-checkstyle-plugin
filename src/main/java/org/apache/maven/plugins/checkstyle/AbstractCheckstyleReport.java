@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import javax.inject.Named;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -452,7 +454,8 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
     protected ByteArrayOutputStream stringOutputStream;
 
-    public AbstractCheckstyleReport(ResourceManager locator, CheckstyleExecutor checkstyleExecutor, I18N i18n) {
+    public AbstractCheckstyleReport(
+            ResourceManager locator, @Named("default") CheckstyleExecutor checkstyleExecutor, I18N i18n) {
         this.locator = locator;
         this.checkstyleExecutor = checkstyleExecutor;
         this.i18n = i18n;

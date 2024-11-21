@@ -488,7 +488,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * @since 2.5
      */
-    protected CheckstyleExecutor checkstyleExecutor;
+    protected final CheckstyleExecutor checkstyleExecutor;
 
     @Inject
     public CheckstyleViolationCheckMojo(final @Named("default") CheckstyleExecutor checkstyleExecutor) {

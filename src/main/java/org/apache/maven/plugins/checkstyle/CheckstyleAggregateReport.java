@@ -19,6 +19,7 @@
 package org.apache.maven.plugins.checkstyle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -32,8 +33,6 @@ import org.codehaus.plexus.resource.ResourceManager;
  * A reporting task that performs Checkstyle analysis and generates an aggregate
  * HTML report on the violations that Checkstyle finds in a multi-module reactor
  * build.
- *
- *
  */
 @Mojo(
         name = "checkstyle-aggregate",
@@ -43,7 +42,8 @@ import org.codehaus.plexus.resource.ResourceManager;
 public class CheckstyleAggregateReport extends AbstractCheckstyleReport {
 
     @Inject
-    public CheckstyleAggregateReport(ResourceManager locator, CheckstyleExecutor checkstyleExecutor, I18N i18n) {
+    public CheckstyleAggregateReport(
+            ResourceManager locator, @Named("default") CheckstyleExecutor checkstyleExecutor, I18N i18n) {
         super(locator, checkstyleExecutor, i18n);
     }
 

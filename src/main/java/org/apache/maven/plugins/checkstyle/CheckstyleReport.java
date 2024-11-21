@@ -19,6 +19,7 @@
 package org.apache.maven.plugins.checkstyle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import java.io.File;
 import java.util.List;
@@ -45,7 +46,8 @@ import org.codehaus.plexus.resource.ResourceManager;
 public class CheckstyleReport extends AbstractCheckstyleReport {
 
     @Inject
-    public CheckstyleReport(ResourceManager locator, CheckstyleExecutor checkstyleExecutor, I18N i18n) {
+    public CheckstyleReport(
+            ResourceManager locator, @Named("default") CheckstyleExecutor checkstyleExecutor, I18N i18n) {
         super(locator, checkstyleExecutor, i18n);
     }
 

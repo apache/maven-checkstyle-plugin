@@ -46,6 +46,7 @@ public class LicenseResourceManager extends DefaultResourceManager {
     @Inject
     public LicenseResourceManager(Map<String, ResourceLoader> resourceLoaders) {
         super(resourceLoaders);
+        this.resourceLoaders = resourceLoaders;
     }
 
     @Override
