@@ -32,12 +32,11 @@ import junit.framework.TestCase;
  *
  */
 public class CheckstyleReportListenerTest extends TestCase {
-    private Map<SeverityLevel, CheckstyleCheckerListener> listenerMap;
+    private Map<SeverityLevel, CheckstyleCheckerListener> listenerMap = new HashMap<>();
 
     /** {@inheritDoc} */
+    @Override
     protected void setUp() throws Exception {
-        listenerMap = new HashMap<>();
-
         CheckstyleCheckerListener listener = new CheckstyleCheckerListener(new File("/source/path"));
         listener.setSeverityLevelFilter(SeverityLevel.INFO);
         listenerMap.put(listener.getSeverityLevelFilter(), listener);
