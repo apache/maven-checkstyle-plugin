@@ -136,6 +136,7 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         }
 
         File outputDir = mojo.getReportOutputDirectory();
+
         File useFile = (File) getVariableValueFromObject(mojo, "useFile");
         if (useFile != null) {
             assertTrue("Test useFile exists", useFile.exists());
