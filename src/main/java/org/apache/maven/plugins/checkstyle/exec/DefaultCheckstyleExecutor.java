@@ -64,7 +64,7 @@ import org.eclipse.sisu.Typed;
  * @author Olivier Lamy
  * @since 2.5
  */
-@Named("default")
+@Named
 @Typed(CheckstyleExecutor.class)
 public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements CheckstyleExecutor {
     private final ResourceManager locator;
