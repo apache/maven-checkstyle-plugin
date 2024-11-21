@@ -18,10 +18,15 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import javax.inject.Inject;
+
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
 import org.apache.maven.reporting.MavenReportException;
+import org.codehaus.plexus.i18n.I18N;
+import org.codehaus.plexus.resource.ResourceManager;
 
 /**
  * A reporting task that performs Checkstyle analysis and generates an aggregate
@@ -36,9 +41,16 @@ import org.apache.maven.reporting.MavenReportException;
         requiresDependencyResolution = ResolutionScope.COMPILE,
         threadSafe = true)
 public class CheckstyleAggregateReport extends AbstractCheckstyleReport {
+
+    @Inject
+    public CheckstyleAggregateReport(ResourceManager locator, CheckstyleExecutor checkstyleExecutor, I18N i18n) {
+        super(locator, checkstyleExecutor, i18n);
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected CheckstyleExecutorRequest createRequest() throws MavenReportException {
         CheckstyleExecutorRequest request = new CheckstyleExecutorRequest();
         request.setAggregate(true)
@@ -70,11 +82,13 @@ public class CheckstyleAggregateReport extends AbstractCheckstyleReport {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getOutputName() {
         return "checkstyle-aggregate";
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean canGenerateReport() {
         // TODO: would be good to scan the files here
         return !skip && project.isExecutionRoot() && reactorProjects.size() > 1;
