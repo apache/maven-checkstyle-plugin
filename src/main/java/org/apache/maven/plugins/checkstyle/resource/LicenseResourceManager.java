@@ -41,7 +41,7 @@ public class LicenseResourceManager extends DefaultResourceManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LicenseResourceManager.class);
 
-    private Map<String, ResourceLoader> resourceLoaders;
+    private final Map<String, ResourceLoader> resourceLoaders;
 
     @Inject
     public LicenseResourceManager(Map<String, ResourceLoader> resourceLoaders) {

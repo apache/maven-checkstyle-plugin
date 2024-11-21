@@ -445,7 +445,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * @since 2.5
      */
-    protected CheckstyleExecutor checkstyleExecutor;
+    protected final CheckstyleExecutor checkstyleExecutor;
 
     /**
      * Internationalization component
@@ -455,7 +455,9 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     protected ByteArrayOutputStream stringOutputStream;
 
     public AbstractCheckstyleReport(
-            ResourceManager locator, @Named("default") CheckstyleExecutor checkstyleExecutor, I18N i18n) {
+            final ResourceManager locator,
+            final @Named("default") CheckstyleExecutor checkstyleExecutor,
+            final I18N i18n) {
         this.locator = locator;
         this.checkstyleExecutor = checkstyleExecutor;
         this.i18n = i18n;

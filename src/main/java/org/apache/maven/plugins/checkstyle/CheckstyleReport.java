@@ -47,7 +47,9 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
 
     @Inject
     public CheckstyleReport(
-            ResourceManager locator, @Named("default") CheckstyleExecutor checkstyleExecutor, I18N i18n) {
+            final ResourceManager locator,
+            final @Named("default") CheckstyleExecutor checkstyleExecutor,
+            final I18N i18n) {
         super(locator, checkstyleExecutor, i18n);
     }
 

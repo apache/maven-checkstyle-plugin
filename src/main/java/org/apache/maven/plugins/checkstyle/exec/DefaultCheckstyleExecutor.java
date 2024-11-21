@@ -63,7 +63,7 @@ import org.codehaus.plexus.util.FileUtils;
  * @author Olivier Lamy
  * @since 2.5
  */
-@Named
+@Named("default")
 public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements CheckstyleExecutor {
     private final ResourceManager locator;
 

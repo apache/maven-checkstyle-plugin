@@ -36,7 +36,8 @@ import org.codehaus.plexus.util.FileUtils;
 public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     public void testNoSource() throws Exception {
         File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
-        assertFalse(FileUtils.fileExists(generatedReport.getAbsolutePath()));
+        String absolutePath = generatedReport.getAbsolutePath();
+        assertFalse(absolutePath + " exists", FileUtils.fileExists(absolutePath));
     }
 
     public void testMinConfiguration() throws Exception {
