@@ -58,12 +58,14 @@ import org.codehaus.plexus.resource.loader.FileResourceCreationException;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.sisu.Typed;
 
 /**
  * @author Olivier Lamy
  * @since 2.5
  */
 @Named("default")
+@Typed(CheckstyleExecutor.class)
 public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements CheckstyleExecutor {
     private final ResourceManager locator;
 
