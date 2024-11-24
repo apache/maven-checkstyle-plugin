@@ -44,7 +44,6 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorException;
@@ -58,12 +57,9 @@ import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.PathTool;
 
 /**
  * Base abstract class for Checkstyle reports.
- *
- *
  */
 public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     protected static final String JAVA_FILES = "**\\/*.java";
@@ -441,31 +437,35 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     @Parameter(property = "checkstyle.excludeGeneratedSources", defaultValue = "false")
     private boolean excludeGeneratedSources;
 
-    /**
-     */
-    @Component
     protected ResourceManager locator;
 
     /**
      * @since 2.5
      */
-    @Component(role = CheckstyleExecutor.class, hint = "default")
-    protected CheckstyleExecutor checkstyleExecutor;
+    protected final CheckstyleExecutor checkstyleExecutor;
 
     /**
      * Internationalization component
      */
-    @Component
     private I18N i18n;
 
     protected ByteArrayOutputStream stringOutputStream;
 
+    public AbstractCheckstyleReport(
+            final ResourceManager locator, final CheckstyleExecutor checkstyleExecutor, final I18N i18n) {
+        this.locator = locator;
+        this.checkstyleExecutor = checkstyleExecutor;
+        this.i18n = i18n;
+    }
+
     /** {@inheritDoc} */
+    @Override
     public String getName(Locale locale) {
         return getI18nString(locale, "name");
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getDescription(Locale locale) {
         return getI18nString(locale, "description");
     }
@@ -479,6 +479,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
     }
 
+    @Override
     protected MavenProject getProject() {
         return project;
     }
@@ -488,6 +489,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void executeReport(Locale locale) throws MavenReportException {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
         checkDeprecatedParameterUsage(testSourceDirectory, "testSourceDirectory", "testSourceDirectories");
@@ -673,16 +675,6 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         }
 
         return consoleListener;
-    }
-
-    private String determineRelativePath(File location) {
-        String relativePath =
-                PathTool.getRelativePath(getReportOutputDirectory().getAbsolutePath(), location.getAbsolutePath());
-        if (relativePath == null || relativePath.trim().isEmpty()) {
-            relativePath = ".";
-        }
-
-        return relativePath + "/" + location.getName();
     }
 
     protected List<File> getSourceDirectories() {

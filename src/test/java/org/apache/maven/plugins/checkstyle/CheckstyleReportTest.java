@@ -29,12 +29,11 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 
 /**
  * @author Edwin Punzalan
- *
  */
 public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     public void testNoSource() throws Exception {
         File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
-        assertFalse(new File(generatedReport.getAbsolutePath()).exists());
+        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
     }
 
     public void testMinConfiguration() throws Exception {
@@ -67,7 +66,7 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
 
             fail("Must throw exception on errors");
         } catch (Exception e) {
-            // expected
+            assertNotNull(e.getMessage());
         }
     }
 

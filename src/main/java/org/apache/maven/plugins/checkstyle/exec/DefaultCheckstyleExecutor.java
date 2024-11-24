@@ -18,6 +18,9 @@
  */
 package org.apache.maven.plugins.checkstyle.exec;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,28 +52,33 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceCreationException;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.sisu.Typed;
 
 /**
  * @author Olivier Lamy
  * @since 2.5
- *
  */
-@Component(role = CheckstyleExecutor.class, hint = "default", instantiationStrategy = "per-lookup")
+@Named
+@Typed(CheckstyleExecutor.class)
 public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements CheckstyleExecutor {
-    @Requirement(hint = "default")
-    private ResourceManager locator;
+    private final ResourceManager locator;
 
-    @Requirement(hint = "license")
-    private ResourceManager licenseLocator;
+    private final ResourceManager licenseLocator;
 
+    @Inject
+    public DefaultCheckstyleExecutor(
+            final @Named("default") ResourceManager locator, final @Named("license") ResourceManager licenseLocator) {
+        this.locator = locator;
+        this.licenseLocator = licenseLocator;
+    }
+
+    @Override
     public CheckstyleResults executeCheckstyle(CheckstyleExecutorRequest request)
             throws CheckstyleExecutorException, CheckstyleException {
         if (getLogger().isDebugEnabled()) {
@@ -255,6 +263,7 @@ public class DefaultCheckstyleExecutor extends AbstractLogEnabled implements Che
         }
     }
 
+    @Override
     public Configuration getConfiguration(CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
         try {
             // Checkstyle will always use the context classloader in order
