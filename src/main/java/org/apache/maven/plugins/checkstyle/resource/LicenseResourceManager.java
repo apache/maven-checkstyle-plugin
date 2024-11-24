@@ -19,14 +19,12 @@
 package org.apache.maven.plugins.checkstyle.resource;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import java.util.Map;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.resource.DefaultResourceManager;
 import org.codehaus.plexus.resource.PlexusResource;
-import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.ResourceLoader;
 import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.codehaus.plexus.resource.loader.ThreadContextClasspathResourceLoader;
@@ -38,17 +36,17 @@ import org.slf4j.LoggerFactory;
  *
  * @since 2.12
  */
-@Component(role = ResourceManager.class, hint = "license", instantiationStrategy = "per-lookup")
+@Named("license")
 public class LicenseResourceManager extends DefaultResourceManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LicenseResourceManager.class);
 
-    @Requirement(role = ResourceLoader.class)
-    private Map<String, ResourceLoader> resourceLoaders;
+    private final Map<String, ResourceLoader> resourceLoaders;
 
     @Inject
     public LicenseResourceManager(Map<String, ResourceLoader> resourceLoaders) {
         super(resourceLoaders);
+        this.resourceLoaders = resourceLoaders;
     }
 
     @Override

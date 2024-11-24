@@ -18,14 +18,20 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import java.io.File;
 import java.util.List;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
 import org.apache.maven.reporting.MavenReportException;
+import org.codehaus.plexus.i18n.I18N;
+import org.codehaus.plexus.resource.ResourceManager;
 
 /**
  * A reporting task that performs Checkstyle analysis and generates an HTML
@@ -38,9 +44,19 @@ import org.apache.maven.reporting.MavenReportException;
  */
 @Mojo(name = "checkstyle", requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true)
 public class CheckstyleReport extends AbstractCheckstyleReport {
+
+    @Inject
+    public CheckstyleReport(
+            final ResourceManager locator,
+            final @Named("default") CheckstyleExecutor checkstyleExecutor,
+            final I18N i18n) {
+        super(locator, checkstyleExecutor, i18n);
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected CheckstyleExecutorRequest createRequest() throws MavenReportException {
         CheckstyleExecutorRequest request = new CheckstyleExecutorRequest();
         request.setConsoleListener(getConsoleListener())
@@ -70,11 +86,13 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getOutputName() {
         return "checkstyle";
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean canGenerateReport() {
         if (skip) {
             return false;

@@ -18,6 +18,9 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,7 +50,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -295,12 +297,6 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     private String inputEncoding;
 
     /**
-     * @since 2.5
-     */
-    @Component(role = CheckstyleExecutor.class, hint = "default")
-    protected CheckstyleExecutor checkstyleExecutor;
-
-    /**
      * Output errors to console.
      */
     @Parameter(property = "checkstyle.consoleOutput", defaultValue = "false")
@@ -486,6 +482,16 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     private boolean excludeGeneratedSources;
 
     private File outputXmlFile;
+
+    /**
+     * @since 2.5
+     */
+    protected final CheckstyleExecutor checkstyleExecutor;
+
+    @Inject
+    public CheckstyleViolationCheckMojo(final @Named("default") CheckstyleExecutor checkstyleExecutor) {
+        this.checkstyleExecutor = checkstyleExecutor;
+    }
 
     /** {@inheritDoc} */
     @Override

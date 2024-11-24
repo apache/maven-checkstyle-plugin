@@ -44,7 +44,6 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorException;
@@ -61,8 +60,6 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Base abstract class for Checkstyle reports.
- *
- *
  */
 public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     protected static final String JAVA_FILES = "**\\/*.java";
@@ -440,24 +437,26 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     @Parameter(property = "checkstyle.excludeGeneratedSources", defaultValue = "false")
     private boolean excludeGeneratedSources;
 
-    /**
-     */
-    @Component
     protected ResourceManager locator;
 
     /**
      * @since 2.5
      */
-    @Component(role = CheckstyleExecutor.class, hint = "default")
-    protected CheckstyleExecutor checkstyleExecutor;
+    protected final CheckstyleExecutor checkstyleExecutor;
 
     /**
      * Internationalization component
      */
-    @Component
     private I18N i18n;
 
     protected ByteArrayOutputStream stringOutputStream;
+
+    public AbstractCheckstyleReport(
+            final ResourceManager locator, final CheckstyleExecutor checkstyleExecutor, final I18N i18n) {
+        this.locator = locator;
+        this.checkstyleExecutor = checkstyleExecutor;
+        this.i18n = i18n;
+    }
 
     /** {@inheritDoc} */
     @Override
