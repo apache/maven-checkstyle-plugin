@@ -58,7 +58,6 @@ import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.PathTool;
 
 /**
  * Base abstract class for Checkstyle reports.
@@ -461,11 +460,13 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     protected ByteArrayOutputStream stringOutputStream;
 
     /** {@inheritDoc} */
+    @Override
     public String getName(Locale locale) {
         return getI18nString(locale, "name");
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getDescription(Locale locale) {
         return getI18nString(locale, "description");
     }
@@ -479,6 +480,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
     }
 
+    @Override
     protected MavenProject getProject() {
         return project;
     }
@@ -488,6 +490,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void executeReport(Locale locale) throws MavenReportException {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
         checkDeprecatedParameterUsage(testSourceDirectory, "testSourceDirectory", "testSourceDirectories");
@@ -673,16 +676,6 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         }
 
         return consoleListener;
-    }
-
-    private String determineRelativePath(File location) {
-        String relativePath =
-                PathTool.getRelativePath(getReportOutputDirectory().getAbsolutePath(), location.getAbsolutePath());
-        if (relativePath == null || relativePath.trim().isEmpty()) {
-            relativePath = ".";
-        }
-
-        return relativePath + "/" + location.getName();
     }
 
     protected List<File> getSourceDirectories() {
