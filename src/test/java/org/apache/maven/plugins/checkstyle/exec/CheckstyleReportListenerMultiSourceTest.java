@@ -28,14 +28,13 @@ import com.puppycrawl.tools.checkstyle.api.Violation;
 import junit.framework.TestCase;
 
 public class CheckstyleReportListenerMultiSourceTest extends TestCase {
-    private Map<SeverityLevel, CheckstyleCheckerListener> listenerMap;
+    private Map<SeverityLevel, CheckstyleCheckerListener> listenerMap = new HashMap<>();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setUp() throws Exception {
-        listenerMap = new HashMap<>();
-
         CheckstyleCheckerListener listener = new CheckstyleCheckerListener(new File("/source/path"));
         listener.addSourceDirectory(new File("/source/path2"));
         listener.setSeverityLevelFilter(SeverityLevel.INFO);
