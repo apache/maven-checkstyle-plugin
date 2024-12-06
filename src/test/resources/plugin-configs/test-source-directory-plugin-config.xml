@@ -27,15 +27,15 @@ under the License.
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <outputDirectory>${basedir}/target/test-harness/checkstyle/no-source</outputDirectory>
+          <outputDirectory>${basedir}/target/test-harness/checkstyle/test-source-directory</outputDirectory>
           <enableRulesSummary>true</enableRulesSummary>
           <enableSeveritySummary>true</enableSeveritySummary>
           <enableFilesSummary>true</enableFilesSummary>
           <includes>**/*.java</includes>
           <configLocation>sun_checks.xml</configLocation>
           <headerLocation>${basedir}/src/test/test-sources/LICENSE.txt</headerLocation>
-          <cacheFile>${basedir}/target/test-harness/checkstyle/no-source/checkstyle-cachefile</cacheFile>
-          <outputFile>${basedir}/target/test-harness/checkstyle/no-source/checkstyle-result.xml</outputFile>
+          <cacheFile>${basedir}/target/test-harness/checkstyle/test-source-directory/checkstyle-cachefile</cacheFile>
+          <outputFile>${basedir}/target/test-harness/checkstyle/test-source-directory/checkstyle-result.xml</outputFile>
           <outputFileFormat>xml</outputFileFormat>
           <failsOnError>false</failsOnError>
           <sourceDirectories>
