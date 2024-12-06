@@ -33,8 +33,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     public void testNoSource() throws Exception {
         File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-        generatedReport.delete();
+        assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
     public void testMinConfiguration() throws Exception {
