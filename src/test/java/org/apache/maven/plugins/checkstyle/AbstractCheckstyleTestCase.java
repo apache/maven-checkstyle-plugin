@@ -140,7 +140,9 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
         File outputDir = mojo.getReportOutputDirectory();
         String filename = mojo.getOutputName() + ".html";
 
-        return new File(outputDir, filename);
+        File file = new File(outputDir, filename);
+
+        return file;
     }
 
     /**

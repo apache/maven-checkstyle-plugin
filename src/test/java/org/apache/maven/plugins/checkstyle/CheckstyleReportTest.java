@@ -34,6 +34,7 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     public void testNoSource() throws Exception {
         File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
         assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+        generatedReport.delete();
     }
 
     public void testMinConfiguration() throws Exception {
@@ -111,8 +112,6 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         if (cacheFile != null) {
             assertTrue("Test cache file exists", new File(cacheFile).exists());
         }
-
-        File outputDir = mojo.getReportOutputDirectory();
 
         File useFile = (File) getVariableValueFromObject(mojo, "useFile");
         if (useFile != null) {
