@@ -127,6 +127,12 @@ under the License.
       <artifactId>org.eclipse.sisu.plexus</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-connector-basic</artifactId>
+      <version>${resolverVersion}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- shared -->
     <dependency>
@@ -294,7 +300,7 @@ under the License.
               </goals>
               <configuration>
                 <failOnWarning>true</failOnWarning>
-                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*</ignoredDependencies>
+                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic</ignoredDependencies>
               </configuration>
             </execution>
           </executions>
