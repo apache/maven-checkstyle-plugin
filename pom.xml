@@ -133,6 +133,12 @@ under the License.
       <version>${resolverVersion}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-transport-wagon</artifactId>
+      <version>${resolverVersion}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- shared -->
     <dependency>
@@ -300,7 +306,7 @@ under the License.
               </goals>
               <configuration>
                 <failOnWarning>true</failOnWarning>
-                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic</ignoredDependencies>
+                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic,org.apache.maven.resolver:maven-resolver-transport-wagon</ignoredDependencies>
               </configuration>
             </execution>
           </executions>
