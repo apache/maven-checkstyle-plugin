@@ -300,6 +300,23 @@ under the License.
             <suppressionsLocation>src/config/checkstyle-suppressions.xml</suppressionsLocation>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.8.1</version>
+          <executions>
+            <execution>
+              <id>analyze</id>
+              <goals>
+                <goal>analyze-only</goal>
+              </goals>
+              <configuration>
+                <failOnWarning>true</failOnWarning>
+                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic,org.apache.maven.resolver:maven-resolver-transport-wagon,org.apache.maven.wagon:wagon-http-lightweight:*</ignoredDependencies>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -385,13 +402,6 @@ under the License.
       <activation>
         <jdk>[9,)</jdk>
       </activation>
-      <dependencies>
-        <dependency>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-          <version>2.3.1</version>
-        </dependency>
-      </dependencies>
       <build>
         <plugins>
           <plugin>
