@@ -18,25 +18,22 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.doxia.tools.SiteTool;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author Edwin Punzalan
- *
  */
 public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
     public void testNoSource() throws Exception {
         File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
-        assertFalse(FileUtils.fileExists(generatedReport.getAbsolutePath()));
+        assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
     public void testMinConfiguration() throws Exception {
@@ -69,7 +66,7 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
 
             fail("Must throw exception on errors");
         } catch (Exception e) {
-            // expected
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -91,26 +88,6 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         generateReport("test-source-directory-plugin-config.xml");
     }
 
-    /**
-     * Read the contents of the specified file object into a string
-     *
-     * @param file the file to be read
-     * @return a String object that contains the contents of the file
-     * @throws java.io.IOException
-     */
-    private String readFile(File file) throws IOException {
-        String strTmp;
-        StringBuilder str = new StringBuilder((int) file.length());
-        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-            while ((strTmp = in.readLine()) != null) {
-                str.append(' ');
-                str.append(strTmp);
-            }
-        }
-
-        return str.toString();
-    }
-
     private void generateReport(String pluginXml) throws Exception {
         File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + pluginXml);
         ResourceBundle bundle =
@@ -124,7 +101,7 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         setVariableValueToObject(mojo, "plugin", descriptorStub);
 
         File generatedReport = generateReport(mojo, pluginXmlFile);
-        assertTrue(FileUtils.fileExists(generatedReport.getAbsolutePath()));
+        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
 
         File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
         assertNotNull("Test output file", outputFile);
@@ -135,14 +112,12 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
             assertTrue("Test cache file exists", new File(cacheFile).exists());
         }
 
-        File outputDir = mojo.getReportOutputDirectory();
-
         File useFile = (File) getVariableValueFromObject(mojo, "useFile");
         if (useFile != null) {
             assertTrue("Test useFile exists", useFile.exists());
         }
 
-        String str = readFile(generatedReport);
+        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
 
         boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
         Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");

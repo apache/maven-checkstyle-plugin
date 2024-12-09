@@ -18,23 +18,11 @@
  */
 package org.apache.maven.plugins.checkstyle.exec;
 
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
-/**
- * @author Olivier Lamy
- * @since 2.5
- */
-public interface CheckstyleExecutor {
-
-    /**
-     * @param request {@link CheckstyleExecutorRequest}
-     * @return {@link CheckstyleResults}
-     * @throws CheckstyleExecutorException in case of an error during plugin execution
-     * @throws CheckstyleException in case of an error raised by Checkstyle
-     */
-    CheckstyleResults executeCheckstyle(CheckstyleExecutorRequest request)
-            throws CheckstyleExecutorException, CheckstyleException;
-
-    Configuration getConfiguration(CheckstyleExecutorRequest request) throws CheckstyleExecutorException;
+public class CheckstyleExecutorTest extends AbstractMojoTestCase {
+    public void testDefaultConfig() throws Exception {
+        CheckstyleExecutor executor = (CheckstyleExecutor) lookup(CheckstyleExecutor.class);
+        assertNotNull("project null.", executor);
+    }
 }

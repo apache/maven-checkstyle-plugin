@@ -40,8 +40,6 @@ import org.codehaus.plexus.i18n.I18N;
 
 /**
  * Generate a report based on CheckstyleResults.
- *
- *
  */
 public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     private static final int NO_TEXT = 0;
@@ -120,6 +118,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
     }
 
+    @Override
     protected void renderBody() {
         startSection(getTitle());
 
@@ -150,31 +149,31 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     }
 
     /**
-     * Get the value of the specified attribute from the Checkstyle configuration.
+     * Get the value of the specified property from the Checkstyle configuration.
      * If parentConfigurations is non-null and non-empty, the parent
-     * configurations are searched if the attribute cannot be found in the
-     * current configuration. If the attribute is still not found, the
+     * configurations are searched if the property cannot be found in the
+     * current configuration. If the property is still not found, the
      * specified default value will be returned.
      *
-     * @param config The current Checkstyle configuration
-     * @param parentConfiguration The configuration of the parent of the current configuration
-     * @param attributeName The name of the attribute
-     * @param defaultValue The default value to use if the attribute cannot be found in any configuration
-     * @return The value of the specified attribute
+     * @param config the current Checkstyle configuration
+     * @param parentConfiguration the configuration of the parent of the current configuration
+     * @param propertyName the name of the property
+     * @param defaultValue the default value to use if the property cannot be found in any configuration
+     * @return the value of the specified property
      */
-    private String getConfigAttribute(
+    private String getConfigProperty(
             Configuration config,
             ChainedItem<Configuration> parentConfiguration,
-            String attributeName,
+            String propertyName,
             String defaultValue) {
         String ret;
         try {
-            ret = config.getAttribute(attributeName);
+            ret = config.getProperty(propertyName);
         } catch (CheckstyleException e) {
-            // Try to find the attribute in a parent, if there are any
+            // Try to find the property in a parent, if there are any
             if (parentConfiguration != null) {
-                ret = getConfigAttribute(
-                        parentConfiguration.value, parentConfiguration.parent, attributeName, defaultValue);
+                ret = getConfigProperty(
+                        parentConfiguration.value, parentConfiguration.parent, propertyName, defaultValue);
             } else {
                 ret = defaultValue;
             }
@@ -185,7 +184,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     /**
      * Create the rules summary section of the report.
      *
-     * @param results The results to summarize
+     * @param results the results to summarize
      */
     private void renderRulesSummarySection() {
         if (!enableRulesSummary) {
@@ -256,16 +255,16 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             sink.text(ruleName);
         }
 
-        List<String> attribnames = new ArrayList<>(Arrays.asList(checkerConfig.getAttributeNames()));
-        attribnames.remove("severity"); // special value (deserves unique column)
-        if (!attribnames.isEmpty()) {
+        List<String> propertyNames = new ArrayList<>(Arrays.asList(checkerConfig.getPropertyNames()));
+        propertyNames.remove("severity"); // special value (deserves unique column)
+        if (!propertyNames.isEmpty()) {
             sink.list();
-            for (String name : attribnames) {
+            for (String name : propertyNames) {
                 sink.listItem();
 
                 sink.text(name);
 
-                String value = getConfigAttribute(checkerConfig, null, name, "");
+                String value = getConfigProperty(checkerConfig, null, name, "");
                 // special case, Header.header and RegexpHeader.header
                 if ("header".equals(name) && ("Header".equals(ruleName) || "RegexpHeader".equals(ruleName))) {
                     String[] lines = StringUtils.split(value, "\\n");
@@ -316,7 +315,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         sink.tableCell();
         // Grab the severity from the rule configuration, this time use error as default value
         // Also pass along all parent configurations, so that we can try to find the severity there
-        String severity = getConfigAttribute(checkerConfig, parentConfiguration, "severity", "error");
+        String severity = getConfigProperty(checkerConfig, parentConfiguration, "severity", "error");
         iconSeverity(severity, TEXT_SIMPLE);
         sink.tableCell_();
 
@@ -626,11 +625,11 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
                 // special sub-case: TreeWalker is the parent of multiple rules, not an effective rule
                 sortConfiguration(result, childConfig, new ChainedItem<>(config, parent), results);
             } else {
-                String fixedmessage = getConfigAttribute(childConfig, null, "message", null);
+                String fixedmessage = getConfigProperty(childConfig, null, "message", null);
                 // Grab the severity from the rule configuration. Do not set default value here as
                 // it breaks our rule aggregate section entirely.  The counts are off but this is
                 // not appropriate fix location per MCHECKSTYLE-365.
-                String configSeverity = getConfigAttribute(childConfig, null, "severity", null);
+                String configSeverity = getConfigProperty(childConfig, null, "severity", null);
 
                 // count rule violations
                 long violations = 0;
@@ -674,6 +673,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             this.count = count;
         }
 
+        @Override
         public int compareTo(ConfReference o) {
             int compare = category.compareTo(o.category);
             if (compare == 0) {

@@ -34,17 +34,7 @@ import junit.framework.TestCase;
  *
  */
 public class CheckstyleResultsTest extends TestCase {
-    private CheckstyleResults results;
-
-    /** {@inheritDoc} */
-    protected void setUp() throws Exception {
-        results = new CheckstyleResults();
-    }
-
-    /** {@inheritDoc} */
-    protected void tearDown() throws Exception {
-        results = null;
-    }
+    private CheckstyleResults results = new CheckstyleResults();
 
     public void testEmptyResults() {
         assertEquals("test total files", 0, results.getFiles().size());

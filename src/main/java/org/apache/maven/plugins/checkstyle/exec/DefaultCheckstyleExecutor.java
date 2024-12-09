@@ -18,6 +18,9 @@
  */
 package org.apache.maven.plugins.checkstyle.exec;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,24 +59,31 @@ import org.codehaus.plexus.resource.loader.FileResourceCreationException;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
 import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.sisu.Typed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Olivier Lamy
  * @since 2.5
- *
  */
-@Component(role = CheckstyleExecutor.class, hint = "default", instantiationStrategy = "per-lookup")
-public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
+@Named
+@Typed(CheckstyleExecutor.class)
+public class DefaultCheckstyleExecutor  implements CheckstyleExecutor {
     private static final Logger logger = LoggerFactory.getLogger(DefaultCheckstyleExecutor.class);
 
-    @Requirement(hint = "default")
-    private ResourceManager locator;
+  private final ResourceManager locator;
 
-    @Requirement(hint = "license")
-    private ResourceManager licenseLocator;
+    private final ResourceManager licenseLocator;
 
+    @Inject
+    public DefaultCheckstyleExecutor(
+            final @Named("default") ResourceManager locator, final @Named("license") ResourceManager licenseLocator) {
+        this.locator = locator;
+        this.licenseLocator = licenseLocator;
+    }
+
+    @Override
     public CheckstyleResults executeCheckstyle(CheckstyleExecutorRequest request)
             throws CheckstyleExecutorException, CheckstyleException {
         if (logger.isDebugEnabled()) {
@@ -257,6 +267,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         }
     }
 
+    @Override
     public Configuration getConfiguration(CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
         try {
             // Checkstyle will always use the context classloader in order

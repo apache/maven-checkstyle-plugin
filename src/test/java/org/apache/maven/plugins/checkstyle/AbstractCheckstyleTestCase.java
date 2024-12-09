@@ -92,7 +92,7 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
      * Generate the report and return the generated file
      *
      * @param goal the mojo goal.
-     * @param pluginXml the name of the xml file in "src/test/resources/plugin-configs/".
+     * @param pluginXml the name of the XML file in "src/test/resources/plugin-configs/"
      * @return the generated HTML file
      * @throws Exception if any
      */
@@ -140,7 +140,9 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
         File outputDir = mojo.getReportOutputDirectory();
         String filename = mojo.getOutputName() + ".html";
 
-        return new File(outputDir, filename);
+        File file = new File(outputDir, filename);
+
+        return file;
     }
 
     /**
