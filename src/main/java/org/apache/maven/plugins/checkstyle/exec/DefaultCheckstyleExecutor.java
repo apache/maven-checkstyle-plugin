@@ -70,9 +70,10 @@ import org.slf4j.LoggerFactory;
 @Named
 @Typed(CheckstyleExecutor.class)
 public class DefaultCheckstyleExecutor  implements CheckstyleExecutor {
+
     private static final Logger logger = LoggerFactory.getLogger(DefaultCheckstyleExecutor.class);
 
-  private final ResourceManager locator;
+    private final ResourceManager locator;
 
     private final ResourceManager licenseLocator;
 
