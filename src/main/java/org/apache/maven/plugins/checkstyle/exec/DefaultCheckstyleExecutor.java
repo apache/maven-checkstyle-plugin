@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  */
 @Component(role = CheckstyleExecutor.class, hint = "default", instantiationStrategy = "per-lookup")
 public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCheckstyleExecutor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCheckstyleExecutor.class);
 
     @Requirement(hint = "default")
     private ResourceManager locator;
@@ -76,8 +76,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
     public CheckstyleResults executeCheckstyle(CheckstyleExecutorRequest request)
             throws CheckstyleExecutorException, CheckstyleException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("executeCheckstyle start headerLocation : " + request.getHeaderLocation());
+        if (logger.isDebugEnabled()) {
+            logger.debug("executeCheckstyle start headerLocation : " + request.getHeaderLocation());
         }
 
         MavenProject project = request.getProject();
@@ -215,7 +215,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                 // work regardless of config), but should record this information
                 throw new CheckstyleExecutorException(message.toString());
             } else {
-                LOGGER.info(message.toString());
+                logger.info(message.toString());
             }
         }
 
@@ -250,7 +250,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     File resourcesDirectory = new File(resource.getDirectory());
                     if (resourcesDirectory.exists() && resourcesDirectory.isDirectory()) {
                         sinkListener.addSourceDirectory(resourcesDirectory);
-                        LOGGER.debug("Added '" + resourcesDirectory.getAbsolutePath() + "' as a source directory.");
+                        logger.debug("Added '" + resourcesDirectory.getAbsolutePath() + "' as a source directory.");
                     }
                 }
             }
@@ -279,7 +279,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     : System.getProperty("file.encoding", "UTF-8");
 
             if (StringUtils.isEmpty(request.getEncoding())) {
-                LOGGER.warn("File encoding has not been set, using platform encoding " + effectiveEncoding
+                logger.warn("File encoding has not been set, using platform encoding " + effectiveEncoding
                         + ", i.e. build is platform dependent!");
             }
 
@@ -290,7 +290,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     addAttributeIfNotExists((DefaultConfiguration) config, "charset", effectiveEncoding);
                     addAttributeIfNotExists((DefaultConfiguration) config, "cacheFile", request.getCacheFile());
                 } else {
-                    LOGGER.warn("Failed to configure file encoding on module " + config);
+                    logger.warn("Failed to configure file encoding on module " + config);
                 }
             }
             return config;
@@ -360,8 +360,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         Properties p = new Properties();
         try {
             if (request.getPropertiesLocation() != null) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("request.getPropertiesLocation() " + request.getPropertiesLocation());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("request.getPropertiesLocation() " + request.getPropertiesLocation());
                 }
 
                 File propertiesFile =
@@ -391,8 +391,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     headerLocation = "config/maven-header.txt";
                 }
             }
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("headerLocation " + headerLocation);
+            if (logger.isDebugEnabled()) {
+                logger.debug("headerLocation " + headerLocation);
             }
 
             if (headerLocation != null && !headerLocation.isEmpty()) {
@@ -403,8 +403,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                         p.setProperty("checkstyle.header.file", headerFile.getAbsolutePath());
                     }
                 } catch (FileResourceCreationException | ResourceNotFoundException e) {
-                    LOGGER.debug("Unable to process header location: " + headerLocation);
-                    LOGGER.debug("Checkstyle will throw exception if ${checkstyle.header.file} is used");
+                    logger.debug("Unable to process header location: " + headerLocation);
+                    logger.debug("Checkstyle will throw exception if ${checkstyle.header.file} is used");
                 }
             }
 
@@ -478,7 +478,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     request.getTestSourceDirectories());
         }
 
-        LOGGER.debug("Added " + files.size() + " files to process.");
+        logger.debug("Added " + files.size() + " files to process.");
 
         return new ArrayList<>(files);
     }
@@ -497,7 +497,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     final List<File> sourceFiles =
                             FileUtils.getFiles(sourceDirectory, request.getIncludes(), request.getExcludes());
                     files.addAll(sourceFiles);
-                    LOGGER.debug("Added " + sourceFiles.size() + " source files found in '"
+                    logger.debug("Added " + sourceFiles.size() + " source files found in '"
                             + sourceDirectory.getAbsolutePath() + "'.");
                 }
             }
@@ -510,7 +510,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                             FileUtils.getFiles(testSourceDirectory, request.getIncludes(), request.getExcludes());
 
                     files.addAll(testSourceFiles);
-                    LOGGER.debug("Added " + testSourceFiles.size() + " test source files found in '"
+                    logger.debug("Added " + testSourceFiles.size() + " test source files found in '"
                             + testSourceDirectory.getAbsolutePath() + "'.");
                 }
             }
@@ -519,13 +519,13 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         if (resources != null && request.isIncludeResources()) {
             addResourceFilesToProcess(request, resources, files);
         } else {
-            LOGGER.debug("No resources found in this project.");
+            logger.debug("No resources found in this project.");
         }
 
         if (testResources != null && request.isIncludeTestResources()) {
             addResourceFilesToProcess(request, testResources, files);
         } else {
-            LOGGER.debug("No test resources found in this project.");
+            logger.debug("No test resources found in this project.");
         }
     }
 
@@ -559,10 +559,10 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
                     List<File> resourceFiles = FileUtils.getFiles(resourcesDirectory, includes, excludes);
                     files.addAll(resourceFiles);
-                    LOGGER.debug("Added " + resourceFiles.size() + " resource files found in '"
+                    logger.debug("Added " + resourceFiles.size() + " resource files found in '"
                             + resourcesDirectory.getAbsolutePath() + "'.");
                 } else {
-                    LOGGER.debug("The resources directory '" + resourcesDirectory.getAbsolutePath()
+                    logger.debug("The resources directory '" + resourcesDirectory.getAbsolutePath()
                             + "' does not exist or is not a directory.");
                 }
             }
@@ -601,8 +601,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
     private String getConfigFile(CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
         try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("request.getConfigLocation() " + request.getConfigLocation());
+            if (logger.isDebugEnabled()) {
+                logger.debug("request.getConfigLocation() " + request.getConfigLocation());
             }
 
             File configFile = locator.getResourceAsFile(request.getConfigLocation(), "checkstyle-checker.xml");
