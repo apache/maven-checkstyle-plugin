@@ -22,5 +22,5 @@ under the License.
   "https://checkstyle.org/dtds/suppressions_1_2.dtd">
  <suppressions>
   <suppress checks="ParameterNumberCheck" files="CheckstyleReportRenderer.java" />
-  <suppress checks="MethodLengthCheck" files="DefaultCheckstyleExecutor.java" />
+  <suppress checks="ConstantName|MethodLengthCheck" files="DefaultCheckstyleExecutor.java" />
 </suppressions>
