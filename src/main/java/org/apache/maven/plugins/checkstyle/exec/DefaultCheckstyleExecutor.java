@@ -52,8 +52,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.resource.ResourceManager;
 import org.codehaus.plexus.resource.loader.FileResourceCreationException;
 import org.codehaus.plexus.resource.loader.FileResourceLoader;
@@ -69,7 +67,7 @@ import org.slf4j.LoggerFactory;
  */
 @Named
 @Typed(CheckstyleExecutor.class)
-public class DefaultCheckstyleExecutor  implements CheckstyleExecutor {
+public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCheckstyleExecutor.class);
 
