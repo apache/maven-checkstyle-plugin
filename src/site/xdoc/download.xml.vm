@@ -50,9 +50,9 @@ under the License.
           <tbody>
             <tr>
               <td>${project.name} ${project.version} (Source zip)</td>
-              <td><a href="https://dlcdn.apache.org/maven/shared/${project.artifactId}-${project.version}-source-release.zip">${project.artifactId}-${project.version}-source-release.zip</a></td>
-              <td><a href="https://downloads.apache.org/maven/shared/${project.artifactId}-${project.version}-source-release.zip.sha512">${project.artifactId}-${project.version}-source-release.zip.sha512</a></td>
-              <td><a href="https://downloads.apache.org/maven/shared/${project.artifactId}-${project.version}-source-release.zip.asc">${project.artifactId}-${project.version}-source-release.zip.asc</a></td>
+              <td><a href="https://dlcdn.apache.org/maven/plugins/${project.artifactId}-${project.version}-source-release.zip">${project.artifactId}-${project.version}-source-release.zip</a></td>
+              <td><a href="https://downloads.apache.org/maven/plugins/${project.artifactId}-${project.version}-source-release.zip.sha512">${project.artifactId}-${project.version}-source-release.zip.sha512</a></td>
+              <td><a href="https://downloads.apache.org/maven/plugins/${project.artifactId}-${project.version}-source-release.zip.asc">${project.artifactId}-${project.version}-source-release.zip.asc</a></td>
             </tr>
           </tbody>
         </table>
@@ -66,7 +66,7 @@ under the License.
 
       <subsection name="Previous Versions">
         <p>It is strongly recommended to use the latest release version of <strong>${project.name}</strong> to take advantage of the newest features and bug fixes.</p>
-        <p>Older non-recommended releases can be found on our <a href="https://archive.apache.org/dist/maven/shared/">archive site</a>.</p>
+        <p>Older non-recommended releases can be found on our <a href="https://archive.apache.org/dist/maven/plugins/">archive site</a>.</p>
       </subsection>
     </section>
   </body>
