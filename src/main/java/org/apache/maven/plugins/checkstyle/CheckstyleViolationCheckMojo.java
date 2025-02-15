@@ -109,6 +109,19 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     private boolean failOnViolation;
 
     /**
+     * Fail the build when the number of violations is not equal to {@link #maxAllowedViolations}.
+     * <p>This prevents the following scenario:
+     * <ul>
+     *   <li>some changes reduce the checkstyle count but maxAllowedViolations is not updated</li>
+     *   <li>some other changes introduces new violations but the build does not fail, as the count left some margin for error</li>
+     * </ul>
+     *
+     * * @since 3.6.1
+     */
+    @Parameter(property = "checkstyle.failOnMismatchedAllowedViolationsCount", defaultValue = "false")
+    private boolean failOnMismatchedAllowedViolationsCount;
+
+    /**
      * The maximum number of allowed violations. The execution fails only if the
      * number of violations is above this limit.
      *
@@ -599,6 +612,10 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                 }
 
                 getLog().warn("checkstyle:check violations detected but failOnViolation set to false");
+            } else if (failOnMismatchedAllowedViolationsCount && violationCount != maxAllowedViolations) {
+                throw new MojoFailureException("The number of violations (" + violationCount
+                        + ") is not equal to the maximum number of allowed violations (" + maxAllowedViolations
+                        + ").");
             }
             if (logViolationCountToConsole) {
                 if (maxAllowedViolations > 0) {
