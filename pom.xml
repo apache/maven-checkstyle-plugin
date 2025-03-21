@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>43</version>
+    <version>44</version>
     <relativePath />
   </parent>
 
@@ -82,6 +82,7 @@ under the License.
     <doxiaSitetoolsVersion>2.0.0</doxiaSitetoolsVersion>
     <sitePluginVersion>3.20.0</sitePluginVersion>
     <jxrPluginVersion>3.5.0</jxrPluginVersion>
+    <mavenPluginAnnotationVersion>3.15.1</mavenPluginAnnotationVersion>
     <project.build.outputTimestamp>2024-10-22T15:04:06Z</project.build.outputTimestamp>
   </properties>
 
@@ -114,6 +115,7 @@ under the License.
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
+      <version>${mavenPluginAnnotationVersion}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
