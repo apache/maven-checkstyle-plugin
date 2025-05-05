@@ -1,9 +1,9 @@
 Following this checklist to help us incorporate your 
 contribution quickly and easily:
 
- - [ ] Make sure there is a [JIRA issue](https://issues.apache.org/jira/browse/MCHECKSTYLE) filed 
+ - [ ] Make sure there is a [Github issue](https://github.com/apache/maven-checkstyle-plugin/issues) filed 
        for the change (usually before you start working on it).  Trivial changes like typos do not 
-       require a JIRA issue.  Your pull request should address just this issue, without 
+       require an issue.  Your pull request should address just this issue, without 
        pulling in other changes.
  - [ ] Each commit in the pull request should have a meaningful subject line and body.
  - [ ] Format the pull request title like `[MCHECKSTYLE-XXX] - Fixes bug in ApproximateQuantiles`,
