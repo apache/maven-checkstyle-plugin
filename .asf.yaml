@@ -32,6 +32,7 @@ github:
     - MCHECKSTYLE
   protected_branches:
     master: { }
+    maven-checkstyle-plugin-3.4.x: { }
   pull_requests:
     del_branch_on_merge: true
   features:
