@@ -28,12 +28,24 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Edwin Punzalan
  *
  */
 public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @Test
     public void testDefaultConfig() throws Exception {
         File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
 
@@ -41,9 +53,9 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
 
         mojoSetup(mojo);
 
-        assertNotNull("Mojo not found.", mojo);
+        Assertions.assertNotNull(mojo, "Mojo not found.");
 
-        assertNotNull("project null.", mojo.project);
+        Assertions.assertNotNull(mojo.project, "project null.");
 
         try {
             mojo.execute();
@@ -54,12 +66,13 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
         }
     }
 
+    @Test
     public void testInvalidFormatWithSkipExec() throws Exception {
         File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
 
         Mojo mojo = lookupMojo("check", pluginXmlFile);
 
-        assertNotNull("Mojo not found.", mojo);
+        Assertions.assertNotNull(mojo, "Mojo not found.");
 
         mojoSetup(mojo);
 
@@ -74,12 +87,13 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
         }
     }
 
+    @Test
     public void testNoOutputFile() throws Exception {
         File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
 
         Mojo mojo = lookupMojo("check", pluginXmlFile);
 
-        assertNotNull("Mojo not found.", mojo);
+        Assertions.assertNotNull(mojo, "Mojo not found.");
 
         mojoSetup(mojo);
 
@@ -93,7 +107,7 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
 
         Mojo mojo = lookupMojo("check", pluginXmlFile);
 
-        assertNotNull("Mojo not found.", mojo);
+        Assertions.assertNotNull(mojo, "Mojo not found.");
 
         PluginDescriptor descriptorStub = new PluginDescriptor();
         descriptorStub.setGroupId("org.apache.maven.plugins");
@@ -105,6 +119,7 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
         mojo.execute();
     }
 
+    @Test
     public void testPlainOutputFileFailOnError() throws Exception {
         try {
             doTestPlainOutputFile(true);
@@ -115,16 +130,18 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
         }
     }
 
+    @Test
     public void testPlainOutputFile() throws Exception {
         doTestPlainOutputFile(false);
     }
 
+    @Test
     public void testNoFail() throws Exception {
         File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
 
         Mojo mojo = lookupMojo("check", pluginXmlFile);
 
-        assertNotNull("Mojo not found.", mojo);
+        Assertions.assertNotNull(mojo, "Mojo not found.");
 
         mojoSetup(mojo);
 

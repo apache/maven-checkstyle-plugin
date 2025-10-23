@@ -20,17 +20,23 @@ package org.apache.maven.plugins.checkstyle;
 
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class RuleUtilTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class RuleUtilTest {
     private static final String CHECKSTYLE_PACKAGE = "com.puppycrawl.tools.checkstyle.checks";
 
+    @Test
     public void testGetName() {
         assertEquals("FinalParameters", RuleUtil.getName(CHECKSTYLE_PACKAGE + ".FinalParameters"));
         assertEquals("FinalParameters", RuleUtil.getName(CHECKSTYLE_PACKAGE + ".FinalParametersCheck"));
         assertNull(RuleUtil.getName((String) null));
     }
 
+    @Test
     public void testGetCategory() {
         assertEquals("misc", RuleUtil.getCategory(CHECKSTYLE_PACKAGE + ".FinalParametersCheck"));
         assertEquals("test", RuleUtil.getCategory(CHECKSTYLE_PACKAGE + ".test.FinalParametersCheck"));
@@ -39,6 +45,7 @@ public class RuleUtilTest extends TestCase {
         assertNull(RuleUtil.getCategory((String) null));
     }
 
+    @Test
     public void testMatcher() {
         String[] specs = ("misc, test, extension, Header, " + CHECKSTYLE_PACKAGE + ".test2").split(",");
         String[] eventSrcNames = new String[] {
@@ -57,13 +64,14 @@ public class RuleUtilTest extends TestCase {
             for (int j = 0; j < matchers.size(); j++) {
                 String eventSrcName = eventSrcNames[j];
                 assertEquals(
-                        spec + " should" + ((i == j) ? " " : " not ") + "match " + eventSrcName,
                         i == j,
-                        matcher.match(eventSrcName));
+                        matcher.match(eventSrcName),
+                        spec + " should" + ((i == j) ? " " : " not ") + "match " + eventSrcName);
             }
         }
     }
 
+    @Test
     public void testMatcherWithBlankStrings() {
         String[] specs = ("   ,,foo, ").split(",");
 

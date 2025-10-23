@@ -21,6 +21,6 @@
 report = new File( basedir, 'target/reports/checkstyle.html' )
 assert report.exists();
 assert report.text.contains( '<a href="./xref/com/example/App.html#L26">' )
-assert report.text.contains( '<a href="./custom-xref-test-location/com/example/AppTest.html#L32">' )
+assert report.text.contains( '<a href="./custom-xref-test-location/com/example/AppTest.html#L23">' )
 
 return true;

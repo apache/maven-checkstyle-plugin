@@ -18,9 +18,12 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class ViolationTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class ViolationTest {
+    @Test
     public void testEquals() {
         Violation v1 = new Violation("", null, null, "", "", "", "");
         Violation v2 = new Violation("", null, null, "", "", "", "");
