@@ -27,34 +27,38 @@ import java.util.Map;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.Violation;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Edwin Punzalan
  *
  */
-public class CheckstyleResultsTest extends TestCase {
+public class CheckstyleResultsTest {
     private CheckstyleResults results = new CheckstyleResults();
 
+    @Test
     public void testEmptyResults() {
-        assertEquals("test total files", 0, results.getFiles().size());
+        assertEquals(0, results.getFiles().size(), "test total files");
 
-        assertEquals("test file count", 0, results.getFileCount());
+        assertEquals(0, results.getFileCount(), "test file count");
 
         assertEquals(
-                "test zero file violations",
                 0,
-                results.getFileViolations("filename").size());
+                results.getFileViolations("filename").size(),
+                "test zero file violations");
 
-        assertEquals("test INFO severity count", 0, results.getSeverityCount(SeverityLevel.INFO));
+        assertEquals(0, results.getSeverityCount(SeverityLevel.INFO), "test INFO severity count");
 
-        assertEquals("test WARNING severity count", 0, results.getSeverityCount(SeverityLevel.WARNING));
+        assertEquals(0, results.getSeverityCount(SeverityLevel.WARNING), "test WARNING severity count");
 
-        assertEquals("test ERROR severity count", 0, results.getSeverityCount(SeverityLevel.ERROR));
+        assertEquals(0, results.getSeverityCount(SeverityLevel.ERROR), "test ERROR severity count");
 
-        assertEquals("test IGNORE severity count", 0, results.getSeverityCount(SeverityLevel.IGNORE));
+        assertEquals(0, results.getSeverityCount(SeverityLevel.IGNORE), "test IGNORE severity count");
     }
 
+    @Test
     public void testResults() {
         Map<String, List<AuditEvent>> files = new HashMap<>();
 
@@ -85,49 +89,49 @@ public class CheckstyleResultsTest extends TestCase {
 
         results.setFiles(files);
 
-        assertEquals("test total files", 4, results.getFiles().size());
-        assertEquals("test file count", 4, results.getFileCount());
+        assertEquals(4, results.getFiles().size(), "test total files");
+        assertEquals(4, results.getFileCount(), "test file count");
 
-        assertEquals("test file severities", 0, results.getSeverityCount("file0", SeverityLevel.INFO));
-        assertEquals("test file severities", 0, results.getSeverityCount("file0", SeverityLevel.WARNING));
-        assertEquals("test file severities", 0, results.getSeverityCount("file0", SeverityLevel.ERROR));
-        assertEquals("test file severities", 0, results.getSeverityCount("file0", SeverityLevel.IGNORE));
-
-        assertEquals(
-                "test file violations", 1, results.getFileViolations("file1").size());
-        assertEquals("test file severities", 1, results.getSeverityCount("file1", SeverityLevel.INFO));
-        assertEquals("test file severities", 0, results.getSeverityCount("file1", SeverityLevel.WARNING));
-        assertEquals("test file severities", 0, results.getSeverityCount("file1", SeverityLevel.ERROR));
-        assertEquals("test file severities", 0, results.getSeverityCount("file1", SeverityLevel.IGNORE));
+        assertEquals(0, results.getSeverityCount("file0", SeverityLevel.INFO), "test file severities");
+        assertEquals(0, results.getSeverityCount("file0", SeverityLevel.WARNING), "test file severities");
+        assertEquals(0, results.getSeverityCount("file0", SeverityLevel.ERROR), "test file severities");
+        assertEquals(0, results.getSeverityCount("file0", SeverityLevel.IGNORE), "test file severities");
 
         assertEquals(
-                "test file violations", 2, results.getFileViolations("file2").size());
-        assertEquals("test file severities", 0, results.getSeverityCount("file2", SeverityLevel.INFO));
-        assertEquals("test file severities", 2, results.getSeverityCount("file2", SeverityLevel.WARNING));
-        assertEquals("test file severities", 0, results.getSeverityCount("file2", SeverityLevel.ERROR));
-        assertEquals("test file severities", 0, results.getSeverityCount("file2", SeverityLevel.IGNORE));
+                1, results.getFileViolations("file1").size(), "test file violations");
+        assertEquals(1, results.getSeverityCount("file1", SeverityLevel.INFO), "test file severities");
+        assertEquals(0, results.getSeverityCount("file1", SeverityLevel.WARNING), "test file severities");
+        assertEquals(0, results.getSeverityCount("file1", SeverityLevel.ERROR), "test file severities");
+        assertEquals(0, results.getSeverityCount("file1", SeverityLevel.IGNORE), "test file severities");
 
         assertEquals(
-                "test file violations", 3, results.getFileViolations("file3").size());
-        assertEquals("test file severities", 0, results.getSeverityCount("file3", SeverityLevel.INFO));
-        assertEquals("test file severities", 0, results.getSeverityCount("file3", SeverityLevel.WARNING));
-        assertEquals("test file severities", 3, results.getSeverityCount("file3", SeverityLevel.ERROR));
-        assertEquals("test file severities", 0, results.getSeverityCount("file3", SeverityLevel.IGNORE));
+                2, results.getFileViolations("file2").size(), "test file violations");
+        assertEquals(0, results.getSeverityCount("file2", SeverityLevel.INFO), "test file severities");
+        assertEquals(2, results.getSeverityCount("file2", SeverityLevel.WARNING), "test file severities");
+        assertEquals(0, results.getSeverityCount("file2", SeverityLevel.ERROR), "test file severities");
+        assertEquals(0, results.getSeverityCount("file2", SeverityLevel.IGNORE), "test file severities");
 
         assertEquals(
-                "test file violations", 4, results.getFileViolations("file4").size());
-        assertEquals("test file severities", 0, results.getSeverityCount("file4", SeverityLevel.INFO));
-        assertEquals("test file severities", 0, results.getSeverityCount("file4", SeverityLevel.WARNING));
-        assertEquals("test file severities", 0, results.getSeverityCount("file4", SeverityLevel.ERROR));
-        assertEquals("test file severities", 4, results.getSeverityCount("file4", SeverityLevel.IGNORE));
+                3, results.getFileViolations("file3").size(), "test file violations");
+        assertEquals(0, results.getSeverityCount("file3", SeverityLevel.INFO), "test file severities");
+        assertEquals(0, results.getSeverityCount("file3", SeverityLevel.WARNING), "test file severities");
+        assertEquals(3, results.getSeverityCount("file3", SeverityLevel.ERROR), "test file severities");
+        assertEquals(0, results.getSeverityCount("file3", SeverityLevel.IGNORE), "test file severities");
 
-        assertEquals("test INFO severity count", 1, results.getSeverityCount(SeverityLevel.INFO));
-        assertEquals("test WARNING severity count", 2, results.getSeverityCount(SeverityLevel.WARNING));
-        assertEquals("test ERROR severity count", 3, results.getSeverityCount(SeverityLevel.ERROR));
-        assertEquals("test IGNORE severity count", 4, results.getSeverityCount(SeverityLevel.IGNORE));
+        assertEquals(
+                4, results.getFileViolations("file4").size(), "test file violations");
+        assertEquals(0, results.getSeverityCount("file4", SeverityLevel.INFO), "test file severities");
+        assertEquals(0, results.getSeverityCount("file4", SeverityLevel.WARNING), "test file severities");
+        assertEquals(0, results.getSeverityCount("file4", SeverityLevel.ERROR), "test file severities");
+        assertEquals(4, results.getSeverityCount("file4", SeverityLevel.IGNORE), "test file severities");
+
+        assertEquals(1, results.getSeverityCount(SeverityLevel.INFO), "test INFO severity count");
+        assertEquals(2, results.getSeverityCount(SeverityLevel.WARNING), "test WARNING severity count");
+        assertEquals(3, results.getSeverityCount(SeverityLevel.ERROR), "test ERROR severity count");
+        assertEquals(4, results.getSeverityCount(SeverityLevel.IGNORE), "test IGNORE severity count");
 
         results.setFileViolations("file", Collections.<AuditEvent>emptyList());
         assertEquals(
-                "test file violations", 0, results.getFileViolations("file").size());
+                0, results.getFileViolations("file").size(), "test file violations");
     }
 }
