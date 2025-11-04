@@ -82,6 +82,7 @@ under the License.
     <doxiaSitetoolsVersion>2.0.0</doxiaSitetoolsVersion>
     <sitePluginVersion>3.20.0</sitePluginVersion>
     <jxrPluginVersion>3.5.0</jxrPluginVersion>
+    <version.maven-invoker-plugin>3.9.1</version.maven-invoker-plugin>
     <project.build.outputTimestamp>2024-10-22T15:04:06Z</project.build.outputTimestamp>
   </properties>
 
