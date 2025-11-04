@@ -18,14 +18,19 @@
  */
 package org.apache.maven.plugins.checkstyle.exec;
 
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.junit.jupiter.api.Assertions;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.junit.jupiter.api.Test;
 
-public class CheckstyleExecutorTest extends AbstractMojoTestCase {
+import javax.inject.Inject;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@MojoTest
+public class CheckstyleExecutorTest {
+    @Inject
+    private CheckstyleExecutor executor;
     @Test
     public void testDefaultConfig() throws Exception {
-        CheckstyleExecutor executor = (CheckstyleExecutor) lookup(CheckstyleExecutor.class);
-        Assertions.assertNotNull(executor, "project null.");
+        assertNotNull(executor, "project null.");
     }
 }

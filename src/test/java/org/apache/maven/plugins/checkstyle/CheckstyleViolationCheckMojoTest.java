@@ -18,19 +18,20 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
-import java.io.File;
-import java.util.Arrays;
-
+import org.apache.maven.api.di.Provides;
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.model.Build;
-import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -38,52 +39,23 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author Edwin Punzalan
  *
  */
-public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
+@MojoTest
+public class CheckstyleViolationCheckMojoTest {
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+    @Inject
+    private MavenProject project;
+    @Inject
+    private PluginDescriptor  plugin;
 
+
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "configLocation", value = "sun_checks.xml" )
+    @MojoParameter(name = "cacheFile", value = "/target/classes/checkstyle-cachefile" )
+    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/src" )
+    @MojoParameter(name = "inputEncoding", value = "UTF-8" )
+    @MojoParameter(name = "skipExec", value = "true" )
     @Test
-    public void testDefaultConfig() throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
-
-        CheckstyleViolationCheckMojo mojo = (CheckstyleViolationCheckMojo) lookupMojo("check", pluginXmlFile);
-
-        // mojo setup
-
-        setVariableValueToObject((Mojo) mojo, "project", new MavenProjectStub() {
-
-            public File getFile() {
-                return new File(getBasedir(), "target/classes");
-            }
-
-            public Build getBuild() {
-                return new Build() {
-                    private static final long serialVersionUID = -743084937617131258L;
-
-                    public String getDirectory() {
-                        return getBasedir() + "/target/classes";
-                    }
-                };
-            }
-        });
-
-        setVariableValueToObject((Mojo) mojo, "configLocation", "sun_checks.xml");
-        setVariableValueToObject((Mojo) mojo, "cacheFile", getBasedir() + "/target/classes/checkstyle-cachefile");
-        setVariableValueToObject(
-                (Mojo) mojo,
-                "sourceDirectories",
-                Arrays.asList(
-                        getBasedir() + "/src/test/plugin-configs/src")); // new File( getBasedir() + "/target" ) );
-        setVariableValueToObject((Mojo) mojo, "inputEncoding", "UTF-8");
-        setVariableValueToObject((Mojo) mojo, "skipExec", Boolean.TRUE);
-
-        Assertions.assertNotNull(mojo, "Mojo not found.");
-
-        Assertions.assertNotNull(mojo.project, "project null.");
-
+    public void testDefaultConfig(CheckstyleViolationCheckMojo mojo) throws Exception {
         try {
             mojo.execute();
 
@@ -93,18 +65,9 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
         }
     }
 
-    @Test
-    public void testInvalidFormatWithSkipExec() throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
-
-        Mojo mojo = lookupMojo("check", pluginXmlFile);
-
-        Assertions.assertNotNull(mojo, "Mojo not found.");
-
-        // mojo setup
-
-        setVariableValueToObject(mojo, "project", new MavenProjectStub() {
-
+    @Provides
+    public MavenProjectStub projectStub() {
+        return new MavenProjectStub() {
             public File getFile() {
                 return new File(getBasedir(), "target/classes");
             }
@@ -118,20 +81,18 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
                     }
                 };
             }
-        });
+        };
+    }
 
-        setVariableValueToObject(mojo, "configLocation", "sun_checks.xml");
-        setVariableValueToObject(mojo, "cacheFile", getBasedir() + "/target/classes/checkstyle-cachefile");
-        setVariableValueToObject(
-                mojo,
-                "sourceDirectories",
-                Arrays.asList(
-                        getBasedir() + "/src/test/plugin-configs/src")); // new File( getBasedir() + "/target" ) );
-        setVariableValueToObject(mojo, "inputEncoding", "UTF-8");
-        setVariableValueToObject(mojo, "skipExec", Boolean.TRUE);
-
-        setVariableValueToObject(mojo, "outputFileFormat", "plain");
-
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "configLocation", value = "sun_checks.xml" )
+    @MojoParameter(name = "cacheFile", value = "/target/classes/checkstyle-cachefile" )
+    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/src" )
+    @MojoParameter(name = "inputEncoding", value = "UTF-8" )
+    @MojoParameter(name = "skipExec", value = "true" )
+    @MojoParameter(name = "outputFileFormat", value = "plain" )
+    @Test
+    public void testInvalidFormatWithSkipExec(CheckstyleViolationCheckMojo mojo) throws Exception {
         try {
             mojo.execute();
 
@@ -141,130 +102,59 @@ public class CheckstyleViolationCheckMojoTest extends AbstractMojoTestCase {
         }
     }
 
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "configLocation", value = "sun_checks.xml" )
+    @MojoParameter(name = "cacheFile", value = "/target/classes/checkstyle-cachefile" )
+    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/src" )
+    @MojoParameter(name = "inputEncoding", value = "UTF-8" )
+    @MojoParameter(name = "skipExec", value = "true" )
+    @MojoParameter(name = "outputFile", value = "target/NoSuchFile.xml" )
     @Test
-    public void testNoOutputFile() throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
-
-        Mojo mojo = lookupMojo("check", pluginXmlFile);
-
-        Assertions.assertNotNull(mojo, "Mojo not found.");
-
-        // mojo setup
-
-        setVariableValueToObject(mojo, "project", new MavenProjectStub() {
-
-            public File getFile() {
-                return new File(getBasedir(), "target/classes");
-            }
-
-            public Build getBuild() {
-                return new Build() {
-                    private static final long serialVersionUID = -743084937617131258L;
-
-                    public String getDirectory() {
-                        return getBasedir() + "/target/classes";
-                    }
-                };
-            }
-        });
-
-        setVariableValueToObject(mojo, "configLocation", "sun_checks.xml");
-        setVariableValueToObject(mojo, "cacheFile", getBasedir() + "/target/classes/checkstyle-cachefile");
-        setVariableValueToObject(
-                mojo,
-                "sourceDirectories",
-                Arrays.asList(
-                        getBasedir() + "/src/test/plugin-configs/src")); // new File( getBasedir() + "/target" ) );
-        setVariableValueToObject(mojo, "inputEncoding", "UTF-8");
-        setVariableValueToObject(mojo, "skipExec", Boolean.TRUE);
-
-        setVariableValueToObject(mojo, "outputFile", new File("target/NoSuchFile.xml"));
-
+    public void testNoOutputFile(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
     }
 
-    @Test
-    public void testPlainOutputFileFailOnError() throws Exception {
-        try {
-            File pluginXmlFile =
-                    new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-plain-output.xml");
 
-            Mojo mojo = lookupMojo("check", pluginXmlFile);
 
-            Assertions.assertNotNull(mojo, "Mojo not found.");
+        @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
+        @MojoParameter(name = "failsOnError", value = "true" )
+        @Test
+        public void testPlainOutputFileFailOnError(CheckstyleViolationCheckMojo mojo) throws Exception {
+            try {
+                mojo.execute();
 
-            PluginDescriptor descriptorStub = new PluginDescriptor();
-            descriptorStub.setGroupId("org.apache.maven.plugins");
-            descriptorStub.setArtifactId("maven-checkstyle-plugin");
-            setVariableValueToObject(mojo, "plugin", descriptorStub);
-
-            setVariableValueToObject(mojo, "failsOnError", true);
-
-            mojo.execute();
-
-            fail("Must fail on violations");
-        } catch (MojoExecutionException e) {
-            // expected
+                fail("Must fail on violations");
+            } catch (MojoExecutionException e) {
+                // expected
+            }
         }
-    }
 
-    @Test
-    public void testPlainOutputFile() throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-plain-output.xml");
 
-        Mojo mojo = lookupMojo("check", pluginXmlFile);
 
-        Assertions.assertNotNull(mojo, "Mojo not found.");
-
+    @Provides
+    public PluginDescriptor getPluginDescriptor() {
         PluginDescriptor descriptorStub = new PluginDescriptor();
         descriptorStub.setGroupId("org.apache.maven.plugins");
         descriptorStub.setArtifactId("maven-checkstyle-plugin");
-        setVariableValueToObject(mojo, "plugin", descriptorStub);
+        return descriptorStub;
+    }
 
-        setVariableValueToObject(mojo, "failsOnError", false);
-
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
+    @MojoParameter(name = "failsOnError", value = "false" )
+    @Test
+    public void testPlainOutputFile(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
     }
 
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "configLocation", value = "sun_checks.xml" )
+    @MojoParameter(name = "cacheFile", value = "/target/classes/checkstyle-cachefile" )
+    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/src" )
+    @MojoParameter(name = "inputEncoding", value = "UTF-8" )
+    @MojoParameter(name = "skipExec", value = "true" )
+    @MojoParameter(name = "failOnViolation", value = "false" )
     @Test
-    public void testNoFail() throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/check-plugin-config.xml");
-
-        Mojo mojo = lookupMojo("check", pluginXmlFile);
-
-        Assertions.assertNotNull(mojo, "Mojo not found.");
-
-        // mojo setup
-
-        setVariableValueToObject(mojo, "project", new MavenProjectStub() {
-
-            public File getFile() {
-                return new File(getBasedir(), "target/classes");
-            }
-
-            public Build getBuild() {
-                return new Build() {
-                    private static final long serialVersionUID = -743084937617131258L;
-
-                    public String getDirectory() {
-                        return getBasedir() + "/target/classes";
-                    }
-                };
-            }
-        });
-
-        setVariableValueToObject(mojo, "configLocation", "sun_checks.xml");
-        setVariableValueToObject(mojo, "cacheFile", getBasedir() + "/target/classes/checkstyle-cachefile");
-        setVariableValueToObject(
-                mojo,
-                "sourceDirectories",
-                Arrays.asList(
-                        getBasedir() + "/src/test/plugin-configs/src")); // new File( getBasedir() + "/target" ) );
-        setVariableValueToObject(mojo, "inputEncoding", "UTF-8");
-        setVariableValueToObject(mojo, "skipExec", Boolean.TRUE);
-
-        setVariableValueToObject(mojo, "failOnViolation", Boolean.FALSE);
-
+    public void testNoFail(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
     }
 }
