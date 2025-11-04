@@ -18,14 +18,6 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.doxia.tools.SiteTool;
 import org.apache.maven.model.Plugin;
@@ -46,6 +38,14 @@ import org.eclipse.aether.repository.LocalRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Edwin Punzalan
@@ -69,7 +69,30 @@ public class CheckstyleReportTest extends AbstractMojoTestCase {
 
     @Test
     public void testNoSource() throws Exception {
-        File generatedReport = generateReport("checkstyle", "no-source-plugin-config.xml");
+        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-source-plugin-config.xml");
+        CheckstyleReport mojo1 = (CheckstyleReport) lookupMojo("checkstyle", pluginXmlFile);
+        Assertions.assertNotNull(mojo1, "Mojo not found.");
+
+        LegacySupport legacySupport = lookup(LegacySupport.class);
+        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+        DefaultRepositorySystemSession repoSession =
+                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+
+        List<MavenProject> reactorProjects =
+                mojo1.getReactorProjects() != null ? mojo1.getReactorProjects() : Collections.emptyList();
+
+        setVariableValueToObject(mojo1, "mojoExecution", getMockMojoExecution());
+        setVariableValueToObject(mojo1, "session", legacySupport.getSession());
+        setVariableValueToObject(mojo1, "repoSession", legacySupport.getRepositorySession());
+        setVariableValueToObject(mojo1, "reactorProjects", reactorProjects);
+        setVariableValueToObject(
+                mojo1, "remoteProjectRepositories", mojo1.getProject().getRemoteProjectRepositories());
+        setVariableValueToObject(
+                mojo1, "siteDirectory", new File(mojo1.getProject().getBasedir(), "src/site"));
+        CheckstyleReport mojo = mojo1;
+        File generatedReport = generateReport(mojo, pluginXmlFile);
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
@@ -813,41 +836,6 @@ public class CheckstyleReportTest extends AbstractMojoTestCase {
         }
 
         return report;
-    }
-
-    /**
-     * Generate the report and return the generated file
-     *
-     * @param goal the mojo goal.
-     * @param pluginXml the name of the XML file in "src/test/resources/plugin-configs/"
-     * @return the generated HTML file
-     * @throws Exception if any
-     */
-    protected File generateReport(String goal, String pluginXml) throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + pluginXml);
-        CheckstyleReport mojo1 = (CheckstyleReport) lookupMojo(goal, pluginXmlFile);
-        Assertions.assertNotNull(mojo1, "Mojo not found.");
-
-        LegacySupport legacySupport = lookup(LegacySupport.class);
-        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-        DefaultRepositorySystemSession repoSession =
-                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-
-        List<MavenProject> reactorProjects =
-                mojo1.getReactorProjects() != null ? mojo1.getReactorProjects() : Collections.emptyList();
-
-        setVariableValueToObject(mojo1, "mojoExecution", getMockMojoExecution());
-        setVariableValueToObject(mojo1, "session", legacySupport.getSession());
-        setVariableValueToObject(mojo1, "repoSession", legacySupport.getRepositorySession());
-        setVariableValueToObject(mojo1, "reactorProjects", reactorProjects);
-        setVariableValueToObject(
-                mojo1, "remoteProjectRepositories", mojo1.getProject().getRemoteProjectRepositories());
-        setVariableValueToObject(
-                mojo1, "siteDirectory", new File(mojo1.getProject().getBasedir(), "src/site"));
-        CheckstyleReport mojo = mojo1;
-        return generateReport(mojo, pluginXmlFile);
     }
 
     protected File generateReport(CheckstyleReport mojo, File pluginXmlFile) throws Exception {
