@@ -23,45 +23,34 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import org.apache.maven.api.di.Provides;
+import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.tools.SiteTool;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.aether.DefaultRepositorySystemSessionFactory;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.testing.ArtifactStubFactory;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.project.ProjectBuildingRequest;
 import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
-import org.eclipse.aether.repository.LocalRepository;
-import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
 import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
-import static org.codehaus.plexus.testing.PlexusExtension.getTestFile;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Edwin Punzalan
@@ -69,51 +58,41 @@ import static org.junit.jupiter.api.Assertions.fail;
 @MojoTest
 public class CheckstyleReportTest {
 
-    private ArtifactStubFactory artifactStubFactory;
     /**
      * The project to test.
      */
+    @Inject
     private MavenProject testMavenProject;
+
+    @Inject
+    private MavenSession mavenSession;
+
+    @Inject
+    private DefaultRepositorySystemSessionFactory repoSessionFactory;
 
     @Inject
     private MojoExecution mojoExecution;
 
-    @Inject
-    private PluginDescriptor pluginDescriptor;
-
-    @Inject
-    private LegacySupport  legacySupport;
-
     @BeforeEach
     public void setUp() throws Exception {
-        artifactStubFactory = new DependencyArtifactStubFactory(getTestFile("target"), true, false);
-        artifactStubFactory.getWorkingDir().mkdirs();
+        // prepare realistic repository session
+        ArtifactRepository localRepo = Mockito.mock(ArtifactRepository.class);
+        Mockito.when(localRepo.getBasedir()).thenReturn(new File(getBasedir(), "target/local-repo").getAbsolutePath());
+
+        MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+        request.setLocalRepository(localRepo);
+
+        RemoteRepository centralRepo =
+                new RemoteRepository.Builder("central", "default", "https://repo.maven.apache.org/maven2").build();
+
+        DefaultRepositorySystemSession systemSession =
+                repoSessionFactory.newRepositorySession(request);
+        Mockito.when(mavenSession.getRepositorySession()).thenReturn(systemSession);
+        Mockito.when(testMavenProject.getRemoteProjectRepositories()).thenReturn(Collections.singletonList(centralRepo));
+
+        Mockito.when(mojoExecution.getPlugin()).thenReturn(new Plugin());
     }
 
-    @Provides
-    private MojoExecution getMockMojoExecution() {
-        MojoDescriptor md = new MojoDescriptor();
-        md.setGoal("checkstyle");
-
-        MojoExecution me = new MojoExecution(md);
-
-        PluginDescriptor pd = new PluginDescriptor();
-        Plugin p = new Plugin();
-        p.setGroupId("org.apache.maven.plugins");
-        p.setArtifactId("maven-checkstyle-plugin");
-        pd.setPlugin(p);
-        md.setPluginDescriptor(pd);
-
-        return me;
-    }
-
-    @Provides
-    private PluginDescriptor getMockPluginDescriptor() {
-        PluginDescriptor descriptorStub = new PluginDescriptor();
-        descriptorStub.setGroupId("org.apache.maven.plugins");
-        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-        return descriptorStub;
-    }
 
     @InjectMojo(goal="checkstyle" , pom ="src/test/resources/plugin-configs/no-source-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
@@ -128,7 +107,10 @@ public class CheckstyleReportTest {
     }
 
 
-    @InjectMojo(goal="checkstyle" , pom ="src/test/resources/plugin-configs/min-plugin-config.xml")
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal="checkstyle" , pom ="min-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
     public void testMinConfiguration(CheckstyleReport mojo) throws Exception {
@@ -137,10 +119,10 @@ public class CheckstyleReportTest {
 //
 //        LegacySupport legacySupport = lookup(LegacySupport.class);
 //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-        DefaultRepositorySystemSession repoSession =
-                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+//        DefaultRepositorySystemSession repoSession =
+//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
 //
 //        List<MavenProject> reactorProjects =
 //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();

@@ -141,6 +141,7 @@ public class CheckstyleViolationCheckMojoTest {
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
     @MojoParameter(name = "failsOnError", value = "false" )
+    @MojoParameter(name = "failOnViolation", value = "false" )
     @Test
     public void testPlainOutputFile(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
