@@ -43,7 +43,6 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -118,7 +117,6 @@ public class CheckstyleReportTest {
     public void testMinConfiguration(CheckstyleReport mojo) throws Exception {
         mojo.execute();
 
-
         assertGeneratedReport(mojo);
     }
 
@@ -186,7 +184,8 @@ public class CheckstyleReportTest {
     @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
-    @Disabled // TODO the junit 3 version produce a false exception (see description in PR https://github.com/apache/maven-checkstyle-plugin/pull/645)
+    @Disabled // TODO the junit 3 version produce a false exception (see description in PR
+    // https://github.com/apache/maven-checkstyle-plugin/pull/645)
     public void testFailOnError(CheckstyleReport mojo) {
         try {
             mojo.execute();
