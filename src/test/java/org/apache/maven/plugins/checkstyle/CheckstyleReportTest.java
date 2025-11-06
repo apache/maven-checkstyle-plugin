@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +45,6 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import javax.inject.Inject;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
 import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
@@ -85,16 +85,15 @@ public class CheckstyleReportTest {
         RemoteRepository centralRepo =
                 new RemoteRepository.Builder("central", "default", "https://repo.maven.apache.org/maven2").build();
 
-        DefaultRepositorySystemSession systemSession =
-                repoSessionFactory.newRepositorySession(request);
+        DefaultRepositorySystemSession systemSession = repoSessionFactory.newRepositorySession(request);
         Mockito.when(mavenSession.getRepositorySession()).thenReturn(systemSession);
-        Mockito.when(testMavenProject.getRemoteProjectRepositories()).thenReturn(Collections.singletonList(centralRepo));
+        Mockito.when(testMavenProject.getRemoteProjectRepositories())
+                .thenReturn(Collections.singletonList(centralRepo));
 
         Mockito.when(mojoExecution.getPlugin()).thenReturn(new Plugin());
     }
 
-
-    @InjectMojo(goal="checkstyle" , pom ="src/test/resources/plugin-configs/no-source-plugin-config.xml")
+    @InjectMojo(goal = "checkstyle", pom = "src/test/resources/plugin-configs/no-source-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
     public void testNoSource(CheckstyleReport mojo) throws Exception {
@@ -106,50 +105,47 @@ public class CheckstyleReportTest {
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
-
     // We need to change the basedir to point to test repositor with out site.xml file
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
-    @InjectMojo(goal="checkstyle" , pom ="min-plugin-config.xml")
+    @InjectMojo(goal = "checkstyle", pom = "min-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
     public void testMinConfiguration(CheckstyleReport mojo) throws Exception {
         ResourceBundle bundle =
                 ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, getClassLoader());
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-
+        //
+        //        LegacySupport legacySupport = lookup(LegacySupport.class);
+        //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+        //        DefaultRepositorySystemSession repoSession =
+        //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+        //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+        //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+        //
+        //        List<MavenProject> reactorProjects =
+        //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+        //
+        //        setVariableValueToObject(mojo, "session", legacySupport.getSession());
+        //        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+        //        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+        //        setVariableValueToObject(
+        //                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+        //        setVariableValueToObject(
 
         mojo.execute();
 
-//        ProjectBuilder builder = lookup(ProjectBuilder.class);
-//
-//        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
-//        buildingRequest.setRepositorySession(lookup(LegacySupport.class).getRepositorySession());
-//
-//        testMavenProject = builder.build(pluginXmlFile, buildingRequest).getProject();
+        //        ProjectBuilder builder = lookup(ProjectBuilder.class);
+        //
+        //        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
+        //        buildingRequest.setRepositorySession(lookup(LegacySupport.class).getRepositorySession());
+        //
+        //        testMavenProject = builder.build(pluginXmlFile, buildingRequest).getProject();
 
         File outputDir = mojo.getReportOutputDirectory();
         String filename = mojo.getOutputName() + ".html";
 
         File generatedReport = new File(outputDir, filename);
         assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
 
         File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
         assertNotNull(outputFile, "Test output file");
@@ -195,629 +191,633 @@ public class CheckstyleReportTest {
     private ClassLoader getClassLoader() {
         return this.getClass().getClassLoader();
     }
-//
-//    @Test
-//    public void testCustomConfiguration(CheckstyleReport mojo) throws Exception {
-//        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + "custom-plugin-config.xml");
-//        ResourceBundle bundle =
-//                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//        Assertions.assertNotNull(mojo, "Mojo not found.");
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
-//        setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-//                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
-//
-//        PluginDescriptor descriptorStub = new PluginDescriptor();
-//        descriptorStub.setGroupId("org.apache.maven.plugins");
-//        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//        setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//        File generatedReport = generateReport(mojo, pluginXmlFile);
-//        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//        Assertions.assertNotNull(outputFile, "Test output file");
-//        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//        if (cacheFile != null) {
-//            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//        }
-//
-//        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//        if (useFile != null) {
-//            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//        }
-//
-//        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//        if (rules) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//        if (severity) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//        if (files) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//        }
-//    }
-//
-//    @Test
-//    public void testUseFile(CheckstyleReport mojo) throws Exception {
-//        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + "useFile-plugin-config.xml");
-//        ResourceBundle bundle =
-//                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//        Assertions.assertNotNull(mojo, "Mojo not found.");
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
-//        setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-//                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
-//
-//        PluginDescriptor descriptorStub = new PluginDescriptor();
-//        descriptorStub.setGroupId("org.apache.maven.plugins");
-//        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//        setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//        File generatedReport = generateReport(mojo, pluginXmlFile);
-//        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//        Assertions.assertNotNull(outputFile, "Test output file");
-//        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//        if (cacheFile != null) {
-//            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//        }
-//
-//        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//        if (useFile != null) {
-//            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//        }
-//
-//        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//        if (rules) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//        if (severity) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//        if (files) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//        }
-//    }
-//
-//    @Test
-//    public void testNoRulesSummary(CheckstyleReport mojo) throws Exception {
-//        File pluginXmlFile =
-//                new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-rules-plugin-config.xml");
-//        ResourceBundle bundle =
-//                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//        Assertions.assertNotNull(mojo, "Mojo not found.");
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
-//        setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-//                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
-//
-//        PluginDescriptor descriptorStub = new PluginDescriptor();
-//        descriptorStub.setGroupId("org.apache.maven.plugins");
-//        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//        setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//        File generatedReport = generateReport(mojo, pluginXmlFile);
-//        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//        Assertions.assertNotNull(outputFile, "Test output file");
-//        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//        if (cacheFile != null) {
-//            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//        }
-//
-//        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//        if (useFile != null) {
-//            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//        }
-//
-//        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//        if (rules) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//        if (severity) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//        if (files) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//        }
-//    }
-//
-//    @Test
-//    public void testNoSeveritySummary(CheckstyleReport mojo1) throws Exception {
-//        File pluginXmlFile =
-//                new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-severity-plugin-config.xml");
-//        ResourceBundle bundle =
-//                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//        Assertions.assertNotNull(mojo1, "Mojo not found.");
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo1.getReactorProjects() != null ? mojo1.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo1, "mojoExecution", getMockMojoExecution());
-//        setVariableValueToObject(mojo1, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo1, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo1, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo1, "remoteProjectRepositories", mojo1.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-//                mojo1, "siteDirectory", new File(mojo1.getProject().getBasedir(), "src/site"));
-//        CheckstyleReport mojo = mojo1;
-//
-//        PluginDescriptor descriptorStub = new PluginDescriptor();
-//        descriptorStub.setGroupId("org.apache.maven.plugins");
-//        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//        setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//        File generatedReport = generateReport(mojo, pluginXmlFile);
-//        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//        Assertions.assertNotNull(outputFile, "Test output file");
-//        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//        if (cacheFile != null) {
-//            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//        }
-//
-//        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//        if (useFile != null) {
-//            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//        }
-//
-//        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//        if (rules) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//        if (severity) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//        if (files) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//        }
-//    }
-//
-//    @Test
-//    public void testNoFilesSummary(CheckstyleReport mojo1) throws Exception {
-//        File pluginXmlFile =
-//                new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-files-plugin-config.xml");
-//        ResourceBundle bundle =
-//                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//        Assertions.assertNotNull(mojo1, "Mojo not found.");
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo1.getReactorProjects() != null ? mojo1.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo1, "mojoExecution", getMockMojoExecution());
-//        setVariableValueToObject(mojo1, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo1, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo1, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo1, "remoteProjectRepositories", mojo1.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-//                mojo1, "siteDirectory", new File(mojo1.getProject().getBasedir(), "src/site"));
-//
-//        PluginDescriptor descriptorStub = new PluginDescriptor();
-//        descriptorStub.setGroupId("org.apache.maven.plugins");
-//        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//        setVariableValueToObject(mojo1, "plugin", descriptorStub);
-//
-//        File generatedReport = generateReport(mojo1, pluginXmlFile);
-//        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//        File outputFile = (File) getVariableValueFromObject(mojo1, "outputFile");
-//        Assertions.assertNotNull(outputFile, "Test output file");
-//        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//        String cacheFile = (String) getVariableValueFromObject(mojo1, "cacheFile");
-//        if (cacheFile != null) {
-//            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//        }
-//
-//        File useFile = (File) getVariableValueFromObject(mojo1, "useFile");
-//        if (useFile != null) {
-//            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//        }
-//
-//        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//        Boolean rules = (Boolean) getVariableValueFromObject(mojo1, "enableRulesSummary");
-//        if (rules) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//        Boolean severity = (Boolean) getVariableValueFromObject(mojo1, "enableSeveritySummary");
-//        if (severity) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//        Boolean files = (Boolean) getVariableValueFromObject(mojo1, "enableFilesSummary");
-//        if (files) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//        }
-//    }
-//
-//    @Test
-//    public void testFailOnError() {
-//        try {
-//            File pluginXmlFile =
-//                    new File(getBasedir(), "src/test/resources/plugin-configs/" + "fail-on-error-plugin-config.xml");
-//            ResourceBundle bundle =
-//                    ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//            Assertions.assertNotNull(mojo, "Mojo not found.");
-//
-//            LegacySupport legacySupport = lookup(LegacySupport.class);
-//            legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//            DefaultRepositorySystemSession repoSession =
-//                    (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//            repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                    .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//            List<MavenProject> reactorProjects =
-//                    mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//            setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
-//            setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//            setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//            setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//            setVariableValueToObject(
-//                    mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//            setVariableValueToObject(
-//                    mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
-//
-//            PluginDescriptor descriptorStub = new PluginDescriptor();
-//            descriptorStub.setGroupId("org.apache.maven.plugins");
-//            descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//            setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//            File generatedReport = generateReport(mojo, pluginXmlFile);
-//            assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//            File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//            Assertions.assertNotNull(outputFile, "Test output file");
-//            Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//            String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//            if (cacheFile != null) {
-//                Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//            }
-//
-//            File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//            if (useFile != null) {
-//                Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//            }
-//
-//            String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//            boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//            Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//            if (rules) {
-//                Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//            } else {
-//                Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//            }
-//
-//            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//            Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//            if (severity) {
-//                Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//            } else {
-//                Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//            }
-//
-//            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//            Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//            if (files) {
-//                Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//            } else {
-//                Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//            }
-//
-//            fail("Must throw exception on errors");
-//        } catch (Exception e) {
-//            assertNotNull(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testDependencyResolutionException() {
-//        try {
-//            File pluginXmlFile = new File(
-//                    getBasedir(), "src/test/resources/plugin-configs/" + "dep-resolution-exception-plugin-config.xml");
-//            ResourceBundle bundle =
-//                    ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//            Assertions.assertNotNull(mojo, "Mojo not found.");
-//
-//            LegacySupport legacySupport = lookup(LegacySupport.class);
-//            legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//            DefaultRepositorySystemSession repoSession =
-//                    (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//            repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                    .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//            List<MavenProject> reactorProjects =
-//                    mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//            setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
-//            setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//            setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//            setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//            setVariableValueToObject(
-//                    mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//            setVariableValueToObject(
-//                    mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
-//
-//            PluginDescriptor descriptorStub = new PluginDescriptor();
-//            descriptorStub.setGroupId("org.apache.maven.plugins");
-//            descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//            setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//            File generatedReport = generateReport(mojo, pluginXmlFile);
-//            assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//            File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//            Assertions.assertNotNull(outputFile, "Test output file");
-//            Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//            String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//            if (cacheFile != null) {
-//                Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//            }
-//
-//            File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//            if (useFile != null) {
-//                Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//            }
-//
-//            String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//            boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//            Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//            if (rules) {
-//                Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//            } else {
-//                Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//            }
-//
-//            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//            Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//            if (severity) {
-//                Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//            } else {
-//                Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//            }
-//
-//            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//            Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//            if (files) {
-//                Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//            } else {
-//                Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//            }
-//
-//            fail("Must throw exception on errors");
-//        } catch (Exception e) {
-//            if (!(e.getCause().getCause().getCause() instanceof DependencyResolutionRequiredException)) {
-//                e.printStackTrace();
-//                fail("Must throw exception DependencyResolutionRequiredException on errors and not "
-//                        + e.getClass().getName() + ", " + e.getMessage());
-//            }
-//        }
-//    }
-//
-//    @Test
-//    public void testTestSourceDirectory(CheckstyleReport mojo) throws Exception {
-//        File pluginXmlFile = new File(
-//                getBasedir(), "src/test/resources/plugin-configs/" + "test-source-directory-plugin-config.xml");
-//        ResourceBundle bundle =
-//                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-//        Assertions.assertNotNull(mojo, "Mojo not found.");
-//
-//        LegacySupport legacySupport = lookup(LegacySupport.class);
-//        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-//        DefaultRepositorySystemSession repoSession =
-//                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-//        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-//                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-//
-//        List<MavenProject> reactorProjects =
-//                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-//
-//        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
-//        setVariableValueToObject(mojo, "session", legacySupport.getSession());
-//        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-//        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-//        setVariableValueToObject(
-//                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-//        setVariableValueToObject(
-//                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
-//
-//        PluginDescriptor descriptorStub = new PluginDescriptor();
-//        descriptorStub.setGroupId("org.apache.maven.plugins");
-//        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-//        setVariableValueToObject(mojo, "plugin", descriptorStub);
-//
-//        File generatedReport = generateReport(mojo, pluginXmlFile);
-//        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-//
-//        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-//        Assertions.assertNotNull(outputFile, "Test output file");
-//        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-//
-//        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-//        if (cacheFile != null) {
-//            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-//        }
-//
-//        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-//        if (useFile != null) {
-//            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-//        }
-//
-//        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-//
-//        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-//        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-//        if (rules) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-//        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-//        if (severity) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-//        }
-//
-//        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-//        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-//        if (files) {
-//            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-//        } else {
-//            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-//        }
-//    }
+    //
+    //    @Test
+    //    public void testCustomConfiguration(CheckstyleReport mojo) throws Exception {
+    //        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" +
+    // "custom-plugin-config.xml");
+    //        ResourceBundle bundle =
+    //                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //        Assertions.assertNotNull(mojo, "Mojo not found.");
+    //
+    //        LegacySupport legacySupport = lookup(LegacySupport.class);
+    //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //        DefaultRepositorySystemSession repoSession =
+    //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //        List<MavenProject> reactorProjects =
+    //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+    //
+    //        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
+    //        setVariableValueToObject(mojo, "session", legacySupport.getSession());
+    //        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+    //        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+    //        setVariableValueToObject(
+    //                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+    //        setVariableValueToObject(
+    //                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
+    //
+    //        PluginDescriptor descriptorStub = new PluginDescriptor();
+    //        descriptorStub.setGroupId("org.apache.maven.plugins");
+    //        descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //        setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //        File generatedReport = generateReport(mojo, pluginXmlFile);
+    //        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //        Assertions.assertNotNull(outputFile, "Test output file");
+    //        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //        if (cacheFile != null) {
+    //            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //        }
+    //
+    //        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //        if (useFile != null) {
+    //            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //        }
+    //
+    //        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //        if (rules) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //        if (severity) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //        if (files) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testUseFile(CheckstyleReport mojo) throws Exception {
+    //        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" +
+    // "useFile-plugin-config.xml");
+    //        ResourceBundle bundle =
+    //                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //        Assertions.assertNotNull(mojo, "Mojo not found.");
+    //
+    //        LegacySupport legacySupport = lookup(LegacySupport.class);
+    //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //        DefaultRepositorySystemSession repoSession =
+    //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //        List<MavenProject> reactorProjects =
+    //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+    //
+    //        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
+    //        setVariableValueToObject(mojo, "session", legacySupport.getSession());
+    //        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+    //        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+    //        setVariableValueToObject(
+    //                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+    //        setVariableValueToObject(
+    //                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
+    //
+    //        PluginDescriptor descriptorStub = new PluginDescriptor();
+    //        descriptorStub.setGroupId("org.apache.maven.plugins");
+    //        descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //        setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //        File generatedReport = generateReport(mojo, pluginXmlFile);
+    //        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //        Assertions.assertNotNull(outputFile, "Test output file");
+    //        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //        if (cacheFile != null) {
+    //            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //        }
+    //
+    //        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //        if (useFile != null) {
+    //            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //        }
+    //
+    //        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //        if (rules) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //        if (severity) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //        if (files) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testNoRulesSummary(CheckstyleReport mojo) throws Exception {
+    //        File pluginXmlFile =
+    //                new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-rules-plugin-config.xml");
+    //        ResourceBundle bundle =
+    //                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //        Assertions.assertNotNull(mojo, "Mojo not found.");
+    //
+    //        LegacySupport legacySupport = lookup(LegacySupport.class);
+    //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //        DefaultRepositorySystemSession repoSession =
+    //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //        List<MavenProject> reactorProjects =
+    //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+    //
+    //        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
+    //        setVariableValueToObject(mojo, "session", legacySupport.getSession());
+    //        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+    //        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+    //        setVariableValueToObject(
+    //                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+    //        setVariableValueToObject(
+    //                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
+    //
+    //        PluginDescriptor descriptorStub = new PluginDescriptor();
+    //        descriptorStub.setGroupId("org.apache.maven.plugins");
+    //        descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //        setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //        File generatedReport = generateReport(mojo, pluginXmlFile);
+    //        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //        Assertions.assertNotNull(outputFile, "Test output file");
+    //        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //        if (cacheFile != null) {
+    //            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //        }
+    //
+    //        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //        if (useFile != null) {
+    //            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //        }
+    //
+    //        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //        if (rules) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //        if (severity) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //        if (files) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testNoSeveritySummary(CheckstyleReport mojo1) throws Exception {
+    //        File pluginXmlFile =
+    //                new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-severity-plugin-config.xml");
+    //        ResourceBundle bundle =
+    //                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //        Assertions.assertNotNull(mojo1, "Mojo not found.");
+    //
+    //        LegacySupport legacySupport = lookup(LegacySupport.class);
+    //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //        DefaultRepositorySystemSession repoSession =
+    //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //        List<MavenProject> reactorProjects =
+    //                mojo1.getReactorProjects() != null ? mojo1.getReactorProjects() : Collections.emptyList();
+    //
+    //        setVariableValueToObject(mojo1, "mojoExecution", getMockMojoExecution());
+    //        setVariableValueToObject(mojo1, "session", legacySupport.getSession());
+    //        setVariableValueToObject(mojo1, "repoSession", legacySupport.getRepositorySession());
+    //        setVariableValueToObject(mojo1, "reactorProjects", reactorProjects);
+    //        setVariableValueToObject(
+    //                mojo1, "remoteProjectRepositories", mojo1.getProject().getRemoteProjectRepositories());
+    //        setVariableValueToObject(
+    //                mojo1, "siteDirectory", new File(mojo1.getProject().getBasedir(), "src/site"));
+    //        CheckstyleReport mojo = mojo1;
+    //
+    //        PluginDescriptor descriptorStub = new PluginDescriptor();
+    //        descriptorStub.setGroupId("org.apache.maven.plugins");
+    //        descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //        setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //        File generatedReport = generateReport(mojo, pluginXmlFile);
+    //        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //        Assertions.assertNotNull(outputFile, "Test output file");
+    //        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //        if (cacheFile != null) {
+    //            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //        }
+    //
+    //        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //        if (useFile != null) {
+    //            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //        }
+    //
+    //        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //        if (rules) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //        if (severity) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //        if (files) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testNoFilesSummary(CheckstyleReport mojo1) throws Exception {
+    //        File pluginXmlFile =
+    //                new File(getBasedir(), "src/test/resources/plugin-configs/" + "no-files-plugin-config.xml");
+    //        ResourceBundle bundle =
+    //                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //        Assertions.assertNotNull(mojo1, "Mojo not found.");
+    //
+    //        LegacySupport legacySupport = lookup(LegacySupport.class);
+    //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //        DefaultRepositorySystemSession repoSession =
+    //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //        List<MavenProject> reactorProjects =
+    //                mojo1.getReactorProjects() != null ? mojo1.getReactorProjects() : Collections.emptyList();
+    //
+    //        setVariableValueToObject(mojo1, "mojoExecution", getMockMojoExecution());
+    //        setVariableValueToObject(mojo1, "session", legacySupport.getSession());
+    //        setVariableValueToObject(mojo1, "repoSession", legacySupport.getRepositorySession());
+    //        setVariableValueToObject(mojo1, "reactorProjects", reactorProjects);
+    //        setVariableValueToObject(
+    //                mojo1, "remoteProjectRepositories", mojo1.getProject().getRemoteProjectRepositories());
+    //        setVariableValueToObject(
+    //                mojo1, "siteDirectory", new File(mojo1.getProject().getBasedir(), "src/site"));
+    //
+    //        PluginDescriptor descriptorStub = new PluginDescriptor();
+    //        descriptorStub.setGroupId("org.apache.maven.plugins");
+    //        descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //        setVariableValueToObject(mojo1, "plugin", descriptorStub);
+    //
+    //        File generatedReport = generateReport(mojo1, pluginXmlFile);
+    //        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //        File outputFile = (File) getVariableValueFromObject(mojo1, "outputFile");
+    //        Assertions.assertNotNull(outputFile, "Test output file");
+    //        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //        String cacheFile = (String) getVariableValueFromObject(mojo1, "cacheFile");
+    //        if (cacheFile != null) {
+    //            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //        }
+    //
+    //        File useFile = (File) getVariableValueFromObject(mojo1, "useFile");
+    //        if (useFile != null) {
+    //            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //        }
+    //
+    //        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //        Boolean rules = (Boolean) getVariableValueFromObject(mojo1, "enableRulesSummary");
+    //        if (rules) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //        Boolean severity = (Boolean) getVariableValueFromObject(mojo1, "enableSeveritySummary");
+    //        if (severity) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //        Boolean files = (Boolean) getVariableValueFromObject(mojo1, "enableFilesSummary");
+    //        if (files) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testFailOnError() {
+    //        try {
+    //            File pluginXmlFile =
+    //                    new File(getBasedir(), "src/test/resources/plugin-configs/" +
+    // "fail-on-error-plugin-config.xml");
+    //            ResourceBundle bundle =
+    //                    ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //            Assertions.assertNotNull(mojo, "Mojo not found.");
+    //
+    //            LegacySupport legacySupport = lookup(LegacySupport.class);
+    //            legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //            DefaultRepositorySystemSession repoSession =
+    //                    (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //            repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                    .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //            List<MavenProject> reactorProjects =
+    //                    mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+    //
+    //            setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
+    //            setVariableValueToObject(mojo, "session", legacySupport.getSession());
+    //            setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+    //            setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+    //            setVariableValueToObject(
+    //                    mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+    //            setVariableValueToObject(
+    //                    mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
+    //
+    //            PluginDescriptor descriptorStub = new PluginDescriptor();
+    //            descriptorStub.setGroupId("org.apache.maven.plugins");
+    //            descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //            setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //            File generatedReport = generateReport(mojo, pluginXmlFile);
+    //            assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //            File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //            Assertions.assertNotNull(outputFile, "Test output file");
+    //            Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //            String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //            if (cacheFile != null) {
+    //                Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //            }
+    //
+    //            File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //            if (useFile != null) {
+    //                Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //            }
+    //
+    //            String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //            boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //            Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //            if (rules) {
+    //                Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //            } else {
+    //                Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //            }
+    //
+    //            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //            Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //            if (severity) {
+    //                Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //            } else {
+    //                Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //            }
+    //
+    //            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //            Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //            if (files) {
+    //                Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //            } else {
+    //                Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //            }
+    //
+    //            fail("Must throw exception on errors");
+    //        } catch (Exception e) {
+    //            assertNotNull(e.getMessage());
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testDependencyResolutionException() {
+    //        try {
+    //            File pluginXmlFile = new File(
+    //                    getBasedir(), "src/test/resources/plugin-configs/" +
+    // "dep-resolution-exception-plugin-config.xml");
+    //            ResourceBundle bundle =
+    //                    ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //            Assertions.assertNotNull(mojo, "Mojo not found.");
+    //
+    //            LegacySupport legacySupport = lookup(LegacySupport.class);
+    //            legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //            DefaultRepositorySystemSession repoSession =
+    //                    (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //            repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                    .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //            List<MavenProject> reactorProjects =
+    //                    mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+    //
+    //            setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
+    //            setVariableValueToObject(mojo, "session", legacySupport.getSession());
+    //            setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+    //            setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+    //            setVariableValueToObject(
+    //                    mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+    //            setVariableValueToObject(
+    //                    mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
+    //
+    //            PluginDescriptor descriptorStub = new PluginDescriptor();
+    //            descriptorStub.setGroupId("org.apache.maven.plugins");
+    //            descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //            setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //            File generatedReport = generateReport(mojo, pluginXmlFile);
+    //            assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //            File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //            Assertions.assertNotNull(outputFile, "Test output file");
+    //            Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //            String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //            if (cacheFile != null) {
+    //                Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //            }
+    //
+    //            File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //            if (useFile != null) {
+    //                Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //            }
+    //
+    //            String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //            boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //            Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //            if (rules) {
+    //                Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //            } else {
+    //                Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //            }
+    //
+    //            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //            Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //            if (severity) {
+    //                Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //            } else {
+    //                Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //            }
+    //
+    //            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //            Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //            if (files) {
+    //                Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //            } else {
+    //                Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //            }
+    //
+    //            fail("Must throw exception on errors");
+    //        } catch (Exception e) {
+    //            if (!(e.getCause().getCause().getCause() instanceof DependencyResolutionRequiredException)) {
+    //                e.printStackTrace();
+    //                fail("Must throw exception DependencyResolutionRequiredException on errors and not "
+    //                        + e.getClass().getName() + ", " + e.getMessage());
+    //            }
+    //        }
+    //    }
+    //
+    //    @Test
+    //    public void testTestSourceDirectory(CheckstyleReport mojo) throws Exception {
+    //        File pluginXmlFile = new File(
+    //                getBasedir(), "src/test/resources/plugin-configs/" + "test-source-directory-plugin-config.xml");
+    //        ResourceBundle bundle =
+    //                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    //        Assertions.assertNotNull(mojo, "Mojo not found.");
+    //
+    //        LegacySupport legacySupport = lookup(LegacySupport.class);
+    //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+    //        DefaultRepositorySystemSession repoSession =
+    //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+    //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
+    //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
+    //
+    //        List<MavenProject> reactorProjects =
+    //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
+    //
+    //        setVariableValueToObject(mojo, "mojoExecution", getMockMojoExecution());
+    //        setVariableValueToObject(mojo, "session", legacySupport.getSession());
+    //        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
+    //        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
+    //        setVariableValueToObject(
+    //                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
+    //        setVariableValueToObject(
+    //                mojo, "siteDirectory", new File(mojo.getProject().getBasedir(), "src/site"));
+    //
+    //        PluginDescriptor descriptorStub = new PluginDescriptor();
+    //        descriptorStub.setGroupId("org.apache.maven.plugins");
+    //        descriptorStub.setArtifactId("maven-checkstyle-plugin");
+    //        setVariableValueToObject(mojo, "plugin", descriptorStub);
+    //
+    //        File generatedReport = generateReport(mojo, pluginXmlFile);
+    //        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
+    //
+    //        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
+    //        Assertions.assertNotNull(outputFile, "Test output file");
+    //        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+    //
+    //        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
+    //        if (cacheFile != null) {
+    //            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+    //        }
+    //
+    //        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
+    //        if (useFile != null) {
+    //            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+    //        }
+    //
+    //        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+    //
+    //        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
+    //        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
+    //        if (rules) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
+    //        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
+    //        if (severity) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+    //        }
+    //
+    //        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
+    //        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
+    //        if (files) {
+    //            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+    //        } else {
+    //            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+    //        }
+    //    }
 
     private static String getHtmlHeader(String s) {
         return ">" + s + "</h2>";
@@ -851,23 +851,23 @@ public class CheckstyleReportTest {
         return report;
     }
 
-//    protected File generateReport(CheckstyleReport mojo, File pluginXmlFile) throws Exception {
-//        mojo.execute();
-//
-//        ProjectBuilder builder = lookup(ProjectBuilder.class);
-//
-//        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
-//        buildingRequest.setRepositorySession(lookup(LegacySupport.class).getRepositorySession());
-//
-//        testMavenProject = builder.build(pluginXmlFile, buildingRequest).getProject();
-//
-//        File outputDir = mojo.getReportOutputDirectory();
-//        String filename = mojo.getOutputName() + ".html";
-//
-//        File file = new File(outputDir, filename);
-//
-//        return file;
-//    }
+    //    protected File generateReport(CheckstyleReport mojo, File pluginXmlFile) throws Exception {
+    //        mojo.execute();
+    //
+    //        ProjectBuilder builder = lookup(ProjectBuilder.class);
+    //
+    //        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
+    //        buildingRequest.setRepositorySession(lookup(LegacySupport.class).getRepositorySession());
+    //
+    //        testMavenProject = builder.build(pluginXmlFile, buildingRequest).getProject();
+    //
+    //        File outputDir = mojo.getReportOutputDirectory();
+    //        String filename = mojo.getOutputName() + ".html";
+    //
+    //        File file = new File(outputDir, filename);
+    //
+    //        return file;
+    //    }
 
     /**
      * Read the contents of the specified file object into a string
@@ -875,6 +875,4 @@ public class CheckstyleReportTest {
     protected String readFile(File checkstyleTestDir, String fileName) throws IOException {
         return new String(Files.readAllBytes(checkstyleTestDir.toPath().resolve(fileName)));
     }
-
-
 }

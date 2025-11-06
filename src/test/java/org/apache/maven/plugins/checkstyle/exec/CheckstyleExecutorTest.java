@@ -18,10 +18,10 @@
  */
 package org.apache.maven.plugins.checkstyle.exec;
 
+import javax.inject.Inject;
+
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.junit.jupiter.api.Test;
-
-import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CheckstyleExecutorTest {
     @Inject
     private CheckstyleExecutor executor;
+
     @Test
     public void testDefaultConfig() throws Exception {
         assertNotNull(executor, "project null.");
