@@ -21,6 +21,7 @@ package org.apache.maven.plugins.checkstyle;
 import javax.inject.Inject;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
@@ -115,35 +116,120 @@ public class CheckstyleReportTest {
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
     public void testMinConfiguration(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, getClassLoader());
-        //
-        //        LegacySupport legacySupport = lookup(LegacySupport.class);
-        //        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
-        //        DefaultRepositorySystemSession repoSession =
-        //                (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-        //        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManagerFactory()
-        //                .newInstance(repoSession, new LocalRepository(artifactStubFactory.getWorkingDir())));
-        //
-        //        List<MavenProject> reactorProjects =
-        //                mojo.getReactorProjects() != null ? mojo.getReactorProjects() : Collections.emptyList();
-        //
-        //        setVariableValueToObject(mojo, "session", legacySupport.getSession());
-        //        setVariableValueToObject(mojo, "repoSession", legacySupport.getRepositorySession());
-        //        setVariableValueToObject(mojo, "reactorProjects", reactorProjects);
-        //        setVariableValueToObject(
-        //                mojo, "remoteProjectRepositories", mojo.getProject().getRemoteProjectRepositories());
-        //        setVariableValueToObject(
-
         mojo.execute();
 
-        //        ProjectBuilder builder = lookup(ProjectBuilder.class);
-        //
-        //        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest();
-        //        buildingRequest.setRepositorySession(lookup(LegacySupport.class).getRepositorySession());
-        //
-        //        testMavenProject = builder.build(pluginXmlFile, buildingRequest).getProject();
 
+        assertGeneratedReport(mojo);
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "custom-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testCustomConfiguration(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
+    }
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "useFile-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testUseFile(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+        assertGeneratedReport(mojo);
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "no-rules-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoRulesSummary(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "no-severity-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoSeveritySummary(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "no-files-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoFilesSummary(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    @Disabled // TODO the junit 3 version produce a false exception (see description in PR https://github.com/apache/maven-checkstyle-plugin/pull/645)
+    public void testFailOnError(CheckstyleReport mojo) {
+        try {
+            mojo.execute();
+            assertGeneratedReport(mojo); // TODO if this necessary
+            fail("Must throw exception on errors");
+        } catch (Exception e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "dep-resolution-exception-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testDependencyResolutionException(CheckstyleReport mojo) {
+        try {
+            mojo.execute();
+
+            fail("Must throw exception on errors");
+        } catch (Exception e) {
+            if (!(e.getCause().getCause().getCause() instanceof DependencyResolutionRequiredException)) {
+                e.printStackTrace();
+                fail("Must throw exception DependencyResolutionRequiredException on errors and not "
+                        + e.getClass().getName() + ", " + e.getMessage());
+            }
+        }
+    }
+
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "test-source-directory-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testTestSourceDirectory(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
+    }
+
+    private void assertGeneratedReport(CheckstyleReport mojo) throws IllegalAccessException, IOException {
         File outputDir = mojo.getReportOutputDirectory();
         String filename = mojo.getOutputName() + ".html";
 
@@ -166,6 +252,8 @@ public class CheckstyleReportTest {
 
         String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
 
+        ResourceBundle bundle =
+                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, getClassLoader());
         boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
         Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
         if (rules) {
@@ -193,496 +281,6 @@ public class CheckstyleReportTest {
 
     private ClassLoader getClassLoader() {
         return this.getClass().getClassLoader();
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "custom-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testCustomConfiguration(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-        mojo.execute();
-
-        File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
-
-        File file = new File(outputDir, filename);
-
-        File generatedReport = file;
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        assertNotNull(outputFile, "Test output file");
-        assertTrue(outputFile.exists(), "Test output file exists");
-
-        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-        if (cacheFile != null) {
-            assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-        }
-
-        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-        if (useFile != null) {
-            assertTrue(useFile.exists(), "Test useFile exists");
-        }
-
-        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-        if (rules) {
-            assertTrue(searchHeaderFound, "Test for Rules Summary");
-        } else {
-            assertFalse(searchHeaderFound, "Test for Rules Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-        if (severity) {
-            assertTrue(searchHeaderFound, "Test for Severity Summary");
-        } else {
-            assertFalse(searchHeaderFound, "Test for Severity Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-        if (files) {
-            assertTrue(searchHeaderFound, "Test for Files Summary");
-        } else {
-            assertFalse(searchHeaderFound, "Test for Files Summary");
-        }
-    }
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "useFile-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testUseFile(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-        mojo.execute();
-
-        File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
-
-        File generatedReport = new File(outputDir, filename);
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        Assertions.assertNotNull(outputFile, "Test output file");
-        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-        if (cacheFile != null) {
-            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-        }
-
-        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-        if (useFile != null) {
-            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-        }
-
-        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-        if (rules) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-        if (severity) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-        if (files) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-        }
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "no-rules-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testNoRulesSummary(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-        mojo.execute();
-
-        File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
-
-        File generatedReport = new File(outputDir, filename);
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        Assertions.assertNotNull(outputFile, "Test output file");
-        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-        if (cacheFile != null) {
-            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-        }
-
-        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-        if (useFile != null) {
-            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-        }
-
-        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-        if (rules) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-        if (severity) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-        if (files) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-        }
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "no-severity-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testNoSeveritySummary(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-        mojo.execute();
-
-        File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
-
-        File generatedReport = new File(outputDir, filename);
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        Assertions.assertNotNull(outputFile, "Test output file");
-        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-        if (cacheFile != null) {
-            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-        }
-
-        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-        if (useFile != null) {
-            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-        }
-
-        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-        if (rules) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-        if (severity) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-        if (files) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-        }
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "no-files-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testNoFilesSummary(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-        mojo.execute();
-
-        File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
-
-        File generatedReport = new File(outputDir, filename);
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        Assertions.assertNotNull(outputFile, "Test output file");
-        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-        if (cacheFile != null) {
-            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-        }
-
-        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-        if (useFile != null) {
-            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-        }
-
-        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-        if (rules) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-        if (severity) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-        if (files) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-        }
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    @Disabled // TODO find out why this test does not produce an exception
-    public void testFailOnError(CheckstyleReport mojo) {
-        try {
-            ResourceBundle bundle =
-                    ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-            mojo.execute();
-
-            File outputDir = mojo.getReportOutputDirectory();
-            String filename = mojo.getOutputName() + ".html";
-
-            File generatedReport = new File(outputDir, filename);
-            assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-            File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-            Assertions.assertNotNull(outputFile, "Test output file");
-            Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-            String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-            if (cacheFile != null) {
-                Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-            }
-
-            File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-            if (useFile != null) {
-                Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-            }
-
-            String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-            boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-            Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-            if (rules) {
-                Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-            } else {
-                Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-            }
-
-            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-            Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-            if (severity) {
-                Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-            } else {
-                Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-            }
-
-            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-            Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-            if (files) {
-                Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-            } else {
-                Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-            }
-
-            fail("Must throw exception on errors");
-        } catch (Exception e) {
-            assertNotNull(e.getMessage());
-        }
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "dep-resolution-exception-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testDependencyResolutionException(CheckstyleReport mojo) {
-        try {
-            ResourceBundle bundle =
-                    ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-            mojo.execute();
-
-            File outputDir = mojo.getReportOutputDirectory();
-            String filename = mojo.getOutputName() + ".html";
-
-            File generatedReport = new File(outputDir, filename);
-            assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-            File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-            Assertions.assertNotNull(outputFile, "Test output file");
-            Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-            String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-            if (cacheFile != null) {
-                Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-            }
-
-            File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-            if (useFile != null) {
-                Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-            }
-
-            String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-            boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-            Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-            if (rules) {
-                Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-            } else {
-                Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-            }
-
-            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-            Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-            if (severity) {
-                Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-            } else {
-                Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-            }
-
-            searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-            Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-            if (files) {
-                Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-            } else {
-                Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-            }
-
-            fail("Must throw exception on errors");
-        } catch (Exception e) {
-            if (!(e.getCause().getCause().getCause() instanceof DependencyResolutionRequiredException)) {
-                e.printStackTrace();
-                fail("Must throw exception DependencyResolutionRequiredException on errors and not "
-                        + e.getClass().getName() + ", " + e.getMessage());
-            }
-        }
-    }
-
-    // We need to change the basedir to point to test repositor with out site.xml file
-    // without it test will use real project site.xml without skin configuration
-    @Basedir("/plugin-configs")
-    @InjectMojo(goal = "checkstyle", pom = "test-source-directory-plugin-config.xml")
-    @MojoParameter(name = "siteDirectory", value = "src/site")
-    @Test
-    public void testTestSourceDirectory(CheckstyleReport mojo) throws Exception {
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
-
-        mojo.execute();
-
-        File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
-
-        File generatedReport = new File(outputDir, filename);
-        assertTrue(new File(generatedReport.getAbsolutePath()).exists());
-
-        File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        Assertions.assertNotNull(outputFile, "Test output file");
-        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
-
-        String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
-        if (cacheFile != null) {
-            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
-        }
-
-        File useFile = (File) getVariableValueFromObject(mojo, "useFile");
-        if (useFile != null) {
-            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
-        }
-
-        String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
-
-        boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
-        Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
-        if (rules) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
-        Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
-        if (severity) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
-        }
-
-        searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
-        Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
-        if (files) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
-        } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
-        }
     }
 
     private static String getHtmlHeader(String s) {
