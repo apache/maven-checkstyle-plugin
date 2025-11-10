@@ -26,57 +26,40 @@ import java.util.ResourceBundle;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.doxia.tools.SiteTool;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author Edwin Punzalan
  */
 public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Test
     public void testNoSource() throws Exception {
         File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
-    @Test
     public void testMinConfiguration() throws Exception {
         generateReport("min-plugin-config.xml");
     }
 
-    @Test
     public void testCustomConfiguration() throws Exception {
         generateReport("custom-plugin-config.xml");
     }
 
-    @Test
     public void testUseFile() throws Exception {
         generateReport("useFile-plugin-config.xml");
     }
 
-    @Test
     public void testNoRulesSummary() throws Exception {
         generateReport("no-rules-plugin-config.xml");
     }
 
-    @Test
     public void testNoSeveritySummary() throws Exception {
         generateReport("no-severity-plugin-config.xml");
     }
 
-    @Test
     public void testNoFilesSummary() throws Exception {
         generateReport("no-files-plugin-config.xml");
     }
 
-    @Test
     public void testFailOnError() {
         try {
             generateReport("fail-on-error-plugin-config.xml");
@@ -87,7 +70,6 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         }
     }
 
-    @Test
     public void testDependencyResolutionException() {
         try {
             generateReport("dep-resolution-exception-plugin-config.xml");
@@ -102,7 +84,6 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         }
     }
 
-    @Test
     public void testTestSourceDirectory() throws Exception {
         generateReport("test-source-directory-plugin-config.xml");
     }
@@ -123,17 +104,17 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         assertTrue(new File(generatedReport.getAbsolutePath()).exists());
 
         File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        Assertions.assertNotNull(outputFile, "Test output file");
-        Assertions.assertTrue(outputFile.exists(), "Test output file exists");
+        assertNotNull("Test output file", outputFile);
+        assertTrue("Test output file exists", outputFile.exists());
 
         String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
         if (cacheFile != null) {
-            Assertions.assertTrue(new File(cacheFile).exists(), "Test cache file exists");
+            assertTrue("Test cache file exists", new File(cacheFile).exists());
         }
 
         File useFile = (File) getVariableValueFromObject(mojo, "useFile");
         if (useFile != null) {
-            Assertions.assertTrue(useFile.exists(), "Test useFile exists");
+            assertTrue("Test useFile exists", useFile.exists());
         }
 
         String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
@@ -141,25 +122,25 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
         Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
         if (rules) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Rules Summary");
+            assertTrue("Test for Rules Summary", searchHeaderFound);
         } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Rules Summary");
+            assertFalse("Test for Rules Summary", searchHeaderFound);
         }
 
         searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
         Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
         if (severity) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Severity Summary");
+            assertTrue("Test for Severity Summary", searchHeaderFound);
         } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Severity Summary");
+            assertFalse("Test for Severity Summary", searchHeaderFound);
         }
 
         searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
         Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
         if (files) {
-            Assertions.assertTrue(searchHeaderFound, "Test for Files Summary");
+            assertTrue("Test for Files Summary", searchHeaderFound);
         } else {
-            Assertions.assertFalse(searchHeaderFound, "Test for Files Summary");
+            assertFalse("Test for Files Summary", searchHeaderFound);
         }
     }
 

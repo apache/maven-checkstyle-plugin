@@ -19,13 +19,10 @@
 package org.apache.maven.plugins.checkstyle.exec;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class CheckstyleExecutorTest extends AbstractMojoTestCase {
-    @Test
     public void testDefaultConfig() throws Exception {
         CheckstyleExecutor executor = (CheckstyleExecutor) lookup(CheckstyleExecutor.class);
-        Assertions.assertNotNull(executor, "project null.");
+        assertNotNull("project null.", executor);
     }
 }
