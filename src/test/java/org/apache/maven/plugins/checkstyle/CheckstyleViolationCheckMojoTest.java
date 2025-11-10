@@ -20,17 +20,13 @@ package org.apache.maven.plugins.checkstyle;
 
 import javax.inject.Inject;
 
-import java.io.File;
-
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
-import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
@@ -64,25 +60,6 @@ public class CheckstyleViolationCheckMojoTest {
         } catch (MojoFailureException e) {
             // expected
         }
-    }
-
-    @Provides
-    public MavenProjectStub projectStub() {
-        return new MavenProjectStub() {
-            public File getFile() {
-                return new File(getBasedir(), "target/classes");
-            }
-
-            public Build getBuild() {
-                return new Build() {
-                    private static final long serialVersionUID = -743084937617131258L;
-
-                    public String getDirectory() {
-                        return getBasedir() + "/target/classes";
-                    }
-                };
-            }
-        };
     }
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
