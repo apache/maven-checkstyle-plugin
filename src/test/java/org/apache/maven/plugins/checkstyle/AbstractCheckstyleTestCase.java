@@ -39,6 +39,7 @@ import org.apache.maven.project.ProjectBuildingRequest;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.internal.impl.SimpleLocalRepositoryManagerFactory;
 import org.eclipse.aether.repository.LocalRepository;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Abstract class to test reports generation.
@@ -51,8 +52,7 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
      */
     private MavenProject testMavenProject;
 
-    @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         // required for mojo lookups to work
         super.setUp();
 
@@ -104,7 +104,7 @@ public abstract class AbstractCheckstyleTestCase extends AbstractMojoTestCase {
 
     protected CheckstyleReport createReportMojo(String goal, File pluginXmlFile) throws Exception {
         CheckstyleReport mojo = (CheckstyleReport) lookupMojo(goal, pluginXmlFile);
-        assertNotNull("Mojo not found.", mojo);
+        Assertions.assertNotNull(mojo, "Mojo not found.");
 
         LegacySupport legacySupport = lookup(LegacySupport.class);
         legacySupport.setSession(newMavenSession(new MavenProjectStub()));
