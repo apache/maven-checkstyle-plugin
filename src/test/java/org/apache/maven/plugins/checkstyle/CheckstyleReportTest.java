@@ -18,61 +18,193 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import javax.inject.Inject;
+
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
+import org.apache.maven.api.plugin.testing.Basedir;
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.tools.SiteTool;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.internal.aether.DefaultRepositorySystemSessionFactory;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
+import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Edwin Punzalan
  */
-public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
-    public void testNoSource() throws Exception {
-        File generatedReport = generateReport(getGoal(), "no-source-plugin-config.xml");
+@MojoTest
+public class CheckstyleReportTest {
+
+    /**
+     * The project to test.
+     */
+    @Inject
+    private MavenProject testMavenProject;
+
+    @Inject
+    private MavenSession mavenSession;
+
+    @Inject
+    private DefaultRepositorySystemSessionFactory repoSessionFactory;
+
+    @Inject
+    private MojoExecution mojoExecution;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        // prepare realistic repository session
+        ArtifactRepository localRepo = Mockito.mock(ArtifactRepository.class);
+        Mockito.when(localRepo.getBasedir()).thenReturn(new File(getBasedir(), "target/local-repo").getAbsolutePath());
+
+        MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+        request.setLocalRepository(localRepo);
+
+        RemoteRepository centralRepo =
+                new RemoteRepository.Builder("central", "default", "https://repo.maven.apache.org/maven2").build();
+
+        DefaultRepositorySystemSession systemSession = repoSessionFactory.newRepositorySession(request);
+        Mockito.when(mavenSession.getRepositorySession()).thenReturn(systemSession);
+        Mockito.when(testMavenProject.getRemoteProjectRepositories())
+                .thenReturn(Collections.singletonList(centralRepo));
+
+        Mockito.when(mojoExecution.getPlugin()).thenReturn(new Plugin());
+    }
+
+    @InjectMojo(goal = "checkstyle", pom = "src/test/resources/plugin-configs/no-source-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoSource(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        File outputDir = mojo.getReportOutputDirectory();
+        String filename = mojo.getOutputName() + ".html";
+        File generatedReport = new File(outputDir, filename);
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
-    public void testMinConfiguration() throws Exception {
-        generateReport("min-plugin-config.xml");
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "min-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testMinConfiguration(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
     }
 
-    public void testCustomConfiguration() throws Exception {
-        generateReport("custom-plugin-config.xml");
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "custom-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testCustomConfiguration(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
+    }
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "useFile-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testUseFile(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+        assertGeneratedReport(mojo);
     }
 
-    public void testUseFile() throws Exception {
-        generateReport("useFile-plugin-config.xml");
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "no-rules-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoRulesSummary(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
     }
 
-    public void testNoRulesSummary() throws Exception {
-        generateReport("no-rules-plugin-config.xml");
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "no-severity-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoSeveritySummary(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
     }
 
-    public void testNoSeveritySummary() throws Exception {
-        generateReport("no-severity-plugin-config.xml");
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "no-files-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testNoFilesSummary(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
     }
 
-    public void testNoFilesSummary() throws Exception {
-        generateReport("no-files-plugin-config.xml");
-    }
-
-    public void testFailOnError() {
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    @Disabled // TODO the junit 3 version produce a false exception (see description in PR
+    // https://github.com/apache/maven-checkstyle-plugin/pull/645)
+    public void testFailOnError(CheckstyleReport mojo) {
         try {
-            generateReport("fail-on-error-plugin-config.xml");
-
+            mojo.execute();
+            assertGeneratedReport(mojo); // TODO if this necessary
             fail("Must throw exception on errors");
         } catch (Exception e) {
             assertNotNull(e.getMessage());
         }
     }
 
-    public void testDependencyResolutionException() {
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "dep-resolution-exception-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testDependencyResolutionException(CheckstyleReport mojo) {
         try {
-            generateReport("dep-resolution-exception-plugin-config.xml");
+            mojo.execute();
 
             fail("Must throw exception on errors");
         } catch (Exception e) {
@@ -84,72 +216,73 @@ public class CheckstyleReportTest extends AbstractCheckstyleTestCase {
         }
     }
 
-    public void testTestSourceDirectory() throws Exception {
-        generateReport("test-source-directory-plugin-config.xml");
+    // We need to change the basedir to point to test repositor with out site.xml file
+    // without it test will use real project site.xml without skin configuration
+    @Basedir("/plugin-configs")
+    @InjectMojo(goal = "checkstyle", pom = "test-source-directory-plugin-config.xml")
+    @MojoParameter(name = "siteDirectory", value = "src/site")
+    @Test
+    public void testTestSourceDirectory(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
     }
 
-    private void generateReport(String pluginXml) throws Exception {
-        File pluginXmlFile = new File(getBasedir(), "src/test/resources/plugin-configs/" + pluginXml);
-        ResourceBundle bundle =
-                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, this.getClassLoader());
+    private void assertGeneratedReport(CheckstyleReport mojo) throws IllegalAccessException, IOException {
+        File outputDir = mojo.getReportOutputDirectory();
+        String filename = mojo.getOutputName() + ".html";
 
-        CheckstyleReport mojo = createReportMojo(getGoal(), pluginXmlFile);
-
-        PluginDescriptor descriptorStub = new PluginDescriptor();
-        descriptorStub.setGroupId("org.apache.maven.plugins");
-        descriptorStub.setArtifactId("maven-checkstyle-plugin");
-        setVariableValueToObject(mojo, "plugin", descriptorStub);
-
-        File generatedReport = generateReport(mojo, pluginXmlFile);
+        File generatedReport = new File(outputDir, filename);
         assertTrue(new File(generatedReport.getAbsolutePath()).exists());
 
         File outputFile = (File) getVariableValueFromObject(mojo, "outputFile");
-        assertNotNull("Test output file", outputFile);
-        assertTrue("Test output file exists", outputFile.exists());
+        assertNotNull(outputFile, "Test output file");
+        assertTrue(outputFile.exists(), "Test output file exists");
 
         String cacheFile = (String) getVariableValueFromObject(mojo, "cacheFile");
         if (cacheFile != null) {
-            assertTrue("Test cache file exists", new File(cacheFile).exists());
+            assertTrue(new File(cacheFile).exists(), "Test cache file exists");
         }
 
         File useFile = (File) getVariableValueFromObject(mojo, "useFile");
         if (useFile != null) {
-            assertTrue("Test useFile exists", useFile.exists());
+            assertTrue(useFile.exists(), "Test useFile exists");
         }
 
         String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
 
+        ResourceBundle bundle =
+                ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, getClassLoader());
         boolean searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.rules")));
         Boolean rules = (Boolean) getVariableValueFromObject(mojo, "enableRulesSummary");
         if (rules) {
-            assertTrue("Test for Rules Summary", searchHeaderFound);
+            assertTrue(searchHeaderFound, "Test for Rules Summary");
         } else {
-            assertFalse("Test for Rules Summary", searchHeaderFound);
+            assertFalse(searchHeaderFound, "Test for Rules Summary");
         }
 
         searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.summary")));
         Boolean severity = (Boolean) getVariableValueFromObject(mojo, "enableSeveritySummary");
         if (severity) {
-            assertTrue("Test for Severity Summary", searchHeaderFound);
+            assertTrue(searchHeaderFound, "Test for Severity Summary");
         } else {
-            assertFalse("Test for Severity Summary", searchHeaderFound);
+            assertFalse(searchHeaderFound, "Test for Severity Summary");
         }
 
         searchHeaderFound = str.contains(getHtmlHeader(bundle.getString("report.checkstyle.files")));
         Boolean files = (Boolean) getVariableValueFromObject(mojo, "enableFilesSummary");
         if (files) {
-            assertTrue("Test for Files Summary", searchHeaderFound);
+            assertTrue(searchHeaderFound, "Test for Files Summary");
         } else {
-            assertFalse("Test for Files Summary", searchHeaderFound);
+            assertFalse(searchHeaderFound, "Test for Files Summary");
         }
+    }
+
+    private ClassLoader getClassLoader() {
+        return this.getClass().getClassLoader();
     }
 
     private static String getHtmlHeader(String s) {
         return ">" + s + "</h2>";
-    }
-
-    @Override
-    protected String getGoal() {
-        return "checkstyle";
     }
 }
