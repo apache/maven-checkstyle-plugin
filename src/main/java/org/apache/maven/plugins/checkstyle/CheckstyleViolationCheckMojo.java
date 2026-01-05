@@ -658,9 +658,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     }
 
     private int countViolations(List<Violation> violations) {
-        List<RuleUtil.Matcher> ignores = violationIgnore == null
-                ? Collections.<RuleUtil.Matcher>emptyList()
-                : RuleUtil.parseMatchers(violationIgnore.split(","));
+        List<RuleUtil.Matcher> ignores =
+                violationIgnore == null ? Collections.emptyList() : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         int ignored = 0;
         int countedViolations = 0;
@@ -691,9 +690,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
-        List<RuleUtil.Matcher> ignores = violationIgnore == null
-                ? Collections.<RuleUtil.Matcher>emptyList()
-                : RuleUtil.parseMatchers(violationIgnore.split(","));
+        List<RuleUtil.Matcher> ignores =
+                violationIgnore == null ? Collections.emptyList() : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         violations.stream()
                 .filter(violation -> isViolation(violation.getSeverity()))
