@@ -436,21 +436,6 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
     }
 
     private List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
-        StringBuilder excludesStr = new StringBuilder();
-
-        if (StringUtils.isNotEmpty(request.getExcludes())) {
-            excludesStr.append(request.getExcludes());
-        }
-
-        String[] defaultExcludes = FileUtils.getDefaultExcludes();
-        for (String defaultExclude : defaultExcludes) {
-            if (excludesStr.length() > 0) {
-                excludesStr.append(",");
-            }
-
-            excludesStr.append(defaultExclude);
-        }
-
         Set<File> files = new LinkedHashSet<>();
         if (request.isAggregate()) {
             for (MavenProject project : request.getReactorProjects()) {
