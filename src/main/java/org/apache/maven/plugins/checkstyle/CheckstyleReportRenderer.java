@@ -183,8 +183,6 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
     /**
      * Create the rules summary section of the report.
-     *
-     * @param results the results to summarize
      */
     private void renderRulesSummarySection() {
         if (!enableRulesSummary) {
@@ -603,7 +601,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         return (checkstyleApiPackage == null) ? null : checkstyleApiPackage.getImplementationVersion();
     }
 
-    public List<ConfReference> sortConfiguration(CheckstyleResults results) {
+    private List<ConfReference> sortConfiguration(CheckstyleResults results) {
         List<ConfReference> result = new ArrayList<>();
 
         sortConfiguration(result, checkstyleConfig, null, results);
@@ -622,7 +620,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             String ruleName = childConfig.getName();
 
             if (treeWalkerNames.contains(ruleName)) {
-                // special sub-case: TreeWalker is the parent of multiple rules, not an effective rule
+                // special subcase: TreeWalker is the parent of multiple rules, not an effective rule
                 sortConfiguration(result, childConfig, new ChainedItem<>(config, parent), results);
             } else {
                 String fixedmessage = getConfigProperty(childConfig, null, "message", null);
