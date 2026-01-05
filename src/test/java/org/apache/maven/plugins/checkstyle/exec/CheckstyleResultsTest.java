@@ -123,7 +123,7 @@ public class CheckstyleResultsTest {
         assertEquals(3, results.getSeverityCount(SeverityLevel.ERROR), "test ERROR severity count");
         assertEquals(4, results.getSeverityCount(SeverityLevel.IGNORE), "test IGNORE severity count");
 
-        results.setFileViolations("file", Collections.<AuditEvent>emptyList());
+        results.setFileViolations("file", Collections.emptyList());
         assertEquals(0, results.getFileViolations("file").size(), "test file violations");
     }
 }
