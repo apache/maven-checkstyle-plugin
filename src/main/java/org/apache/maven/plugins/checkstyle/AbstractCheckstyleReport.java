@@ -479,11 +479,6 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
     }
 
-    @Override
-    protected MavenProject getProject() {
-        return project;
-    }
-
     protected List<MavenProject> getReactorProjects() {
         return reactorProjects;
     }
