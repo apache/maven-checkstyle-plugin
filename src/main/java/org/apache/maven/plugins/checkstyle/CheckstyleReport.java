@@ -40,7 +40,6 @@ import org.codehaus.plexus.resource.ResourceManager;
  * @author <a href="mailto:evenisse@apache.org">Emmanuel Venisse</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @author <a href="mailto:joakim@erdfelt.com">Joakim Erdfelt</a>
- *
  */
 @Mojo(name = "checkstyle", requiresDependencyResolution = ResolutionScope.COMPILE, threadSafe = true)
 public class CheckstyleReport extends AbstractCheckstyleReport {
@@ -85,13 +84,17 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
         return request;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getOutputName() {
         return "checkstyle";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean canGenerateReport() {
         if (skip) {
@@ -118,7 +121,8 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
 
     /**
      * Check if any of the resources exist.
-     * @param resources The resources to check
+     *
+     * @param resources the resources to check
      * @return <code>true</code> if the resource directory exist
      */
     private boolean hasResources(List<Resource> resources) {

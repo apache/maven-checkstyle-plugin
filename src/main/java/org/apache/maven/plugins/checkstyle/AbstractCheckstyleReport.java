@@ -204,6 +204,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
     /**
      * Specifies the names filter of the resource files to be used for Checkstyle.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true)
@@ -212,6 +213,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Specifies the names filter of the resource files to be excluded for
      * Checkstyle.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.resourceExcludes")
@@ -219,6 +221,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
     /**
      * Specifies whether to include the resource directories in the check.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.includeResources", defaultValue = "true", required = true)
@@ -226,6 +229,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
     /**
      * Specifies whether to include the test resource directories in the check.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.includeTestResources", defaultValue = "true", required = true)
@@ -244,6 +248,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Specifies the location of the source directories to be used for Checkstyle.
      * Default value is <code>${project.compileSourceRoots}</code>.
+     *
      * @since 2.13
      */
     // Compatibility with all Maven 3: default of 'project.compileSourceRoots' is done manually because of MNG-5440
@@ -264,6 +269,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Specifies the location of the test source directories to be used for Checkstyle.
      * Default value is <code>${project.testCompileSourceRoots}</code>.
+     *
      * @since 2.13
      */
     // Compatibility with all Maven 3: default of 'project.testCompileSourceRoots' is done manually because of MNG-5440
@@ -336,7 +342,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     private boolean enableFilesSummary;
 
     /**
-     * The Plugin Descriptor
+     * The Plugin Descriptor.
      */
     @Parameter(defaultValue = "${plugin}", readonly = true, required = true)
     private PluginDescriptor plugin;
@@ -445,7 +451,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     protected final CheckstyleExecutor checkstyleExecutor;
 
     /**
-     * Internationalization component
+     * Internationalization component.
      */
     private I18N i18n;
 
@@ -458,22 +464,26 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         this.i18n = i18n;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName(Locale locale) {
         return getI18nString(locale, "name");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription(Locale locale) {
         return getI18nString(locale, "description");
     }
 
     /**
-     * @param locale The locale
-     * @param key The key to search for
-     * @return The text appropriate for the locale.
+     * @param locale the locale
+     * @param key the key to search for
+     * @return the text appropriate for the locale
      */
     protected String getI18nString(Locale locale, String key) {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
@@ -488,7 +498,9 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
         return reactorProjects;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void executeReport(Locale locale) throws MavenReportException {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
@@ -574,8 +586,8 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Create the Checkstyle executor request.
      *
-     * @return The executor request.
-     * @throws MavenReportException If something goes wrong during creation.
+     * @return the executor request
+     * @throws MavenReportException if something goes wrong during creation
      */
     protected abstract CheckstyleExecutorRequest createRequest() throws MavenReportException;
 
@@ -610,8 +622,8 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Creates and returns the report generation listener.
      *
-     * @return The audit listener.
-     * @throws MavenReportException If something goes wrong.
+     * @return the audit listener
+     * @throws MavenReportException if something goes wrong
      */
     protected AuditListener getListener() throws MavenReportException {
         AuditListener listener = null;
@@ -660,8 +672,8 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
     /**
      * Creates and returns the console listener.
      *
-     * @return The console listener.
-     * @throws MavenReportException If something goes wrong.
+     * @return the console listener
+     * @throws MavenReportException if something goes wrong
      */
     protected AuditListener getConsoleListener() throws MavenReportException {
         AuditListener consoleListener;

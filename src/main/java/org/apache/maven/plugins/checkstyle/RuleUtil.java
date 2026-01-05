@@ -131,6 +131,7 @@ public final class RuleUtil {
     public interface Matcher {
         /**
          * Does the event source name match?
+         *
          * @param eventSrcName the event source name
          * @return boolean
          */

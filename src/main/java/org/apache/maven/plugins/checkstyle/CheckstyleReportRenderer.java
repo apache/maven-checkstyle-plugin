@@ -111,8 +111,8 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     }
 
     /**
-     * @param key The key.
-     * @return The translated string.
+     * @param key the key
+     * @return the translated string
      */
     private String getI18nString(String key) {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
@@ -225,9 +225,9 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     /**
      * Create a summary for one Checkstyle rule.
      *
-     * @param ref The configuration reference for the row
-     * @param results The results to summarize
-     * @param previousCategory The previous row's category
+     * @param ref the configuration reference for the row
+     * @param results the results to summarize
+     * @param previousCategory the previous row's category
      */
     private void renderRuleRow(ConfReference ref, CheckstyleResults results, String previousCategory) {
         Configuration checkerConfig = ref.configuration;
@@ -326,10 +326,10 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
      * Check if a violation matches a rule.
      *
      * @param event the violation to check
-     * @param ruleName The name of the rule
-     * @param expectedMessage A message that, if it's not null, will be matched to the message from the violation
-     * @param expectedSeverity A severity that, if it's not null, will be matched to the severity from the violation
-     * @return The number of rule violations
+     * @param ruleName the name of the rule
+     * @param expectedMessage a message that, if it's not null, will be matched to the message from the violation
+     * @param expectedSeverity a severity that, if it's not null, will be matched to the severity from the violation
+     * @return the number of rule violations
      */
     public boolean matchRule(AuditEvent event, String ruleName, String expectedMessage, String expectedSeverity) {
         if (!ruleName.equals(RuleUtil.getName(event))) {
@@ -569,6 +569,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
     /**
      * Render an icon of given level with associated text.
+     *
      * @param level one of <code>INFO</code>, <code>WARNING</code> or <code>ERROR</code> constants
      * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
      * <code>TEXT_ABBREV</code> constants
@@ -595,6 +596,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
     /**
      * Get the effective Checkstyle version at runtime.
+     *
      * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
      */
     private String getCheckstyleVersion() {

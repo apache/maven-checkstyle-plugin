@@ -31,10 +31,10 @@ class Violation {
      */
     protected static final String NO_COLUMN = "-1";
 
-    /** The full qualified class name of the checkstyle rule */
+    /** The full qualified class name of the checkstyle rule. */
     private final String source;
 
-    /** The absolute path of the file containing the violation */
+    /** The absolute path of the file containing the violation. */
     private final String file;
 
     private final String line;
@@ -124,6 +124,7 @@ class Violation {
 
     /**
      * Sets the column value for this violation to the given string value.
+     *
      * @param column the column value to set. May be {@code null}, which will set it to the {@link #NO_COLUMN} value.
      */
     protected void setColumn(/* Nullable */ String column) {

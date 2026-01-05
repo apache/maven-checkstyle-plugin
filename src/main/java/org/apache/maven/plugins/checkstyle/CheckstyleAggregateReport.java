@@ -81,13 +81,17 @@ public class CheckstyleAggregateReport extends AbstractCheckstyleReport {
         return request;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getOutputName() {
         return "checkstyle-aggregate";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean canGenerateReport() {
         // TODO: would be good to scan the files here
