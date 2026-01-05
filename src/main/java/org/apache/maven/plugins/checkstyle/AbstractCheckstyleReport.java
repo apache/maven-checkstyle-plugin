@@ -500,10 +500,6 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
         locator.setOutputDirectory(new File(project.getBuild().getDirectory()));
 
-        // for when we start using maven-shared-io and maven-shared-monitor...
-        // locator = new Locator( new MojoLogMonitorAdaptor( getLog() ) );
-
-        // locator = new Locator( getLog(), new File( project.getBuild().getDirectory() ) );
         String effectiveConfigLocation = configLocation;
         if (checkstyleRules != null) {
             if (!DEFAULT_CONFIG_LOCATION.equals(configLocation)) {
