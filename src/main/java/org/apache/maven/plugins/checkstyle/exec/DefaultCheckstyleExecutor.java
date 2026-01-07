@@ -356,9 +356,9 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
     /**
      * Get the effective Checkstyle version at runtime.
-     * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
      *
-     *@todo Copied from CheckstyleReportGenerator - move to a utility class
+     * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
+     * @todo Copied from CheckstyleReportGenerator - move to a utility class
      */
     private String getCheckstyleVersion() {
         Package checkstyleApiPackage = Configuration.class.getPackage();
@@ -634,7 +634,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
      * Configures search paths in the resource locator.
      * This method should only be called once per execution.
      *
-     * @param request executor request data.
+     * @param request executor request data
      */
     private void configureResourceLocator(
             final ResourceManager resourceManager,

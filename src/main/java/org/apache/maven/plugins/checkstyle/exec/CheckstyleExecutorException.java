@@ -21,36 +21,32 @@ package org.apache.maven.plugins.checkstyle.exec;
 /**
  * @author Olivier Lamy
  * @since 2.5
- *
  */
 public class CheckstyleExecutorException extends Exception {
 
     private static final long serialVersionUID = 3239899539232498912L;
 
-    /**
-     *
-     */
     public CheckstyleExecutorException() {
         // nothing
     }
 
     /**
-     * @param message Message of the exception.
+     * @param message message of the exception
      */
     public CheckstyleExecutorException(String message) {
         super(message);
     }
 
     /**
-     * @param cause Cause of the exception.
+     * @param cause cause of the exception
      */
     public CheckstyleExecutorException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message Message of the exception.
-     * @param cause Cause of the exception.
+     * @param message message of the exception
+     * @param cause cause of the exception
      */
     public CheckstyleExecutorException(String message, Throwable cause) {
         super(message, cause);

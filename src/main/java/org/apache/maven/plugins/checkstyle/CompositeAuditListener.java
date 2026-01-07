@@ -25,7 +25,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 
 /**
- * AuditListener that forwards events to a list of other AuditListeners
+ * AuditListener that forwards events to a list of other AuditListeners.
  */
 public class CompositeAuditListener implements AuditListener {
 

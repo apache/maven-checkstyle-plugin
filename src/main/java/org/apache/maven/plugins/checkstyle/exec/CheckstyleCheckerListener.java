@@ -35,7 +35,6 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author <a href="mailto:evenisse@apache.org">Emmanuel Venisse</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- *
  */
 public class CheckstyleCheckerListener extends AutomaticBean implements AuditListener {
     private final List<File> sourceDirectories;
@@ -85,32 +84,38 @@ public class CheckstyleCheckerListener extends AutomaticBean implements AuditLis
     }
 
     /**
-     * @param severityLevel The severity level of the events to listen to.
+     * @param severityLevel the severity level of the events to listen to
      */
     public void setSeverityLevelFilter(SeverityLevel severityLevel) {
         this.severityLevel = severityLevel;
     }
 
     /**
-     * @return The severity level of the events to listen to.
+     * @return the severity level of the events to listen to
      */
     public SeverityLevel getSeverityLevelFilter() {
         return severityLevel;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void auditStarted(AuditEvent event) {
         setResults(new CheckstyleResults());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void auditFinished(AuditEvent event) {
         // do nothing
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void fileStarted(AuditEvent event) {
         final String fileName = StringUtils.replace(event.getFileName(), "\\", "/");
@@ -132,14 +137,18 @@ public class CheckstyleCheckerListener extends AutomaticBean implements AuditLis
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void fileFinished(AuditEvent event) {
         getResults().setFileViolations(currentFile, events);
         currentFile = null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addError(AuditEvent event) {
         if (SeverityLevel.IGNORE.equals(event.getSeverityLevel())) {
@@ -151,20 +160,24 @@ public class CheckstyleCheckerListener extends AutomaticBean implements AuditLis
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addException(AuditEvent event, Throwable throwable) {
         // Do Nothing
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void finishLocalSetup() throws CheckstyleException {
         // Do Nothing
     }
 
     /**
-     * @return The results of Checkstyle invocation.
+     * @return the results of Checkstyle invocation
      */
     public CheckstyleResults getResults() {
         results.setConfiguration(checkstyleConfiguration);
@@ -172,22 +185,22 @@ public class CheckstyleCheckerListener extends AutomaticBean implements AuditLis
     }
 
     /**
-     * @param results The results of Checkstyle invocation.
+     * @param results the results of Checkstyle invocation
      */
     public void setResults(CheckstyleResults results) {
         this.results = results;
     }
 
     /**
+     * @return the configuration of Checkstyle to use
      * @since 2.5
-     * @return The configuration of Checkstyle to use.
      */
     public Configuration getCheckstyleConfiguration() {
         return checkstyleConfiguration;
     }
 
     /**
-     * @param checkstyleConfiguration The configuration of Checkstyle to use.
+     * @param checkstyleConfiguration the configuration of Checkstyle to use
      * @since 2.5
      */
     public void setCheckstyleConfiguration(Configuration checkstyleConfiguration) {

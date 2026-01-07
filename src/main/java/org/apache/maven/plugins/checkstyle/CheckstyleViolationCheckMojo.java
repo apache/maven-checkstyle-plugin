@@ -72,7 +72,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * It can also be configured to re-use an earlier analysis.
  *
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
- *
  */
 @Mojo(
         name = "check",
@@ -309,7 +308,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * The Plugin Descriptor
+     * The Plugin Descriptor.
      */
     @Parameter(defaultValue = "${plugin}", readonly = true, required = true)
     private PluginDescriptor plugin;
@@ -337,6 +336,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Specifies the names filter of the files to be excluded for
      * Checkstyle when checking resources.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.resourceExcludes")
@@ -344,6 +344,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Specifies the names filter of the files to be used for Checkstyle when checking resources.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true)
@@ -372,6 +373,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Specifies the location of the test source directories to be used for Checkstyle.
      * Default value is <code>${project.testCompileSourceRoots}</code>.
+     *
      * @since 2.13
      */
     // Compatibility with all Maven 3: default of 'project.testCompileSourceRoots' is done manually because of MNG-5440
@@ -399,6 +401,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Specifies the location of the source directories to be used for Checkstyle.
      * Default value is <code>${project.compileSourceRoots}</code>.
+     *
      * @since 2.13
      */
     // Compatibility with all Maven 3: default of 'project.compileSourceRoots' is done manually because of MNG-5440
@@ -407,6 +410,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Whether to apply Checkstyle to resource directories.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.includeResources", defaultValue = "true", required = true)
@@ -414,6 +418,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Whether to apply Checkstyle to test resource directories.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.includeTestResources", defaultValue = "true", required = true)
@@ -493,7 +498,9 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         this.checkstyleExecutor = checkstyleExecutor;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
@@ -722,7 +729,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Checks if the given severity is considered a violation.
      *
-     * @param severity The severity to check
+     * @param severity the severity to check
      * @return <code>true</code> if the given severity is a violation, otherwise <code>false</code>
      */
     private boolean isViolation(String severity) {
