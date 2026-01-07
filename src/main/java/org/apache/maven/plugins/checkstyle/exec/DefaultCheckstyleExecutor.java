@@ -387,7 +387,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             if (StringUtils.isNotEmpty(request.getPropertyExpansion())) {
                 String propertyExpansion = request.getPropertyExpansion();
                 // Convert \ to \\, so that p.load will convert it back properly
-                propertyExpansion = StringUtils.replace(propertyExpansion, "\\", "\\\\");
+                propertyExpansion = propertyExpansion.replace("\\", "\\\\");
                 p.load(new ByteArrayInputStream(propertyExpansion.getBytes()));
             }
 

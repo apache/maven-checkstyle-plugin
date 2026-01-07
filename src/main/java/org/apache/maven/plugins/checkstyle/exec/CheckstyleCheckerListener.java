@@ -118,10 +118,10 @@ public class CheckstyleCheckerListener extends AutomaticBean implements AuditLis
      */
     @Override
     public void fileStarted(AuditEvent event) {
-        final String fileName = StringUtils.replace(event.getFileName(), "\\", "/");
+        final String fileName = event.getFileName().replace("\\", "/");
 
         for (File sourceDirectory : sourceDirectories) {
-            String sourceDirectoryPath = StringUtils.replace(sourceDirectory.getPath(), "\\", "/");
+            String sourceDirectoryPath = sourceDirectory.getPath().replace("\\", "/");
 
             if (fileName.startsWith(sourceDirectoryPath + "/")) {
                 currentFile = StringUtils.substring(fileName, sourceDirectoryPath.length() + 1);
