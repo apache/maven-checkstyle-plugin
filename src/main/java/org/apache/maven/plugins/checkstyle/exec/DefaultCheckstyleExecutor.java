@@ -486,11 +486,19 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             Collection<File> files,
             Collection<File> testSourceDirectories)
             throws IOException {
+
+        String excludes = request.getExcludes();
+        String defaultExcludes = String.join(",", FileUtils.getDefaultExcludes());
+        if (excludes == null || excludes.isEmpty()) {
+            excludes = defaultExcludes;
+        } else {
+            excludes = excludes + "," + defaultExcludes;
+        }
+
         if (sourceDirectories != null) {
             for (File sourceDirectory : sourceDirectories) {
                 if (sourceDirectory.isDirectory()) {
-                    final List<File> sourceFiles =
-                            FileUtils.getFiles(sourceDirectory, request.getIncludes(), request.getExcludes());
+                    final List<File> sourceFiles = FileUtils.getFiles(sourceDirectory, request.getIncludes(), excludes);
                     files.addAll(sourceFiles);
                     logger.debug("Added " + sourceFiles.size() + " source files found in '"
                             + sourceDirectory.getAbsolutePath() + "'.");
@@ -502,7 +510,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             for (File testSourceDirectory : testSourceDirectories) {
                 if (testSourceDirectory.isDirectory()) {
                     final List<File> testSourceFiles =
-                            FileUtils.getFiles(testSourceDirectory, request.getIncludes(), request.getExcludes());
+                            FileUtils.getFiles(testSourceDirectory, request.getIncludes(), excludes);
 
                     files.addAll(testSourceFiles);
                     logger.debug("Added " + testSourceFiles.size() + " test source files found in '"
