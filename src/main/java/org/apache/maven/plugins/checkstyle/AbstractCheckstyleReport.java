@@ -374,7 +374,7 @@ public abstract class AbstractCheckstyleReport extends AbstractMavenReport {
 
     /**
      * When using custom treeWalkers, specify their names here so the checks
-     * inside the treeWalker end up the the rule-summary.
+     * inside the treeWalker end up in the rule summary.
      *
      * @since 2.11
      */

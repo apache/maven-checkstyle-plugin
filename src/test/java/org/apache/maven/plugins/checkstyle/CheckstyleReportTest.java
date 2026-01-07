@@ -108,7 +108,7 @@ public class CheckstyleReportTest {
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "min-plugin-config.xml")
@@ -120,7 +120,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "custom-plugin-config.xml")
@@ -131,7 +131,7 @@ public class CheckstyleReportTest {
 
         assertGeneratedReport(mojo);
     }
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "useFile-plugin-config.xml")
@@ -142,7 +142,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "no-rules-plugin-config.xml")
@@ -154,7 +154,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "no-severity-plugin-config.xml")
@@ -166,7 +166,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "no-files-plugin-config.xml")
@@ -178,7 +178,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
@@ -196,7 +196,7 @@ public class CheckstyleReportTest {
         }
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "dep-resolution-exception-plugin-config.xml")
@@ -216,7 +216,7 @@ public class CheckstyleReportTest {
         }
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "test-source-directory-plugin-config.xml")
