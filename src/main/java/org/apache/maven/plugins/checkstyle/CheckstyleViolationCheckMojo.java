@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +61,6 @@ import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.PathTool;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
@@ -631,7 +631,9 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             if (eventType != XmlPullParser.START_TAG) {
                 continue;
             } else if ("file".equals(xpp.getName())) {
-                file = PathTool.getRelativeFilePath(basedir, xpp.getAttributeValue("", "name"));
+                file = Paths.get(basedir.toString())
+                        .relativize(Paths.get(xpp.getAttributeValue("", "name")))
+                        .toString();
                 continue;
             } else if (!"error".equals(xpp.getName())) {
                 continue;
