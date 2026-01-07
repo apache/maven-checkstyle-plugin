@@ -18,17 +18,15 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
-import java.io.InputStream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -62,7 +60,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.PathTool;
-import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -582,7 +579,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
         try (InputStream in = Files.newInputStream(outputXmlFile.toPath())) {
             XmlPullParser xpp = new MXParser();
-            xpp.se(in);
+            xpp.setInput(in, null); // null tells the parser to detect the encoding
 
             final List<Violation> violationsList = getViolations(xpp);
             long violationCount = countViolations(violationsList);
