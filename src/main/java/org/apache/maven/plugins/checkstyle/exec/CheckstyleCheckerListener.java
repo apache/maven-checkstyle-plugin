@@ -68,7 +68,7 @@ public class CheckstyleCheckerListener extends AutomaticBean implements AuditLis
     }
 
     /**
-     * @param configuration checkstyle configuration
+     * @param configuration Checkstyle configuration
      * @since 2.5
      */
     public CheckstyleCheckerListener(Configuration configuration) {
