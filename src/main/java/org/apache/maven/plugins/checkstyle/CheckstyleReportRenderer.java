@@ -339,8 +339,8 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         if (expectedMessage != null) {
             // event.getMessage() uses java.text.MessageFormat in its implementation.
             // Read MessageFormat Javadoc about single quote:
-            // http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
-            String msgWithoutSingleQuote = StringUtils.replace(expectedMessage, "'", "");
+            // https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html
+            String msgWithoutSingleQuote = expectedMessage.replace("'", "");
 
             if (!(expectedMessage.equals(event.getMessage()) || msgWithoutSingleQuote.equals(event.getMessage()))) {
                 return false;
