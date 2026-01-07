@@ -116,7 +116,7 @@ class Violation {
     /**
      * Returns the column in which the violation occurred, if available.
      *
-     * @return the column in which the violation occurred, if available. Otherwise returns {@link #NO_COLUMN}.
+     * @return the column in which the violation occurred, if available. Otherwise, returns {@link #NO_COLUMN}.
      */
     protected String getColumn() {
         return column;
