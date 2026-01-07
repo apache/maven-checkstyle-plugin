@@ -18,6 +18,7 @@
  */
 package org.apache.maven.plugins.checkstyle;
 
+import java.io.InputStream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -579,9 +580,9 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
-        try (Reader reader = new BufferedReader(ReaderFactory.newXmlReader(outputXmlFile))) {
+        try (InputStream in = Files.newInputStream(outputXmlFile.toPath())) {
             XmlPullParser xpp = new MXParser();
-            xpp.setInput(reader);
+            xpp.se(in);
 
             final List<Violation> violationsList = getViolations(xpp);
             long violationCount = countViolations(violationsList);
