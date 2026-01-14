@@ -432,6 +432,20 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             }
         }
 
+        //${config_loc} for the origin dir of the configLocation, just like eclipsecs
+        // so we config such as `${config_loc}/checkstyle-suppressions.xml`
+        final String configLocation = request.getConfigLocation();
+        final int idx = configLocation.lastIndexOf( '/' );
+        final String configLoc;
+        if ( idx == -1 ) 
+        {
+            configLoc = "";
+        }
+        else
+        {
+            configLoc = configLocation.substring( 0, idx );
+        }
+        p.setProperty( "config_loc", configLoc );
         return p;
     }
 
