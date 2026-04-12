@@ -96,6 +96,7 @@ public class CheckstyleReportTest {
         Mockito.when(mojoExecution.getPlugin()).thenReturn(new Plugin());
     }
 
+    @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "src/test/resources/plugin-configs/no-source-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
