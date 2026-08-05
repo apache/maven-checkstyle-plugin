@@ -19,7 +19,8 @@
  under the License.
 -->
 
-## Maven Checkstyle Plugin Releases History
+Maven Checkstyle Plugin Releases History
+----------------------------------------
 
 #macro ( release $version )
 <a href="https://checkstyle.org/releasenotes.html#Release_$version">$version</a>
