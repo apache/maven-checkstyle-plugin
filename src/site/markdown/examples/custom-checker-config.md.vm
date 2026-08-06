@@ -1,38 +1,29 @@
- ------
- Using a Custom Checkstyle Checker Configuration
- ------
- 2015-05-01
- ------
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+http://www.apache.org/licenses/LICENSE-2.0
 
-~~ NOTE: For help with the syntax of this file, see:
-~~ http://maven.apache.org/doxia/references/apt-format.html
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 
+# Using a Custom Checkstyle Checker Configuration
 
-Using a Custom Checkstyle Checker Configuration
+A custom [Checker configuration xml file](https://checkstyle.org/config.html#Checker) can be defined and then referenced via a URL, File, or build classpath resource reference.
 
-  A custom {{{https://checkstyle.org/config.html#Checker}Checker configuration xml file}} can
-  be defined and then referenced via a URL, File, or build classpath resource reference.
+To reference a custom Checkstyle Checker configuration, use the `configLocation` parameter.
 
-  To reference a custom Checkstyle Checker configuration, use the <<<configLocation>>> parameter.
-
-+-----+
+```xml
 <project>
   ...
   <reporting>
@@ -49,15 +40,11 @@ Using a Custom Checkstyle Checker Configuration
   </reporting>
   ...
 </project>
-+-----+
+```
 
-  This example causes the Checkstyle Plugin to check for a File named <<<checkstyle.xml>>> or a
-  resource named <<<checkstyle.xml>>> within the compile scope of the dependencies or build extensions
-  classpath.
+This example causes the Checkstyle Plugin to check for a File named `checkstyle.xml` or a resource named `checkstyle.xml` within the compile scope of the dependencies or build extensions classpath.
 
-  There are 2 predefined Checkstyle configuration definitions that ship with the Checkstyle Plugin,
-  the Sun Microsystems Definition is selected by default.
+There are 2 predefined Checkstyle configuration definitions that ship with the Checkstyle Plugin, the Sun Microsystems Definition is selected by default.
 
-  * <<sun_checks.xml>> - Sun Microsystems Definition (default).
-
-  * <<google_checks.xml>> - Google Definition.
+- **sun\_checks.xml** - Sun Microsystems Definition (default).
+- **google\_checks.xml** - Google Definition.
