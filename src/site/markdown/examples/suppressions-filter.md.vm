@@ -1,39 +1,29 @@
- ------
- Using a Suppressions Filter
- ------
- 2006-07-21
- ------
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+http://www.apache.org/licenses/LICENSE-2.0
 
-~~ NOTE: For help with the syntax of this file, see:
-~~ http://maven.apache.org/doxia/references/apt-format.html
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 
+# Using a Suppressions Filter
 
-Using a Suppressions Filter
+Checkstyle allows the definition of a list of files and their line ranges that should be suppressed from reporting any violations (known as a [suppressions filter](https://checkstyle.org/config.html#Filters) ).
 
-   Checkstyle allows the definition of a list of files and their line ranges that should be suppressed
-   from reporting any violations (known as a
-   {{{https://checkstyle.org/config.html#Filters}suppressions filter}} ).
+Example: `checkstyle-suppressions.xml`
 
-   Example: <<<checkstyle-suppressions.xml>>>
-
-+-----+
+```xml
 <?xml version="1.0"?>
 
 <!DOCTYPE suppressions PUBLIC
@@ -48,11 +38,11 @@ Using a Suppressions Filter
              files="LegacyDatasetConvertor.java"
              lines="221,250-295"/>
 </suppressions>
-+-----+
+```
 
-   Example: <<<pom.xml>>> - Specifies the suppressions filter that Checkstyle should use.
+Example: `pom.xml` - Specifies the suppressions filter that Checkstyle should use.
 
-+-----+
+```xml
 <project>
   ...
   <reporting>
@@ -71,4 +61,4 @@ Using a Suppressions Filter
   </reporting>
   ...
 </project>
-+-----+
+```
