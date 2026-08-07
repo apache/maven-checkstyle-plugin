@@ -46,5 +46,5 @@ This example causes the Checkstyle Plugin to check for a File named `checkstyle.
 
 There are 2 predefined Checkstyle configuration definitions that ship with the Checkstyle Plugin, the Sun Microsystems Definition is selected by default.
 
-- **sun\_checks.xml** - Sun Microsystems Definition (default).
-- **google\_checks.xml** - Google Definition.
+- **sun_checks.xml** - Sun Microsystems Definition (default).
+- **google_checks.xml** - Google Definition.
