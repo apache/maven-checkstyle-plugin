@@ -257,14 +257,8 @@ under the License.
     </dependency>
     <dependency>
       <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-transport-wagon</artifactId>
+      <artifactId>maven-resolver-transport-http</artifactId>
       <version>${resolverVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.wagon</groupId>
-      <artifactId>wagon-http-lightweight</artifactId>
-      <version>3.5.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -318,7 +312,7 @@ under the License.
               </goals>
               <configuration>
                 <failOnWarning>true</failOnWarning>
-                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic,org.apache.maven.resolver:maven-resolver-transport-wagon,org.apache.maven.wagon:wagon-http-lightweight:*</ignoredDependencies>
+                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic,org.apache.maven.resolver:maven-resolver-transport-http</ignoredDependencies>
               </configuration>
             </execution>
           </executions>
