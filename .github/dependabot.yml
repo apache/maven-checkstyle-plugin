@@ -27,3 +27,8 @@ updates:
       - dependency-name: org.apache.maven:*
         versions:
           - "> 3.1.0"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
