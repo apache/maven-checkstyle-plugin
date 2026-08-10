@@ -21,7 +21,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<a name="top"></a>
+<a id="top"></a>
 
 # Frequently Asked Questions
 
@@ -31,7 +31,7 @@ under the License.
 1. [How do I include the test directory in Checkstyle?](#How_do_I_include_the_test_directory_in_Checkstyle)
 1. [What is the difference between checkstyle:checkstyle and checkstyle:check?](#What_is_the_difference_between_checkstyle.3Acheckstyle_and_checkstyle.3Acheck)
 
-<a name="Where_is_maven_checks.xml_predefined_ruleset"></a>
+<a id="Where_is_maven_checks.xml_predefined_ruleset"></a>
 
 ### Where is `config/maven_checks.xml` predefined ruleset?
 
@@ -39,7 +39,7 @@ Starting with maven-checkstyle-plugin version 2.14, `config/maven_checks.xml`
 predefined ruleset is not part of the plugin any more but has moved to
 [Apache Maven Shared Resources](/shared/maven-shared-resources/).
 
-<a name="How_are_the_Checkstyle_properties_set"></a>
+<a id="How_are_the_Checkstyle_properties_set"></a>
 
 ### How are the Checkstyle properties set?
 
@@ -47,7 +47,7 @@ You can set the Checkstyle properties to be used in the plugin configuration of 
 POM through the `propertiesLocation` parameter. The properties file will be resolved
 by the plugin based on its value.
 
-<a name="How_do_I_set_a_custom_ruleset"></a>
+<a id="How_do_I_set_a_custom_ruleset"></a>
 
 ### How do I set a custom ruleset?
 
@@ -55,14 +55,14 @@ You can set a custom ruleset through the `configLocation` plugin parameter. If n
 value is specified, the plugin will use a default ruleset, which is the
 `sun_checks.xml`, that is bundled with the plugin.
 
-<a name="How_do_I_include_the_test_directory_in_Checkstyle"></a>
+<a id="How_do_I_include_the_test_directory_in_Checkstyle"></a>
 
 ### How do I include the test directory in Checkstyle?
 
 You can include the test directory in the Checkstyle report by setting the
 `includeTestSourceDirectory` plugin parameter to `true`.
 
-<a name="What_is_the_difference_between_checkstyle.3Acheckstyle_and_checkstyle.3Acheck"></a>
+<a id="What_is_the_difference_between_checkstyle.3Acheckstyle_and_checkstyle.3Acheck"></a>
 
 ### What is the difference between checkstyle:checkstyle and checkstyle:check?
 
