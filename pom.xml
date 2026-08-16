@@ -80,7 +80,7 @@ under the License.
     <slf4jVersion>1.7.36</slf4jVersion>
     <doxiaVersion>2.1.0</doxiaVersion>
     <doxiaSitetoolsVersion>2.1.0</doxiaSitetoolsVersion>
-    <sitePluginVersion>3.20.0</sitePluginVersion>
+    <sitePluginVersion>${version.maven-site-plugin}</sitePluginVersion>
     <jxrPluginVersion>3.5.0</jxrPluginVersion>
     <project.build.outputTimestamp>2024-10-22T15:04:06Z</project.build.outputTimestamp>
   </properties>
