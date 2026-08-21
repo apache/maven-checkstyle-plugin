@@ -195,6 +195,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
         checker.destroy();
 
+        CheckstyleResults results = checkerListener.getResults();
+
         if (nbErrors > 0) {
             StringBuilder message = new StringBuilder("There ");
             if (nbErrors == 1) {
@@ -219,16 +221,15 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             message.append(" ruleset.");
 
             if (request.isFailsOnError()) {
-                // TODO: should be a failure, not an error. Report is not meant to
-                // throw an exception here (so site would
-                // work regardless of config), but should record this information
-                throw new CheckstyleExecutorException(message.toString());
+                // Record rather than throw so the report goal can still generate
+                // the site. The check goal turns this into a MojoFailureException.
+                results.setFailsOnErrorMessage(message.toString());
             } else {
                 logger.info(message.toString());
             }
         }
 
-        return checkerListener.getResults();
+        return results;
     }
 
     protected void addSourceDirectory(
