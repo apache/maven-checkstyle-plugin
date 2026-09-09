@@ -104,7 +104,7 @@ public class CheckstyleReportTest {
         mojo.execute();
 
         File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
+        String filename = mojo.getOutputPath() + ".html";
         File generatedReport = new File(outputDir, filename);
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
@@ -231,7 +231,7 @@ public class CheckstyleReportTest {
 
     private void assertGeneratedReport(CheckstyleReport mojo) throws IllegalAccessException, IOException {
         File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
+        String filename = mojo.getOutputPath() + ".html";
 
         File generatedReport = new File(outputDir, filename);
         assertTrue(new File(generatedReport.getAbsolutePath()).exists());

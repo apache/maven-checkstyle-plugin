@@ -85,10 +85,19 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
     }
 
     /**
+     * @deprecated use {@link #getOutputPath()} instead
+     */
+    @Override
+    @Deprecated
+    public String getOutputName() {
+        return getOutputPath();
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    public String getOutputName() {
+    public String getOutputPath() {
         return "checkstyle";
     }
 
