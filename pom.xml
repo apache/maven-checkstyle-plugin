@@ -74,8 +74,8 @@ under the License.
 
   <properties>
     <javaVersion>8</javaVersion>
-    <mavenVersion>3.6.3</mavenVersion>
-    <resolverVersion>1.4.1</resolverVersion>
+    <mavenVersion>3.9.16</mavenVersion>
+    <resolverVersion>1.9.27</resolverVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <doxiaVersion>2.1.0</doxiaVersion>
@@ -272,12 +272,6 @@ under the License.
       <version>${resolverVersion}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-compat</artifactId>
-      <version>${mavenVersion}</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -323,7 +317,7 @@ under the License.
               </goals>
               <configuration>
                 <failOnWarning>true</failOnWarning>
-                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven:maven-compat:*,org.apache.maven.resolver:maven-resolver-connector-basic,org.apache.maven.resolver:maven-resolver-transport-http</ignoredDependencies>
+                <ignoredDependencies>org.slf4j:slf4j-simple:*,org.apache.maven.resolver:maven-resolver-connector-basic,org.apache.maven.resolver:maven-resolver-transport-http</ignoredDependencies>
               </configuration>
             </execution>
           </executions>
