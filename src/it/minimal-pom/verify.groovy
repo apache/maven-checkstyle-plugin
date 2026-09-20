@@ -32,7 +32,7 @@ try
         return false;
     }
 
-    String[] reports = { "checkstyle" };
+    String[] reports = [ "checkstyle" ] as String[];
     for ( String report : reports )
     {
         File reportFile = new File( siteDir, report + ".html" );
