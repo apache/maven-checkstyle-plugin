@@ -44,7 +44,6 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -185,16 +184,10 @@ public class CheckstyleReportTest {
     @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
-    @Disabled // TODO the junit 3 version produce a false exception (see description in PR
-    // https://github.com/apache/maven-checkstyle-plugin/pull/645)
-    public void testFailOnError(CheckstyleReport mojo) {
-        try {
-            mojo.execute();
-            assertGeneratedReport(mojo); // TODO if this necessary
-            fail("Must throw exception on errors");
-        } catch (Exception e) {
-            assertNotNull(e.getMessage());
-        }
+    public void testFailOnError(CheckstyleReport mojo) throws Exception {
+        mojo.execute();
+
+        assertGeneratedReport(mojo);
     }
 
     // We need to change the basedir to point to test repository without site.xml file.
