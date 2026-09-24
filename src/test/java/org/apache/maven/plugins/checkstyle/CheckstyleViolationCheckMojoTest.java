@@ -95,14 +95,10 @@ public class CheckstyleViolationCheckMojoTest {
         mojo.execute();
     }
 
-    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
-    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/no-sources")
-    @MojoParameter(name = "includeResources", value = "false")
-    @MojoParameter(name = "includeTestResources", value = "false")
-    @MojoParameter(name = "outputFile", value = "target/test-harness/checkstyle/no-source-check/checkstyle-result.xml")
-    @MojoParameter(name = "cacheFile", value = "target/test-harness/checkstyle/no-source-check/checkstyle-cachefile")
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/no-source-check-plugin-config.xml")
     @Test
     public void testNoSourceDoesNotCreateOutputFiles(CheckstyleViolationCheckMojo mojo) throws Exception {
+        project.setPackaging("pom");
         mojo.execute();
 
         File outputDirectory = new File("target/test-harness/checkstyle/no-source-check");

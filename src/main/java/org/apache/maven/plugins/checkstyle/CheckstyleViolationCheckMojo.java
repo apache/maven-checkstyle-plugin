@@ -30,7 +30,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -508,8 +507,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
-        if (!skipExec && !hasFilesToProcess()) {
-            getLog().info("No files to process. Skipping Checkstyle execution.");
+        if (!skipExec && "pom".equalsIgnoreCase(project.getPackaging())) {
+            getLog().info("Not executing Checkstyle for a pom project.");
             return;
         }
 
@@ -886,46 +885,6 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             testSourceDirs.add(FileUtils.resolveFile(project.getBasedir(), testSourceDir));
         }
         return testSourceDirs;
-    }
-
-    private boolean hasFilesToProcess() throws MojoExecutionException {
-        try {
-            if (hasFiles(getSourceDirectories())) {
-                return true;
-            }
-            if (includeTestSourceDirectory && hasFiles(getTestSourceDirectories())) {
-                return true;
-            }
-            return (includeResources && hasResourceFiles(resources))
-                    || (includeTestResources && hasResourceFiles(testResources));
-        } catch (IOException e) {
-            throw new MojoExecutionException("Failed to determine files to process", e);
-        }
-    }
-
-    private boolean hasFiles(Collection<File> directories) throws IOException {
-        for (File directory : directories) {
-            if (directory.isDirectory() && !FileUtils.getFiles(directory, includes, excludes).isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasResourceFiles(List<Resource> resourceList) throws IOException {
-        if (resourceList == null) {
-            return false;
-        }
-        for (Resource resource : resourceList) {
-            if (resource.getDirectory() != null) {
-                File directory = new File(resource.getDirectory());
-                if (directory.isDirectory()
-                        && !FileUtils.getFiles(directory, resourceIncludes, resourceExcludes).isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private List<String> filterBuildTarget(List<String> sourceDirectories) {
