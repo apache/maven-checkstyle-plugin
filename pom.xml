@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>49</version>
+    <version>50</version>
     <relativePath />
   </parent>
 
@@ -281,7 +281,7 @@ under the License.
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <excludes combine.children="append">
+            <inputExcludes combine.children="append">
               <!--
                 This file must not contain a license header, because the test is
                 supposed to report an error because of a missing license header.
@@ -295,7 +295,7 @@ under the License.
               <exclude>src/it/MCHECKSTYLE-225-pluginManagement/build-tools/src/main/resources/test/custom-header.txt</exclude>
               <exclude>src/it/MCHECKSTYLE-225-LICENSE.txt/build-tools/src/main/resources/LICENSE.txt</exclude>
               <exclude>src/test/resources/plugin-configs/target/test-harness/checkstyle/min/checkstyle-checker.xml</exclude>
-            </excludes>
+            </inputExcludes>
           </configuration>
         </plugin>
         <plugin>
