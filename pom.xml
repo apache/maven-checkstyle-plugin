@@ -280,6 +280,7 @@ under the License.
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
+          <version>0.17</version>
           <configuration>
             <excludes combine.children="append">
               <!--
