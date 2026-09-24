@@ -20,6 +20,8 @@ package org.apache.maven.plugins.checkstyle;
 
 import javax.inject.Inject;
 
+import java.io.File;
+
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
@@ -30,6 +32,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -90,6 +93,23 @@ public class CheckstyleViolationCheckMojoTest {
     @Test
     public void testNoOutputFile(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
+    }
+
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/no-sources")
+    @MojoParameter(name = "includeResources", value = "false")
+    @MojoParameter(name = "includeTestResources", value = "false")
+    @MojoParameter(name = "outputFile", value = "target/test-harness/checkstyle/no-source-check/checkstyle-result.xml")
+    @MojoParameter(name = "cacheFile", value = "target/test-harness/checkstyle/no-source-check/checkstyle-cachefile")
+    @Test
+    public void testNoSourceDoesNotCreateOutputFiles(CheckstyleViolationCheckMojo mojo) throws Exception {
+        mojo.execute();
+
+        File outputDirectory = new File("target/test-harness/checkstyle/no-source-check");
+        assertFalse(new File(outputDirectory, "checkstyle-cachefile").exists());
+        assertFalse(new File(outputDirectory, "checkstyle-checker.xml").exists());
+        assertFalse(new File(outputDirectory, "checkstyle-header.txt").exists());
+        assertFalse(new File(outputDirectory, "checkstyle-result.xml").exists());
     }
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
