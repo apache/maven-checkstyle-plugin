@@ -507,6 +507,11 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
+        if (!skipExec && "pom".equalsIgnoreCase(project.getPackaging())) {
+            getLog().info("Not executing Checkstyle for a pom project.");
+            return;
+        }
+
         outputXmlFile = outputFile;
 
         if (!skipExec) {
