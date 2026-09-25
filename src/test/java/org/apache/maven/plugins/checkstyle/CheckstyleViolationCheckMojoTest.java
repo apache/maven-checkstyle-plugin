@@ -20,6 +20,10 @@ package org.apache.maven.plugins.checkstyle;
 
 import javax.inject.Inject;
 
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.InjectMojo;
 import org.apache.maven.api.plugin.testing.MojoParameter;
@@ -27,6 +31,7 @@ import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
@@ -131,5 +136,35 @@ public class CheckstyleViolationCheckMojoTest {
     @Test
     public void testNoFail(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
+    }
+
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "outputFile", value = "src/test/resources/plugin-configs/check-plugin-warning-output.xml")
+    @MojoParameter(name = "skipExec", value = "true")
+    @MojoParameter(name = "failOnViolation", value = "false")
+    @MojoParameter(name = "violationSeverity", value = "error")
+    @MojoParameter(name = "logViolationsToConsole", value = "true")
+    @Test
+    public void testWarningsAreLoggedWhenSeverityIsError(CheckstyleViolationCheckMojo mojo) throws Exception {
+        List<String> loggedMessages = new ArrayList<>();
+        Log log = (Log) Proxy.newProxyInstance(
+                Log.class.getClassLoader(),
+                new Class<?>[] {Log.class},
+                (proxy, method, args) -> {
+                    if (method.getName().startsWith("is") && method.getName().endsWith("Enabled")) {
+                        return true;
+                    }
+                    if (args != null && args.length > 0 && args[0] != null) {
+                        loggedMessages.add(String.valueOf(args[0]));
+                    }
+                    return null;
+                });
+        mojo.setLog(log);
+
+        mojo.execute();
+
+        org.junit.jupiter.api.Assertions.assertTrue(
+                loggedMessages.stream().anyMatch(message -> message.contains("A warning violation")),
+                "warning violations should be logged when violationSeverity is error");
     }
 }
