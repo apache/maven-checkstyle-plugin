@@ -38,6 +38,8 @@ public class CheckstyleResults {
 
     private Configuration configuration;
 
+    private String failsOnErrorMessage;
+
     public CheckstyleResults() {
         files = new HashMap<>();
     }
@@ -117,5 +119,13 @@ public class CheckstyleResults {
 
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
+    }
+
+    public String getFailsOnErrorMessage() {
+        return failsOnErrorMessage;
+    }
+
+    public void setFailsOnErrorMessage(String failsOnErrorMessage) {
+        this.failsOnErrorMessage = failsOnErrorMessage;
     }
 }
