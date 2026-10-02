@@ -27,10 +27,13 @@ import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Edwin Punzalan
@@ -90,6 +93,18 @@ public class CheckstyleViolationCheckMojoTest {
     @Test
     public void testNoOutputFile(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
+    }
+
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "skip", value = "true")
+    @Test
+    public void testSkipLogsReason(CheckstyleViolationCheckMojo mojo) throws Exception {
+        Log log = mock(Log.class);
+        mojo.setLog(log);
+
+        mojo.execute();
+
+        verify(log).info("Skipping Checkstyle execution because property checkstyle.skip is set.");
     }
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
