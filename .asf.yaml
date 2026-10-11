@@ -40,3 +40,38 @@ notifications:
   commits: commits@maven.apache.org
   issues: issues@maven.apache.org
   pullrequests: issues@maven.apache.org
+
+# https://releases.apache.org/projects/maven-checkstyle-plugin
+
+project:
+  metadata:
+    key: maven-checkstyle-plugin
+    committee: maven
+    name: Apache Maven Checkstyle Plugin
+    description: Generates a report on violations of code style and optionally fails
+      the build if violations are detected.
+    homepage: https://maven.apache.org/plugins/maven-checkstyle-plugin/
+    download_page: https://maven.apache.org/plugins/maven-checkstyle-plugin/download.cgi
+    bug_database: https://maven.apache.org/plugins/maven-checkstyle-plugin/issue-management.html
+    mailing_lists: https://maven.apache.org/plugins/maven-checkstyle-plugin/mailing-lists.html
+    repositories:
+      - https://github.com/apache/maven-checkstyle-plugin
+    categories:
+      - build-management
+    programming_languages:
+      - Java
+  policy:
+    announce_release_template_url: https://maven.apache.org/atr/templates/announce_release_template.txt
+    start_vote_template_url: https://maven.apache.org/atr/templates/start_vote_template.txt
+    finish_vote_template_url: https://maven.apache.org/atr/templates/finish_vote_template.txt
+    github_repository_name: maven-checkstyle-plugin
+    download_path_suffix: plugins
+    vote_recipients:
+      to: dev@maven.apache.org
+    announce_recipients:
+      to: announce@maven.apache.org
+      cc:
+        - dev@maven.apache.org
+        - users@maven.apache.org
+  features:
+    atr_sync: true
