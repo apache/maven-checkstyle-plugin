@@ -19,12 +19,14 @@
 package org.apache.maven.plugins.checkstyle.exec;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -43,12 +45,12 @@ class DefaultCheckstyleExecutorTest {
     @Test
     void testDefaultExcludesAreApplied() throws Exception {
         File included = new File(sourceDirectory, "Included.java");
-        FileUtils.fileWrite(included, "public class Included {}");
+        writeFile(included, "public class Included {}");
 
         File cvs = new File(sourceDirectory, "CVS");
         assertTrue(cvs.mkdirs(), "Unable to create " + cvs);
         File excluded = new File(cvs, "Excluded.java");
-        FileUtils.fileWrite(excluded, "public class Excluded {}");
+        writeFile(excluded, "public class Excluded {}");
 
         List<String> names = getFilesToProcess(null).stream().map(File::getName).collect(Collectors.toList());
 
@@ -61,15 +63,15 @@ class DefaultCheckstyleExecutorTest {
     @Test
     void testUserExcludesAreCombinedWithDefaultExcludes() throws Exception {
         File excludedByUser = new File(sourceDirectory, "ExcludedByUser.java");
-        FileUtils.fileWrite(excludedByUser, "public class ExcludedByUser {}");
+        writeFile(excludedByUser, "public class ExcludedByUser {}");
 
         File included = new File(sourceDirectory, "Included.java");
-        FileUtils.fileWrite(included, "public class Included {}");
+        writeFile(included, "public class Included {}");
 
         File cvs = new File(sourceDirectory, "CVS");
         assertTrue(cvs.mkdirs(), "Unable to create " + cvs);
         File excludedByDefault = new File(cvs, "ExcludedByDefault.java");
-        FileUtils.fileWrite(excludedByDefault, "public class ExcludedByDefault {}");
+        writeFile(excludedByDefault, "public class ExcludedByDefault {}");
 
         List<String> names = getFilesToProcess("**/ExcludedByUser.java").stream()
                 .map(File::getName)
@@ -80,6 +82,12 @@ class DefaultCheckstyleExecutorTest {
         assertFalse(
                 names.contains("ExcludedByDefault.java"),
                 "A file below a default-excluded directory (CVS) must not be checked: " + names);
+    }
+
+    private static void writeFile(File file, String content) throws IOException {
+        try (Writer writer = new FileWriter(file)) {
+            writer.write(content);
+        }
     }
 
     /**
