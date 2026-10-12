@@ -30,6 +30,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -96,16 +97,24 @@ public class CheckstyleViolationCheckMojoTest {
     }
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/no-source-check-plugin-config.xml")
+    @MojoParameter(name = "sourceDirectories", value = "/src/test/plugin-configs/no-sources")
+    @MojoParameter(name = "includeResources", value = "false")
+    @MojoParameter(name = "includeTestResources", value = "false")
+    @MojoParameter(
+            name = "outputFile",
+            value = "${basedir}/target/test-harness/checkstyle/no-source-check/checkstyle-result.xml")
+    @MojoParameter(
+            name = "cacheFile", value = "${basedir}/target/test-harness/checkstyle/no-source-check/checkstyle-cachefile")
     @Test
     public void testNoSourceDoesNotCreateOutputFiles(CheckstyleViolationCheckMojo mojo) throws Exception {
         project.setPackaging("pom");
+        File outputDirectory = new File(project.getBasedir(), "target/test-harness/checkstyle/no-source-check");
+        FileUtils.deleteDirectory(outputDirectory);
+        assertFalse(outputDirectory.exists());
+
         mojo.execute();
 
-        File outputDirectory = new File("target/test-harness/checkstyle/no-source-check");
-        assertFalse(new File(outputDirectory, "checkstyle-cachefile").exists());
-        assertFalse(new File(outputDirectory, "checkstyle-checker.xml").exists());
-        assertFalse(new File(outputDirectory, "checkstyle-header.txt").exists());
-        assertFalse(new File(outputDirectory, "checkstyle-result.xml").exists());
+        assertFalse(outputDirectory.exists());
     }
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
