@@ -104,7 +104,7 @@ public class CheckstyleViolationCheckMojoTest {
 
         mojo.execute();
 
-        verify(log).info("Skipping Checkstyle execution because property checkstyle.skip is set.");
+        verify(log).debug("Skipping Checkstyle execution because property checkstyle.skip is set.");
     }
 
     @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-plain-output.xml")
