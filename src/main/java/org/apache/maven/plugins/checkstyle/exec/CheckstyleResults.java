@@ -38,6 +38,10 @@ public class CheckstyleResults {
 
     private Configuration configuration;
 
+    /**
+     * Non-empty failure summary for violations when {@code failsOnError} is enabled.
+     * The check goal interprets this value; report goals log it and still generate reports.
+     */
     private String failsOnErrorMessage;
 
     public CheckstyleResults() {
@@ -121,10 +125,20 @@ public class CheckstyleResults {
         this.configuration = configuration;
     }
 
+    /**
+     * Returns the failure summary recorded when violations exist and {@code failsOnError} is enabled.
+     *
+     * @return the non-empty failure summary, or {@code null} when no such failure was recorded
+     */
     public String getFailsOnErrorMessage() {
         return failsOnErrorMessage;
     }
 
+    /**
+     * Records the non-empty failure summary for the check goal to interpret.
+     *
+     * @param failsOnErrorMessage the non-empty summary, or {@code null} to clear it
+     */
     public void setFailsOnErrorMessage(String failsOnErrorMessage) {
         this.failsOnErrorMessage = failsOnErrorMessage;
     }

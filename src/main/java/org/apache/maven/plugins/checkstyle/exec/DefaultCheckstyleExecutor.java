@@ -220,12 +220,11 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             message.append(request.getConfigLocation());
             message.append(" ruleset.");
 
+            logger.info(message.toString());
             if (request.isFailsOnError()) {
                 // Record rather than throw so the report goal can still generate
                 // the site. The check goal turns this into a MojoFailureException.
                 results.setFailsOnErrorMessage(message.toString());
-            } else {
-                logger.info(message.toString());
             }
         }
 
