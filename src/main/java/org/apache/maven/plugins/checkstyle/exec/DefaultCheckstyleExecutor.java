@@ -435,7 +435,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         return p;
     }
 
-    private List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
+    List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
         Set<File> files = new LinkedHashSet<>();
         if (request.isAggregate()) {
             for (MavenProject project : request.getReactorProjects()) {

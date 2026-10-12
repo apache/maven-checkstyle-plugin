@@ -19,10 +19,11 @@
 package org.apache.maven.plugins.checkstyle.exec;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,13 +86,13 @@ class DefaultCheckstyleExecutorTest {
     }
 
     private static void writeFile(File file, String content) throws IOException {
-        try (Writer writer = new FileWriter(file)) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             writer.write(content);
         }
     }
 
     /**
-     * Calls the private {@code getFilesToProcess} method which is where the default excludes are applied.
+     * Calls {@code getFilesToProcess}, where the default excludes are applied.
      */
     private List<File> getFilesToProcess(String excludes) throws Exception {
         CheckstyleExecutorRequest request = new CheckstyleExecutorRequest();
@@ -100,11 +101,6 @@ class DefaultCheckstyleExecutorTest {
         request.setSourceDirectories(Collections.singletonList(sourceDirectory));
 
         DefaultCheckstyleExecutor executor = new DefaultCheckstyleExecutor(null, null);
-        Method method =
-                DefaultCheckstyleExecutor.class.getDeclaredMethod("getFilesToProcess", CheckstyleExecutorRequest.class);
-        method.setAccessible(true);
-        @SuppressWarnings("unchecked")
-        List<File> files = (List<File>) method.invoke(executor, request);
-        return files;
+        return executor.getFilesToProcess(request);
     }
 }
