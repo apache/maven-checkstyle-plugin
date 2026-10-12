@@ -1,5 +1,5 @@
 ---
-title: Using Custom Developed Checkstyle Checks
+title: Custom Developed Checkstyle Checks
 author: 
   - 2008-02-04
 ---
@@ -23,18 +23,22 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Using Custom Developed Checkstyle Checks
+# Custom Developed Checkstyle Checks
 
-We will guide you through creating a Maven project that produces a jar file of your custom checks. Then we'll include it in one of your projects by adding it as a dependency to the Checkstyle Plugin.
+This example shows how to create a Maven project for your custom checks.
+The project generates a jar file.
+You then use the jar file in your other projects.
+You add the jar file as a dependency to the Checkstyle Plugin.
 
-The plugin also provides the ability to define the [package names XML document](https://checkstyle.org/config.html#Packages) required to reference your custom check modules more easily.
+The plugin also lets you define the [package names XML document](https://checkstyle.org/config.html#Packages).
+This document lets Checkstyle reference your custom check modules.
 
-In this example we will be using the [example check](https://checkstyle.org/writingchecks.html#Visitor_in_action) that can be found on the Checkstyle web site.
+This example uses the [example check](https://checkstyle.org/writingchecks.html#Visitor_in_action) from the Checkstyle website.
 
-Structuring your project
-------------------------
+Project Structure
+-----------------
 
-First we set up the directory structure for the custom checks project. It looks like this:
+This project has the directory structure below:
 
 ```unknown
 mycompany-checkstyle-checks
@@ -49,11 +53,11 @@ mycompany-checkstyle-checks
                         `-- MethodLimitCheck.java
 ```
 
-Now we'll go through each of the three files one at a time.
+The sections below describe the three files.
 
 #[[### `pom.xml`]]#
 
-Not much to say here, except that we add a dependency on Checkstyle.
+This POM adds a dependency on Checkstyle.
 
 ```xml
 <project>
@@ -74,7 +78,10 @@ Not much to say here, except that we add a dependency on Checkstyle.
 
 #[[### `packagenames.xml`]]#
 
-This file lets you specify the names of the packages that you want to be able to use. Here we have added `com.mycompany.checks` to the standard set of Checkstyle packages. That means that you can use your custom checks in the Checkstyle configuration file, without having to specify their package name.
+This file lets you specify the names of the packages that you want to use.
+This example adds `com.mycompany.checks` to the standard set of Checkstyle packages.
+You can then use your custom checks in the Checkstyle configuration file.
+You do not need to specify their package name.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -109,7 +116,8 @@ This file lets you specify the names of the packages that you want to be able to
 
 #[[### `MethodLimitCheck.java`]]#
 
-Here is the example check from the Checkstyle site. It checks that your source files don't have more that 30 methods.
+Here is the example check from the Checkstyle site.
+It checks that your source files do not have more than 30 methods.
 
 ```java
 package com.mycompany.checks;
@@ -140,16 +148,18 @@ public class MethodLimitCheck extends Check
 }
 ```
 
-Building a JAR for your custom checks project
----------------------------------------------
+Build the JAR for Your Custom Checks Project
+--------------------------------------------
 
-To be able to use your custom checks in other projects, you need to package and install them. To do that, just run this on the command line:
+To use your custom checks in other projects, package and install them.
+Run this command:
 
 ```shell
 mvn install
 ```
 
-This produces a JAR file with the following contents and installs it into your local repository.
+This command produces a JAR file with these contents.
+It also installs the file into your local repository.
 
 #[[### `mycompany-checkstyle-checks-1.0.jar`]]#
 
@@ -170,16 +180,18 @@ mycompany-checkstyle-checks-1.0.jar
             `-- MethodLimitCheck.class
 ```
 
-Using your checks in another project
-------------------------------------
+Use Your Checks in Another Project
+----------------------------------
 
-Now you are ready to make use of your custom checks in another project.
+You are now ready to use your custom checks in another project.
 
 #[[### Create a Checkstyle configuration]]#
 
-Create the file `checkstyle.xml` in the root of the project that wants to use your custom checks. In this file you tell Checkstyle which checks you want to use.
+Create the file `checkstyle.xml` in the root of the project that wants to use your custom checks.
+In this file, tell Checkstyle which checks you want to use.
 
-**Note:** We don't have to specify the fully qualified classname of our check here. That's because we used the `packagenames.xml` file earlier.
+**Note:** You do not have to specify the fully qualified class name of your check here.
+The `packagenames.xml` file makes this possible.
 
 ```xml
 <?xml version="1.0" ?>
@@ -197,9 +209,13 @@ Create the file `checkstyle.xml` in the root of the project that wants to use yo
 
 #[[### Configure the Checkstyle Plugin to use your custom checks]]#
 
-Finally we need to tell the other project that you want it to use your custom Checkstyle checks. In the `pom.xml` of that project, add the following configuration.
+Finally, tell the other project to use your custom Checkstyle checks.
+Add this configuration to the `pom.xml` of that project.
 
-**Note:** You have to specify a plugin dependency on `mycompany-checkstyle-checks` in the `<build>` element of your `pom.xml`. It will not work inside the `<reporting>` element, because `<reporting>` does not support plugin dependencies. The rest of the configuration is done in the normal way in the `<reporting>` element.
+**Note:** You must specify a plugin dependency on `mycompany-checkstyle-checks` in the `<build>` element of your `pom.xml`.
+This dependency will not work in the `<reporting>` element.
+The `<reporting>` element does not support plugin dependencies.
+Do the rest of the configuration in the normal way in the `<reporting>` element.
 
 ```xml
 <project>

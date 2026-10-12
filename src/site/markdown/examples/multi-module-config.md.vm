@@ -25,11 +25,13 @@ under the License.
 
 # Multimodule Configuration
 
-Since version 2.12 of this Plugin you can also [inline](./inline-checker-config.html) the configuration directly in the parent pom.
+From version 2.12 of this Plugin, you can [inline](./inline-checker-config.html) the configuration directly in the parent POM.
 
-Configuring the Checkstyle Plugin for use within large multimodule projects can be done, but it requires a little setup.
+You can configure the Checkstyle Plugin for large multimodule projects.
+It requires some setup.
 
-This example will use a mysterious project called _whizbang_. This is what the structure of that project looks like:
+This example uses a sample project called _whizbang_.
+The project has the structure below:
 
 ```unknown
 whizbang
@@ -46,7 +48,11 @@ whizbang
 Create a subproject to house the resources
 ------------------------------------------
 
-We'll start by adding another sub project that will house our common configuration. Let's call it _build-tools_. In it we put the resources that we want to include. In this example, we will add configuration files for the Checkstyle Plugin. Configuration files for other plugins, like the PMD plugin, can be included in the same subproject if you like.
+Create another subproject that houses your common configuration.
+Call it _build-tools_.
+Put the resources that you want to include in the subproject.
+In this example, add configuration files for the Checkstyle Plugin.
+You can also include configuration files for other plugins, like the PMD plugin, in the same subproject.
 
 ```unknown
 whizbang
@@ -65,9 +71,9 @@ whizbang
 `-- src
 ```
 
-**Tip:** put the resources into a subdirectory that you can ensure will be unique and not conflict with anyone else.
+**Tip:** Put the resources into a unique subdirectory so that they do not conflict with anyone else.
 
-The `pom.xml` file for _build-tools_ should look like this:
+The `pom.xml` file for _build-tools_ looks like this:
 
 ```xml
 <project>
@@ -82,9 +88,12 @@ The `pom.xml` file for _build-tools_ should look like this:
 Configure the other projects to use it
 --------------------------------------
 
-Now we can include the Checkstyle configuration in the top level `pom.xml`.
+Now include the Checkstyle configuration in the top level `pom.xml`.
 
-**Note:** You have to specify a plugin dependency on `build-tools` in the `<build>` element of your `pom.xml`. It will not work inside the `<reporting>` element, because `<reporting>` does not support plugin dependencies. The rest of the configuration is done in the normal way in the `<reporting>` element.
+**Note:** You must specify a plugin dependency on `build-tools` in the `<build>` element of your `pom.xml`.
+This dependency will not work in the `<reporting>` element.
+The `<reporting>` element does not support plugin dependencies.
+Do the rest of the configuration in the normal way in the `<reporting>` element.
 
 ```xml
 <project>
@@ -132,14 +141,17 @@ Now we can include the Checkstyle configuration in the top level `pom.xml`.
 </project>
 ```
 
-Once you are done with that, ensure that you do not include the Maven Checkstyle Plugin in your sub modules, as their definition and configuration, will override the top level parent pom's definition.
+Make sure that you do not include the Maven Checkstyle Plugin in your submodules.
+A submodule definition overrides the top level parent POM definition.
 
-Based on the Checkstyle Plugin configuration above, the values of `configLocation` and `headerLocation` will be resolved from the classpath. The _build-tools_ JAR was included in the classpath when it was declared as a dependency to the plugin.
+The plugin resolves the values of `configLocation` and `headerLocation` from the classpath.
+The _build-tools_ JAR is in the classpath.
+You declared the JAR as a dependency to the plugin.
 
-Lastly, kick off a build of the site.
+Then run a build of the site:
 
 ```shell
 mvn site
 ```
 
-Every sub project will now use the same Checkstyle setup and configuration.
+Every subproject now uses the same Checkstyle setup and configuration.

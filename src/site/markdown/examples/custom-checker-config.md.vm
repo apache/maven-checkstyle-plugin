@@ -1,5 +1,5 @@
 ---
-title: Using a Custom Checkstyle Checker Configuration
+title: Custom Checkstyle Checker Configuration
 author: 
   - 2015-05-01
 ---
@@ -23,11 +23,12 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Using a Custom Checkstyle Checker Configuration
+# Custom Checkstyle Checker Configuration
 
-A custom [Checker configuration xml file](https://checkstyle.org/config.html#Checker) can be defined and then referenced via a URL, File, or build classpath resource reference.
+You can define a custom [Checker configuration xml file](https://checkstyle.org/config.html#Checker).
+You can reference it through a URL, a file, or a build classpath resource.
 
-To reference a custom Checkstyle Checker configuration, use the `configLocation` parameter.
+Use the `configLocation` parameter to reference a custom Checkstyle Checker configuration.
 
 ```xml
 <project>
@@ -48,9 +49,11 @@ To reference a custom Checkstyle Checker configuration, use the `configLocation`
 </project>
 ```
 
-This example causes the Checkstyle Plugin to check for a File named `checkstyle.xml` or a resource named `checkstyle.xml` within the compile scope of the dependencies or build extensions classpath.
+This example makes the plugin check for a file named `checkstyle.xml`.
+It can find the file in the compile scope of the dependencies or in the build extensions classpath.
 
-There are 2 predefined Checkstyle configuration definitions that ship with the Checkstyle Plugin, the Sun Microsystems Definition is selected by default.
+The Checkstyle Plugin ships with two predefined configuration definitions.
+It selects the Sun Microsystems definition by default.
 
 - **sun_checks.xml** - Sun Microsystems Definition (default).
 - **google_checks.xml** - Google Definition.

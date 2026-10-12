@@ -33,40 +33,41 @@ under the License.
 
 <a id="Where_is_maven_checks.xml_predefined_ruleset"></a>
 
-### Where is `config/maven_checks.xml` predefined ruleset?
+### Where is the `config/maven_checks.xml` predefined ruleset?
 
-Starting with maven-checkstyle-plugin version 2.14, `config/maven_checks.xml`
-predefined ruleset is not part of the plugin any more but has moved to
-[Apache Maven Shared Resources](/shared/maven-shared-resources/).
+From maven-checkstyle-plugin version 2.14, `config/maven_checks.xml`
+is no longer part of the plugin.
+The file moved to [Apache Maven Shared Resources](/shared/maven-shared-resources/).
 
 <a id="How_are_the_Checkstyle_properties_set"></a>
 
 ### How are the Checkstyle properties set?
 
-You can set the Checkstyle properties to be used in the plugin configuration of your
-POM through the `propertiesLocation` parameter. The properties file will be resolved
-by the plugin based on its value.
+You can set the Checkstyle properties with the `propertiesLocation` parameter in the
+plugin configuration of your POM.
+The plugin resolves the properties file from the value of the parameter.
 
 <a id="How_do_I_set_a_custom_ruleset"></a>
 
 ### How do I set a custom ruleset?
 
-You can set a custom ruleset through the `configLocation` plugin parameter. If no
-value is specified, the plugin will use a default ruleset, which is the
-`sun_checks.xml`, that is bundled with the plugin.
+You can set a custom ruleset with the `configLocation` plugin parameter.
+If you do not specify a value, the plugin uses the `sun_checks.xml` ruleset.
+This ruleset is bundled with the plugin.
 
 <a id="How_do_I_include_the_test_directory_in_Checkstyle"></a>
 
 ### How do I include the test directory in Checkstyle?
 
-You can include the test directory in the Checkstyle report by setting the
-`includeTestSourceDirectory` plugin parameter to `true`.
+You can include the test directory in the Checkstyle report.
+The `includeTestSourceDirectory` plugin parameter must be `true`.
 
 <a id="What_is_the_difference_between_checkstyle.3Acheckstyle_and_checkstyle.3Acheck"></a>
 
 ### What is the difference between checkstyle:checkstyle and checkstyle:check?
 
-The checkstyle:checkstyle goal is a **reporting** goal that adds a report of
-Checkstyle violations to the output of the maven-site-plugin. The checkstyle:check
-goal is an ordinary goal that reports violations to the console and/or fails the
-build when there are violations.
+The checkstyle:checkstyle goal is a **reporting** goal.
+It adds a report of Checkstyle violations to the output of the maven-site-plugin.
+The checkstyle:check goal is an ordinary goal.
+It reports violations to the console.
+It fails the build when there are violations.

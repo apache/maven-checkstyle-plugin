@@ -27,7 +27,10 @@ under the License.
 
 # Predefined Rulesets
 
-Maven Checkstyle Plugin has had different sets of predefined rulesets across different versions. Some have been included in the plugin itself while others have been references to other projects. The table below shows this history.
+Maven Checkstyle Plugin had different sets of predefined rulesets across different versions.
+Some rulesets were included in the plugin itself.
+Other rulesets were references to other projects.
+The table below shows this history.
 
 |Predefined ruleset|2.0 - 2.13|2.14|2.15|2.16 -|
 |:---|:---|:---|:---|:---|
