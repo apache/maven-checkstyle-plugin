@@ -145,7 +145,8 @@ public class CheckstyleViolationCheckMojoTest {
     @MojoParameter(name = "violationSeverity", value = "error")
     @MojoParameter(name = "logViolationsToConsole", value = "true")
     @Test
-    public void testWarningsAreLoggedWhenSeverityIsError(CheckstyleViolationCheckMojo mojo) throws Exception {
+    public void testWarningsAreLoggedWhenSeverityIsError(
+            CheckstyleViolationCheckMojo mojo) throws Exception {
         List<String> loggedMessages = new ArrayList<>();
         Log log = (Log) Proxy.newProxyInstance(
                 Log.class.getClassLoader(),
