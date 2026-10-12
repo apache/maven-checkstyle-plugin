@@ -908,7 +908,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     private boolean hasFiles(Collection<File> directories) throws IOException {
         for (File directory : directories) {
-            if (directory.isDirectory() && !FileUtils.getFiles(directory, includes, excludes).isEmpty()) {
+            if (directory.isDirectory()
+                    && !FileUtils.getFiles(directory, includes, excludes).isEmpty()) {
                 return true;
             }
         }
@@ -923,7 +924,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             if (resource.getDirectory() != null) {
                 File directory = new File(resource.getDirectory());
                 if (directory.isDirectory()
-                        && !FileUtils.getFiles(directory, resourceIncludes, resourceExcludes).isEmpty()) {
+                        && !FileUtils.getFiles(directory, resourceIncludes, resourceExcludes)
+                                .isEmpty()) {
                     return true;
                 }
             }

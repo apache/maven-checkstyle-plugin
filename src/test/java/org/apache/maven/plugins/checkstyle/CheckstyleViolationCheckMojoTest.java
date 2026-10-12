@@ -104,7 +104,8 @@ public class CheckstyleViolationCheckMojoTest {
             name = "outputFile",
             value = "${basedir}/target/test-harness/checkstyle/no-source-check/checkstyle-result.xml")
     @MojoParameter(
-            name = "cacheFile", value = "${basedir}/target/test-harness/checkstyle/no-source-check/checkstyle-cachefile")
+            name = "cacheFile",
+            value = "${basedir}/target/test-harness/checkstyle/no-source-check/checkstyle-cachefile")
     @Test
     public void testNoSourceDoesNotCreateOutputFiles(CheckstyleViolationCheckMojo mojo) throws Exception {
         project.setPackaging("pom");
