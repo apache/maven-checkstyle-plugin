@@ -504,7 +504,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
         checkDeprecatedParameterUsage(testSourceDirectory, "testSourceDirectory", "testSourceDirectories");
         if (skip) {
-            getLog().info("Skipping Checkstyle execution because property checkstyle.skip is set.");
+            getLog().debug("Skipping Checkstyle execution because property checkstyle.skip is set.");
             return;
         }
 
