@@ -142,8 +142,7 @@ public class CheckstyleViolationCheckMojoTest {
     @MojoParameter(name = "violationSeverity", value = "error")
     @MojoParameter(name = "logViolationsToConsole", value = "true")
     @Test
-    public void testWarningsAreLoggedWhenSeverityIsError(
-            CheckstyleViolationCheckMojo mojo) throws Exception {
+    public void testWarningsAreLoggedWhenSeverityIsError(CheckstyleViolationCheckMojo mojo) throws Exception {
         Log log = Mockito.mock(Log.class);
         mojo.setLog(log);
 
