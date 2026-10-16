@@ -1,5 +1,5 @@
 ---
-title: Upgrading Checkstyle at Runtime
+title: Upgrade Checkstyle at Runtime
 author: 
   - 2022-02-07
 ---
@@ -23,11 +23,14 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Upgrading Checkstyle at Runtime
+# Upgrade Checkstyle at Runtime
 
-Maven Checkstyle plugin comes with a default Checkstyle version: for `maven-checkstyle-plugin ${project.version}`, Checkstyle ${checkstyleVersion} is used by default.
+The Maven Checkstyle Plugin has a default Checkstyle version.
+For `maven-checkstyle-plugin ${project.version}`, the plugin uses Checkstyle ${checkstyleVersion} by default.
 
-Given Checkstyle generally keeps good compatibility between versions, you can override the version used at runtime to benefit from [Checkstyle latest bugfixes](https://checkstyle.org/releasenotes.html):
+Checkstyle keeps good compatibility between versions.
+You can override the version used at runtime.
+This lets you use the [latest Checkstyle bug fixes](https://checkstyle.org/releasenotes.html):
 
 ```xml
 <project>
