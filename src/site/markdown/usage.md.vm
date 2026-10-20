@@ -26,12 +26,13 @@ under the License.
 
 # Usage
 
-The following examples describe the basic usage of the Checkstyle Plugin.
+The examples below describe the basic usage of the Checkstyle Plugin.
 
 Generate Checkstyle Report As Part of the Project Reports
 ---------------------------------------------------------
 
-To generate the Checkstyle report as part of the Project Reports, add the Checkstyle Plugin in the `<reporting>` section of your `pom.xml`.
+Generate the Checkstyle report as part of the Project Reports.
+Add the Checkstyle Plugin to the `<reporting>` section of your `pom.xml`.
 
 ```xml
 <project>
@@ -56,7 +57,7 @@ To generate the Checkstyle report as part of the Project Reports, add the Checks
 </project>
 ```
 
-Then, execute the site phase to generate the report.
+Run the site phase to generate the report.
 
 ```shell
 mvn site
@@ -65,20 +66,32 @@ mvn site
 Generate Checkstyle Report As Standalone
 ----------------------------------------
 
-You can also generate the Checkstyle report by explicitly executing the `checkstyle:checkstyle` goal from the command line. You are not required to specify the Checkstyle Plugin in your `pom.xml` unless you want to use a specific configuration.
+You can also generate the Checkstyle report with the `checkstyle:checkstyle` goal from the command line.
+You do not need to specify the Checkstyle Plugin in your `pom.xml` unless you need a specific configuration.
 
 ```shell
 mvn checkstyle:checkstyle
 ```
 
-Checking for Violations as Part of the Build
---------------------------------------------
+Check for Violations as Part of the Build
+-----------------------------------------
 
-If you want to report to the console or fail the build, you must add an execution of `checkstyle::check` to the `<build>` element and configure any options that you need.
+If you want the console report or a build failure, add an execution of `checkstyle::check` to the `<build>` element.
+Configure any options that you need.
 
-Options you set in the `<reporting>` element do not have any effect on executions in the `<build>` element.
+Options that you set in the `<reporting>` element do not affect executions in the `<build>` element.
 
-Note that the phase that `checkstyle::check` is bound to is very important. If bound to the validate phase, it would check the code prior to compiling the code. If the code is invalid, the parsing errors reported by checkstyle may be different than what would be expected from the javac compiler. However, it's guaranteed to run. Another popular option is to bind it to the verify phase which would run much later (and allow the javac compiler to flag invalid code prior to checkstyle). However, if developers generally just use "mvn test" prior to pushing changes, checkstyle would not run as verify occurs after the test phase.
+The phase that `checkstyle::check` is bound to is important.
+If you bind it to the validate phase, it checks the code before compilation.
+It is guaranteed to run.
+If the code is invalid, the errors that checkstyle reports can differ from the errors from the javac compiler.
+
+Another common option binds the goal to the verify phase.
+The verify phase runs much later than the validate phase.
+A later phase lets the javac compiler flag invalid code before checkstyle runs.
+
+If developers run `mvn test` before they push changes, checkstyle does not run.
+The verify phase occurs after the test phase.
 
 For example:
 
