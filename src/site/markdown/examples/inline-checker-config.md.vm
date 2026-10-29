@@ -1,5 +1,5 @@
 ---
-title: Using an 'inlined' Checkstyle Checker Configuration
+title: Inline Checkstyle Checker Configuration
 author: 
   - 2015-10-04
 ---
@@ -23,13 +23,15 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Using an Inline Checkstyle Checker Configuration
+# Inline Checkstyle Checker Configuration
 
-Since version 2.12, an inlined [Checker configuration](https://checkstyle.org/config.html#Checker) can be defined directly in the `configuration` section of the plugin itself inside your `pom.xml`.
+From version 2.12, you can define an inline [Checker configuration](https://checkstyle.org/config.html#Checker) directly in the `configuration` section of the plugin inside your `pom.xml`.
 
-This is especially useful when the Checkstyle checks should be executed with every compile and you do not like to create an own project for your Checkstyle rules and neither like to have a separate parent POM structure.
+This is useful when you want to run the Checkstyle checks with every compile.
+You do not need to create a separate project for your Checkstyle rules.
+You do not need a separate parent POM structure.
 
-To define a custom Checkstyle checker configuration inside your `pom.xml`, use the `checkstyleRules` parameter.
+Use the `checkstyleRules` parameter to define a custom Checkstyle checker configuration inside your `pom.xml`.
 
 ```xml
 <project>
@@ -81,13 +83,16 @@ To define a custom Checkstyle checker configuration inside your `pom.xml`, use t
 </project>
 ```
 
-# Using a different header
+# Different Header
 
-The inline configuration works by writing the configuration to a file and passing that file to checkstyle. This configuration file must contain a specific [header](https://checkstyle.org/config.html#Configuration_XML_Structure).
+The plugin writes the inline configuration to a file.
+It then passes the file to checkstyle.
+The configuration file must contain a specific [header](https://checkstyle.org/config.html#Configuration_XML_Structure).
 
-We include one by default that is compatible with the included checkstyle version.
+The plugin includes one by default.
+The default header is compatible with the included checkstyle version.
 
-When you use a different checkstyle version than the the one that's included it might be necessary for you to specify a different header:
+When you use a different checkstyle version than the one that is included, you must specify a different header:
 
 ```xml
 <project>
