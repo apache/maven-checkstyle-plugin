@@ -313,11 +313,11 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         try {
             // MCHECKSTYLE-132 DefaultConfiguration addAttribute has changed in checkstyle 5.3
             if (config.getAttribute(name) == null) {
-                config.addAttribute(name, value);
+                config.addProperty(name, value);
             }
         } catch (CheckstyleException ex) {
             // MCHECKSTYLE-159 Checkstyle 5.4+ throws an exception when trying to access an attribute that doesn't exist
-            config.addAttribute(name, value);
+            config.addProperty(name, value);
         }
     }
 
