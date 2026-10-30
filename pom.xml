@@ -73,7 +73,6 @@ under the License.
   </distributionManagement>
 
   <properties>
-    <javaVersion>8</javaVersion>
     <mavenVersion>3.9.16</mavenVersion>
     <resolverVersion>1.9.27</resolverVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
@@ -308,7 +307,6 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.11.0</version>
           <executions>
             <execution>
               <id>analyze</id>
