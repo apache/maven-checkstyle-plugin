@@ -36,7 +36,7 @@ Structuring your project
 
 First we set up the directory structure for the custom checks project. It looks like this:
 
-```unknown
+```text
 mycompany-checkstyle-checks
 |-- pom.xml
 `-- src
@@ -153,7 +153,7 @@ This produces a JAR file with the following contents and installs it into your l
 
 #[[### `mycompany-checkstyle-checks-1.0.jar`]]#
 
-```unknown
+```text
 mycompany-checkstyle-checks-1.0.jar
 |-- pom.xml
 |-- META-INF

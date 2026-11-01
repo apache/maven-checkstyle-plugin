@@ -31,7 +31,7 @@ Configuring the Checkstyle Plugin for use within large multimodule projects can 
 
 This example will use a mysterious project called _whizbang_. This is what the structure of that project looks like:
 
-```unknown
+```text
 whizbang
 |-- pom.xml
 |-- core
@@ -48,7 +48,7 @@ Create a subproject to house the resources
 
 We'll start by adding another sub project that will house our common configuration. Let's call it _build-tools_. In it we put the resources that we want to include. In this example, we will add configuration files for the Checkstyle Plugin. Configuration files for other plugins, like the PMD plugin, can be included in the same subproject if you like.
 
-```unknown
+```text
 whizbang
 |-- pom.xml
 |-- build-tools
