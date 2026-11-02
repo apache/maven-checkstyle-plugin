@@ -45,8 +45,8 @@ import com.puppycrawl.tools.checkstyle.PropertiesExpander;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.api.FilterSet;
-import com.puppycrawl.tools.checkstyle.filters.SuppressionsLoader;
+import com.puppycrawl.tools.checkstyle.api.Filter;
+import com.puppycrawl.tools.checkstyle.filters.SuppressionFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -106,7 +106,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         }
 
         final String suppressionsFilePath = getSuppressionsFilePath(request);
-        FilterSet filterSet = getSuppressionsFilterSet(suppressionsFilePath);
+        Filter suppressionFilter = createSuppressionFilter(suppressionsFilePath);
 
         Checker checker = new Checker();
 
@@ -156,8 +156,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
 
-        if (filterSet != null) {
-            checker.addFilter(filterSet);
+        if (suppressionFilter != null) {
+            checker.addFilter(suppressionFilter);
         }
         Configuration configuration = getConfiguration(request);
         checker.configure(configuration);
@@ -579,16 +579,37 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         }
     }
 
-    private FilterSet getSuppressionsFilterSet(final String suppressionsFilePath) throws CheckstyleExecutorException {
+    /**
+     * Builds a {@code SuppressionFilter} module configured with the given suppressions file, the same way
+     * Checkstyle builds one when it is declared as a module in the checker configuration.
+     * <p>
+     * This matters for the cache file (MCHECKSTYLE-372): Checkstyle invalidates its cache for an external
+     * resource only when the module holding it implements {@code ExternalResourceHolder}, which
+     * {@code SuppressionFilter} does but a pre-parsed {@code FilterSet} does not. Loading the suppressions
+     * ourselves and adding the result as a plain {@code FilterSet} - as this method used to - left Checkstyle
+     * with no way to notice the suppressions file had changed, so edits to it were silently ignored as long
+     * as the cache file was still considered up to date for everything else.
+     *
+     * @param suppressionsFilePath absolute path to the suppressions file, or {@code null} if none configured
+     * @return the configured filter, or {@code null} if {@code suppressionsFilePath} is {@code null}
+     * @throws CheckstyleExecutorException if the suppressions file cannot be loaded
+     */
+    private Filter createSuppressionFilter(final String suppressionsFilePath) throws CheckstyleExecutorException {
         if (suppressionsFilePath == null) {
             return null;
         }
 
+        SuppressionFilter suppressionFilter = new SuppressionFilter();
+        DefaultConfiguration suppressionFilterConfig = new DefaultConfiguration("SuppressionFilter");
+        suppressionFilterConfig.addProperty("file", suppressionsFilePath);
+
         try {
-            return SuppressionsLoader.loadSuppressions(suppressionsFilePath);
+            suppressionFilter.configure(suppressionFilterConfig);
         } catch (CheckstyleException ce) {
             throw new CheckstyleExecutorException("Failed to load suppressions file from: " + suppressionsFilePath, ce);
         }
+
+        return suppressionFilter;
     }
 
     private String getSuppressionsFilePath(final CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
