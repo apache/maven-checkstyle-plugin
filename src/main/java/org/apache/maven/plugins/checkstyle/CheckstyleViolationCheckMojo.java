@@ -61,6 +61,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.PathTool;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -923,10 +924,25 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         for (Resource resource : resourceList) {
             if (resource.getDirectory() != null) {
                 File directory = new File(resource.getDirectory());
-                if (directory.isDirectory()
-                        && !FileUtils.getFiles(directory, resourceIncludes, resourceExcludes)
-                                .isEmpty()) {
-                    return true;
+                if (directory.isDirectory()) {
+                    String includes = resourceIncludes;
+                    String excludes = resourceExcludes;
+                    // Match DefaultCheckstyleExecutor's project-root resource filtering (MCHECKSTYLE-214).
+                    if (directory.equals(project.getBasedir())) {
+                        String additionalIncludes =
+                                StringUtils.join(resource.getIncludes().iterator(), ",");
+                        includes = includes == null || includes.isEmpty()
+                                ? additionalIncludes
+                                : includes + "," + additionalIncludes;
+                        String additionalExcludes =
+                                StringUtils.join(resource.getExcludes().iterator(), ",");
+                        excludes = excludes == null || excludes.isEmpty()
+                                ? additionalExcludes
+                                : excludes + "," + additionalExcludes;
+                    }
+                    if (!FileUtils.getFiles(directory, includes, excludes).isEmpty()) {
+                        return true;
+                    }
                 }
             }
         }
