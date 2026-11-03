@@ -251,6 +251,8 @@ public class CheckstyleReportTest {
         }
 
         String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+        // severities are text: the report must not rely on the site skin's severity images
+        assertFalse(str.contains("images/icon_"), "Report references a site skin image");
 
         ResourceBundle bundle =
                 ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, getClassLoader());

@@ -42,7 +42,6 @@ import org.codehaus.plexus.i18n.I18N;
  * Generate a report based on CheckstyleResults.
  */
 public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
-    private static final int NO_TEXT = 0;
     private static final int TEXT_SIMPLE = 1;
     private static final int TEXT_TITLE = 2;
     private static final int TEXT_ABBREV = 3;
@@ -314,7 +313,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         // Grab the severity from the rule configuration, this time use error as default value
         // Also pass along all parent configurations, so that we can try to find the severity there
         String severity = getConfigProperty(checkerConfig, parentConfiguration, "severity", "error");
-        iconSeverity(severity, TEXT_SIMPLE);
+        severityText(severity, TEXT_SIMPLE);
         sink.tableCell_();
 
         sink.tableRow_();
@@ -373,15 +372,15 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconSeverity("info", TEXT_TITLE);
+        severityText("info", TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconSeverity("warning", TEXT_TITLE);
+        severityText("warning", TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconSeverity("error", TEXT_TITLE);
+        severityText("error", TEXT_TITLE);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
@@ -411,13 +410,13 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         sink.text(getI18nString("file"));
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconSeverity("info", TEXT_ABBREV);
+        severityText("info", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconSeverity("warning", TEXT_ABBREV);
+        severityText("warning", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconSeverity("error", TEXT_ABBREV);
+        severityText("error", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
@@ -504,7 +503,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             sink.tableRow();
 
             sink.tableCell();
-            iconSeverity(level.getName(), TEXT_SIMPLE);
+            severityText(level.getName(), TEXT_SIMPLE);
             sink.tableCell_();
 
             sink.tableCell();
@@ -566,30 +565,24 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     }
 
     /**
-     * Render an icon of given level with associated text.
+     * Render the name of the given severity level as text, without the site skin's severity images.
      *
      * @param level one of <code>INFO</code>, <code>WARNING</code> or <code>ERROR</code> constants
-     * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
-     * <code>TEXT_ABBREV</code> constants
+     * @param textType one of <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or <code>TEXT_ABBREV</code> constants
      */
-    private void iconSeverity(String level, int textType) {
-        sink.figureGraphics("images/icon_" + level + "_sml.gif");
-
-        if (textType > NO_TEXT) {
-            sink.nonBreakingSpace();
-            String suffix;
-            switch (textType) {
-                case TEXT_TITLE:
-                    suffix = "s";
-                    break;
-                case TEXT_ABBREV:
-                    suffix = "s.abbrev";
-                    break;
-                default:
-                    suffix = "";
-            }
-            sink.text(getI18nString(level + suffix));
+    private void severityText(String level, int textType) {
+        String suffix;
+        switch (textType) {
+            case TEXT_TITLE:
+                suffix = "s";
+                break;
+            case TEXT_ABBREV:
+                suffix = "s.abbrev";
+                break;
+            default:
+                suffix = "";
         }
+        sink.text(getI18nString(level + suffix));
     }
 
     /**
