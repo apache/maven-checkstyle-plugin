@@ -284,9 +284,8 @@ under the License.
                 These are license header templates.
               -->
               <exclude>src/main/resources/config/maven-header.txt</exclude>
-              <exclude>src/it/MCHECKSTYLE-225-customHeader/build-tools/src/main/resources/test/custom-header.txt</exclude>
-              <exclude>src/it/MCHECKSTYLE-225-pluginManagement/build-tools/src/main/resources/test/custom-header.txt</exclude>
-              <exclude>src/it/MCHECKSTYLE-225-LICENSE.txt/build-tools/src/main/resources/LICENSE.txt</exclude>
+              <exclude>src/it/MCHECKSTYLE-225/build-tools/src/main/resources/test/custom-header.txt</exclude>
+              <exclude>src/it/MCHECKSTYLE-225/build-tools/src/main/resources/LICENSE.txt</exclude>
               <exclude>src/test/resources/plugin-configs/target/test-harness/checkstyle/min/checkstyle-checker.xml</exclude>
             </inputExcludes>
           </configuration>
