@@ -23,5 +23,6 @@ def buildLog = new File( basedir, 'build.log' ).text
 // but both locations shouldn't be checked
 assert !buildLog.contains( "[INFO] There are 3 errors reported by Checkstyle" )
 
-// the check ran in the parent and in both children: child-a with sourceDirectories, child-b with testSourceDirectories
+// the check ran in the parent (pom packaging, counted as one of the three) and in both children: child-a with
+// sourceDirectories, child-b with testSourceDirectories
 assert buildLog.count( "[INFO] You have 0 Checkstyle violations." ) == 3
