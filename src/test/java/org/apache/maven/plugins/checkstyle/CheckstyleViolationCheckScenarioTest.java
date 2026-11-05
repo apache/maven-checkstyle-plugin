@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.apache.maven.api.di.Provides;
 import org.apache.maven.api.plugin.testing.Basedir;
 import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -54,6 +55,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * <p>
  * The log of the plugin is recorded. The executor logs through SLF4J instead, so what it writes to
  * <code>System.err</code> is captured as well (<code>simplelogger.properties</code> enables its debug level).
+ * <p>
+ * Some tests change the JVM-wide default locale and standard error stream, so this class must not run its tests in
+ * parallel with others; the build runs them sequentially.
  */
 @MojoTest
 public class CheckstyleViolationCheckScenarioTest {
@@ -110,10 +114,10 @@ public class CheckstyleViolationCheckScenarioTest {
     /** MCHECKSTYLE-347: a blank violationIgnore ignores nothing. */
     @Basedir("/check-scenarios/MCHECKSTYLE-347")
     @InjectMojo(goal = "check", pom = "pom.xml")
+    @MojoParameter(name = "violationIgnore", value = "")
     @Test
     public void testBlankViolationIgnore(CheckstyleViolationCheckMojo mojo) throws Exception {
         project.addCompileSourceRoot("src/main/java");
-        setViolationIgnore(mojo, "");
 
         Execution execution = execute(mojo);
 
@@ -311,12 +315,6 @@ public class CheckstyleViolationCheckScenarioTest {
             messages.append(t.getMessage()).append('\n');
         }
         return messages.toString();
-    }
-
-    private static void setViolationIgnore(CheckstyleViolationCheckMojo mojo, String value) throws Exception {
-        java.lang.reflect.Field field = CheckstyleViolationCheckMojo.class.getDeclaredField("violationIgnore");
-        field.setAccessible(true);
-        field.set(mojo, value);
     }
 
     private String readResult(CheckstyleViolationCheckMojo mojo) throws Exception {
