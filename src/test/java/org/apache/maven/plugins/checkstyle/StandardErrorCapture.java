@@ -25,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 /**
  * Captures what is written to the standard error stream, where the SLF4J binding of the tests writes the log of
  * the Checkstyle executor.
+ * <p>
+ * Replaces <code>System.err</code> for the whole JVM until closed, so it is only safe while tests run sequentially.
  */
 final class StandardErrorCapture implements AutoCloseable {
 
