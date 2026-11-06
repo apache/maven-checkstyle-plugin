@@ -49,7 +49,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
-import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,7 +79,7 @@ public class CheckstyleReportTest {
     public void setUp() throws Exception {
         // prepare realistic repository session
         ArtifactRepository localRepo = Mockito.mock(ArtifactRepository.class);
-        Mockito.when(localRepo.getBasedir()).thenReturn(new File(getBasedir(), "target/local-repo").getAbsolutePath());
+        Mockito.when(localRepo.getBasedir()).thenReturn(new File("target/local-repo").getAbsolutePath());
 
         MavenExecutionRequest request = new DefaultMavenExecutionRequest();
         request.setLocalRepository(localRepo);
