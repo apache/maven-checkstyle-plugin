@@ -26,11 +26,16 @@ under the License.
 
 # ${project.name}
 
-The Checkstyle Plugin generates a report regarding the code style used by the developers. For more information about Checkstyle, see [https://checkstyle.org/](https://checkstyle.org/).
+The Checkstyle Plugin generates a report on the code style used by the developers.
+For more information about Checkstyle, see [https://checkstyle.org/](https://checkstyle.org/).
 
-This version of the plugin uses Checkstyle ${checkstyleVersion} by default and requires Java ${javaVersion}. But you can [upgrade the version used at runtime](./examples/upgrading-checkstyle.html).
+This version of the plugin uses Checkstyle ${checkstyleVersion} by default.
+It requires Java ${javaVersion}.
+You can [upgrade the version used at runtime](./examples/upgrading-checkstyle.html).
 
-The plugin can be configured in the project's POM. Predefined rulesets available for use in this version of the plugin are: [`sun_checks.xml`](https://checkstyle.org/sun_style.html) and [`google_checks.xml`](https://checkstyle.org/google_style.html). You can also use a custom ruleset by specifying it in the plugin configuration.
+The plugin can be configured in the project's POM.
+This version of the plugin provides two predefined rulesets: [`sun_checks.xml`](https://checkstyle.org/sun_style.html) and [`google_checks.xml`](https://checkstyle.org/google_style.html).
+You can also use a custom ruleset in the plugin configuration.
 
 Goals Overview
 --------------
@@ -39,34 +44,48 @@ The Checkstyle Plugin has three goals:
 
 - [checkstyle:checkstyle](./checkstyle-mojo.html) is a reporting goal that performs Checkstyle analysis and generates a report on violations.
 - [checkstyle:checkstyle-aggregate](./checkstyle-aggregate-mojo.html) is a reporting goal that performs Checkstyle analysis and generates an aggregate HTML report on violations in a multi-module reactor build.
-- [checkstyle:check](./check-mojo.html) is a goal that performs Checkstyle analysis and outputs violations or a count of violations to the console, potentially failing the build. It can also be configured to re-use an earlier analysis.
+- [checkstyle:check](./check-mojo.html) is a goal that performs Checkstyle analysis and outputs violations or a count of violations to the console.
+  It can also fail the build.
+  You can configure it to re-use an earlier analysis.
 
 Major Version Upgrade to version 3.0.0
 --------------------------------------
 
-Please note that the following parameters have been completely removed from the plugin configuration:
+These two parameters were removed from the plugin configuration:
 
-- `sourceDirectory`: use `sourceDirectories` instead;
+- `sourceDirectory`: use `sourceDirectories` instead.
 - `testSourceDirectory`: use `testSourceDirectories` instead.
 
 Usage
 -----
 
-General instructions on how to use the Checkstyle Plugin can be found on the [usage page](./usage.html). Some more specific use cases are described in the examples given below.
+General instructions on how to use the Checkstyle Plugin are on the [usage page](./usage.html).
+The examples below describe more specific use cases.
 
-In case you still have questions regarding the plugin's usage, please have a look at the [FAQ](./faq.html) and feel free to contact the [user mailing list](./mailing-lists.html). The posts to the mailing list are archived and could already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching the [mail archive](./mailing-lists.html).
+If you still have questions about the plugin's usage, look at the [FAQ](./faq.html).
+You can also contact the [user mailing list](./mailing-lists.html).
+The posts to the mailing list are archived.
+An older thread can contain the answer to your question.
+You can also search the [mail archive](./mailing-lists.html).
 
-If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our [issue tracker](https://issues.apache.org/jira/projects/MCHECKSTYLE/). When creating a new issue, please provide a comprehensive description of your concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason, entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated. Of course, patches are welcome, too. Contributors can check out the project from our [source repository](./scm.html) and will find supplementary information in the [guide to helping with Maven](https://maven.apache.org/guides/development/guide-helping.html).
+If you think that the plugin lacks a feature or has a defect, report it in the [issue tracker](https://issues.apache.org/jira/projects/MCHECKSTYLE/).
+When you create a new issue, include a comprehensive description of your concern.
+For bug fixes, the developers must be able to reproduce your problem.
+Attach entire debug logs, POMs, or little demo projects to the issue.
+Patches are welcome.
+
+Contributors can check out the project from the [source repository](./scm.html).
+They can also find supplementary information in the [guide to helping with Maven](https://maven.apache.org/guides/development/guide-helping.html).
 
 Examples
 --------
 
-The following examples show how to use the Checkstyle Plugin in more advanced usecases:
+The examples below show how to use the Checkstyle Plugin in more advanced use cases:
 
-- [Upgrading Checkstyle at Runtime](./examples/upgrading-checkstyle.html)
-- [Using an 'Inline' Checkstyle Checker Configuration](./examples/inline-checker-config.html)
-- [Using a Custom Checkstyle Checker Configuration](./examples/custom-checker-config.html)
-- [Using Custom Checkstyle Property Expansion Definitions](./examples/custom-property-expansion.html)
-- [Using a Suppressions Filter](./examples/suppressions-filter.html)
-- [Using Custom Developed Checkstyle Check Modules](./examples/custom-developed-checkstyle.html)
+- [Upgrade Checkstyle at Runtime](./examples/upgrading-checkstyle.html)
+- [Inline Checkstyle Checker Configuration](./examples/inline-checker-config.html)
+- [Custom Checkstyle Checker Configuration](./examples/custom-checker-config.html)
+- [Custom Checkstyle Property Expansion Definitions](./examples/custom-property-expansion.html)
+- [Suppressions Filter](./examples/suppressions-filter.html)
+- [Custom Developed Checkstyle Check Modules](./examples/custom-developed-checkstyle.html)
 - [Multimodule Configuration](./examples/multi-module-config.html)

@@ -1,5 +1,5 @@
 ---
-title: Using Custom Checkstyle Property Expansion Definitions
+title: Custom Checkstyle Property Expansion Definitions
 author: 
   - 2006-07-21
 ---
@@ -23,13 +23,16 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Using Custom Checkstyle Property Expansion Definitions
+# Custom Checkstyle Property Expansion Definitions
 
-Custom [property expansion definitions](https://checkstyle.org/config.html#Properties) for the Checker can be defined.
+You can define custom [property expansion definitions](https://checkstyle.org/config.html#Properties) for the Checker.
 
-Checkstyle uses the property expansion mechanism to allow injection of specific values into a pre-defined Checker configuration. Using property expansion alone is an insufficient means to customize the checks performed by Checkstyle.
+Checkstyle uses the property expansion mechanism to inject specific values into a pre-defined Checker configuration.
+Property expansion alone is not enough to customize the checks that Checkstyle performs.
 
-Example: `checkstyle.xml` - only checks the package name in use to ensure that it conforms to the desired scheme, but allows for users of this Checker to specify their own projectname.
+Example: `checkstyle.xml` - This configuration checks the package name in use.
+It makes sure that the package name conforms to the desired scheme.
+It also lets the Checker users specify their own projectname.
 
 ```xml
 <?xml version="1.0" ?>
@@ -48,7 +51,8 @@ Example: `checkstyle.xml` - only checks the package name in use to ensure that i
 </module>
 ```
 
-Example: `pom.xml` - Specifies the `projectname` property expansion that Checkstyle will use when encountering such a variable in the above Checker configuration.
+Example: `pom.xml` - This configuration specifies the `projectname` property expansion.
+Checkstyle uses it when it encounters the variable in the Checker configuration above.
 
 ```xml
 <project>
@@ -73,7 +77,8 @@ Example: `pom.xml` - Specifies the `projectname` property expansion that Checkst
 </project>
 ```
 
-The property expansion information can also come from a location using the `propertiesLocation` parameter as shown below. The `propertiesLocation` can point to a URL, File or build classpath resource reference.
+You can also provide the property expansion information from a location with the `propertiesLocation` parameter as shown below.
+The parameter can point to a URL, a file, or a build classpath resource.
 
 ```xml
 <project>
