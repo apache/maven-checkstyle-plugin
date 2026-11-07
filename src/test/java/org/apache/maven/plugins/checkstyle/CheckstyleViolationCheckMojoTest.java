@@ -100,8 +100,8 @@ public class CheckstyleViolationCheckMojoTest {
             mojo.execute();
 
             fail("Must fail on violations");
-        } catch (MojoExecutionException e) {
-            // expected
+        } catch (MojoFailureException e) {
+            // expected: failsOnError is a build failure, not a plugin error
         }
     }
 
