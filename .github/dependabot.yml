@@ -31,6 +31,10 @@ updates:
       - dependency-name: "org.slf4j:*"
         versions:
           - ">= 2.0.0"
+      # Mockito 5 requires Java 11
+      - dependency-name: "org.mockito:*"
+        versions:
+          - ">= 5.0.0"
 
   - package-ecosystem: "github-actions"
     directory: "/"
