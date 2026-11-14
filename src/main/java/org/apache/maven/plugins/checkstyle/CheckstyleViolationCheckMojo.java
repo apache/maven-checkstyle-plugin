@@ -699,7 +699,6 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                 violationIgnore == null ? Collections.emptyList() : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         violations.stream()
-                .filter(violation -> isViolation(violation.getSeverity()))
                 .filter(violation -> !ignore(ignores, violation.getSource()))
                 .forEach(violation -> {
                     final String message = String.format(
