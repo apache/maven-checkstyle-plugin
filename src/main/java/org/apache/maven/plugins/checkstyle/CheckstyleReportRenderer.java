@@ -422,7 +422,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         // Sort the files before writing them to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
-        Collections.sort(fileList);
+        fileList.sort(null);
 
         for (String filename : fileList) {
             List<AuditEvent> violations = results.getFileViolations(filename);
@@ -464,7 +464,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         // Sort the files before writing their details to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
-        Collections.sort(fileList);
+        fileList.sort(null);
 
         for (String file : fileList) {
             List<AuditEvent> violations = results.getFileViolations(file);
@@ -593,7 +593,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     private String getCheckstyleVersion() {
         Package checkstyleApiPackage = Configuration.class.getPackage();
 
-        return (checkstyleApiPackage == null) ? null : checkstyleApiPackage.getImplementationVersion();
+        return checkstyleApiPackage == null ? null : checkstyleApiPackage.getImplementationVersion();
     }
 
     private List<ConfReference> sortConfiguration(CheckstyleResults results) {
@@ -601,7 +601,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         sortConfiguration(result, checkstyleConfig, null, results);
 
-        Collections.sort(result);
+        result.sort(null);
 
         return result;
     }
@@ -672,7 +672,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             if (compare == 0) {
                 compare = configuration.getName().compareTo(o.configuration.getName());
             }
-            return (compare == 0) ? (o.count - count) : compare;
+            return compare == 0 ? (o.count - count) : compare;
         }
     }
 

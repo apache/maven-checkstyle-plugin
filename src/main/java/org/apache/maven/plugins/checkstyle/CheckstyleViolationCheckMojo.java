@@ -593,7 +593,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             printViolations(violationsList);
 
             String msg = "You have " + violationCount + " Checkstyle violation"
-                    + ((violationCount > 1 || violationCount == 0) ? "s" : "") + ".";
+                    + (violationCount > 1 || violationCount == 0 ? "s" : "") + ".";
 
             if (violationCount > maxAllowedViolations) {
                 if (failOnViolation) {
@@ -683,8 +683,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         }
 
         if (ignored > 0) {
-            getLog().info("Ignored " + ignored + " error" + ((ignored > 1L) ? "s" : "") + ", " + countedViolations
-                    + " violation" + ((countedViolations > 1) ? "s" : "") + " remaining.");
+            getLog().info("Ignored " + ignored + " error" + (ignored > 1L ? "s" : "") + ", " + countedViolations
+                    + " violation" + (countedViolations > 1 ? "s" : "") + " remaining.");
         }
 
         return countedViolations;
@@ -706,7 +706,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                             "%s:[%s%s] (%s) %s: %s",
                             violation.getFile(),
                             violation.getLine(),
-                            (Violation.NO_COLUMN.equals(violation.getColumn())) ? "" : (',' + violation.getColumn()),
+                            Violation.NO_COLUMN.equals(violation.getColumn()) ? "" : (',' + violation.getColumn()),
                             violation.getCategory(),
                             violation.getRuleName(),
                             violation.getMessage());

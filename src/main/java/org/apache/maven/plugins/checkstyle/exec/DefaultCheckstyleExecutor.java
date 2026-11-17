@@ -363,7 +363,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
     private String getCheckstyleVersion() {
         Package checkstyleApiPackage = Configuration.class.getPackage();
 
-        return (checkstyleApiPackage == null) ? null : checkstyleApiPackage.getImplementationVersion();
+        return checkstyleApiPackage == null ? null : checkstyleApiPackage.getImplementationVersion();
     }
 
     private Properties getOverridingProperties(CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
