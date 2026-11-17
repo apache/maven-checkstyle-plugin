@@ -284,11 +284,12 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             }
             Configuration config = ConfigurationLoader.loadConfiguration(
                     configFile, new PropertiesExpander(overridingProperties), omitIgnoredModules);
-            String effectiveEncoding = StringUtils.isNotEmpty(request.getEncoding())
-                    ? request.getEncoding()
-                    : System.getProperty("file.encoding", "UTF-8");
+            String effectiveEncoding =
+                    request.getEncoding() != null && !request.getEncoding().isEmpty()
+                            ? request.getEncoding()
+                            : System.getProperty("file.encoding", "UTF-8");
 
-            if (StringUtils.isEmpty(request.getEncoding())) {
+            if (request.getEncoding() == null || request.getEncoding().isEmpty()) {
                 logger.warn("File encoding has not been set, using platform encoding " + effectiveEncoding
                         + ", i.e. build is platform dependent!");
             }
@@ -384,7 +385,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                 }
             }
 
-            if (StringUtils.isNotEmpty(request.getPropertyExpansion())) {
+            if (request.getPropertyExpansion() != null
+                    && !request.getPropertyExpansion().isEmpty()) {
                 String propertyExpansion = request.getPropertyExpansion();
                 // Convert \ to \\, so that p.load will convert it back properly
                 propertyExpansion = propertyExpansion.replace("\\", "\\\\");
@@ -438,7 +440,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
     private List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
         StringBuilder excludesStr = new StringBuilder();
 
-        if (StringUtils.isNotEmpty(request.getExcludes())) {
+        if (request.getExcludes() != null && !request.getExcludes().isEmpty()) {
             excludesStr.append(request.getExcludes());
         }
 
