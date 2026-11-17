@@ -125,7 +125,7 @@ public class CheckstyleReport extends AbstractCheckstyleReport {
             }
         }
 
-        return ((includeResources && hasResources(resources)) || (includeTestResources && hasResources(testResources)));
+        return (includeResources && hasResources(resources)) || (includeTestResources && hasResources(testResources));
     }
 
     /**
