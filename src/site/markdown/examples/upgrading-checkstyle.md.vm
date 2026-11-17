@@ -23,14 +23,16 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+<a id="Upgrading_Checkstyle_at_Runtime"></a>
+
 # Upgrade Checkstyle at Runtime
 
 The Maven Checkstyle Plugin has a default Checkstyle version.
 For `maven-checkstyle-plugin ${project.version}`, the plugin uses Checkstyle ${checkstyleVersion} by default.
 
-Checkstyle keeps good compatibility between versions.
-You can override the version used at runtime.
-This lets you use the [latest Checkstyle bug fixes](https://checkstyle.org/releasenotes.html):
+You can override the version used at runtime with a plugin dependency.
+This lets you use the [latest Checkstyle checks and bug fixes](https://checkstyle.org/release-notes.html).
+Declare it in `<pluginManagement>` so that it applies both to the `check` goal and to the reports:
 
 ```xml
 <project>
@@ -56,3 +58,15 @@ This lets you use the [latest Checkstyle bug fixes](https://checkstyle.org/relea
   ...
 </project>
 ```
+
+Newer Checkstyle versions need a newer Java version than the plugin itself.
+Run Maven with a JDK that the chosen Checkstyle version supports:
+
+| Checkstyle | Minimum Java |
+|:---|:---|
+| 10.x | 11 |
+| 11.x and 12.x | 17 |
+| 13.x and later | 21 |
+
+The predefined `sun_checks.xml` and `google_checks.xml` rulesets come from the Checkstyle JAR.
+When you upgrade Checkstyle, they change with it and can report new violations.

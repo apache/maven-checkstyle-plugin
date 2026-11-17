@@ -25,7 +25,7 @@ under the License.
 
 # Frequently Asked Questions
 
-1. [Where is `config/maven_checks.xml` predefined ruleset?](#Where_is_maven_checks.xml_predefined_ruleset)
+1. [Where is the `config/maven_checks.xml` predefined ruleset?](#Where_is_maven_checks.xml_predefined_ruleset)
 1. [How are the Checkstyle properties set?](#How_are_the_Checkstyle_properties_set)
 1. [How do I set a custom ruleset?](#How_do_I_set_a_custom_ruleset)
 1. [How do I include the test directory in Checkstyle?](#How_do_I_include_the_test_directory_in_Checkstyle)
@@ -35,39 +35,38 @@ under the License.
 
 ### Where is the `config/maven_checks.xml` predefined ruleset?
 
-From maven-checkstyle-plugin version 2.14, `config/maven_checks.xml`
-is no longer part of the plugin.
-The file moved to [Apache Maven Shared Resources](/shared/maven-shared-resources/).
+Version 2.14 removed `config/maven_checks.xml` from the plugin.
+The ruleset is now in [Apache Maven Shared Resources](/shared/maven-shared-resources/).
+The plugin ships `sun_checks.xml` and `google_checks.xml`; the [Predefined Rulesets](./config/index.html) page lists the rulesets of each plugin version.
 
 <a id="How_are_the_Checkstyle_properties_set"></a>
 
 ### How are the Checkstyle properties set?
 
-You can set the Checkstyle properties with the `propertiesLocation` parameter in the
-plugin configuration of your POM.
-The plugin resolves the properties file from the value of the parameter.
+Set them with the `propertyExpansion` parameter, or put them in a properties file and point the `propertiesLocation` parameter to it.
+See [Custom Checkstyle Property Expansion Definitions](./examples/custom-property-expansion.html).
 
 <a id="How_do_I_set_a_custom_ruleset"></a>
 
 ### How do I set a custom ruleset?
 
-You can set a custom ruleset with the `configLocation` plugin parameter.
-If you do not specify a value, the plugin uses the `sun_checks.xml` ruleset.
-This ruleset is bundled with the plugin.
+Set the `configLocation` parameter to a file, a URL, or a resource on the plugin classpath.
+If you do not set it, the plugin uses the `sun_checks.xml` ruleset that ships with Checkstyle.
+See [Custom Checkstyle Checker Configuration](./examples/custom-checker-config.html).
 
 <a id="How_do_I_include_the_test_directory_in_Checkstyle"></a>
 
 ### How do I include the test directory in Checkstyle?
 
-You can include the test directory in the Checkstyle report.
-The `includeTestSourceDirectory` plugin parameter must be `true`.
+Set the `includeTestSourceDirectory` parameter to `true`.
+It is `false` by default, for both the `check` goal and the reports.
 
+<a id="What_is_the_difference_between_checkstyle:checkstyle_and_checkstyle:check"></a>
 <a id="What_is_the_difference_between_checkstyle.3Acheckstyle_and_checkstyle.3Acheck"></a>
 
 ### What is the difference between checkstyle:checkstyle and checkstyle:check?
 
-The checkstyle:checkstyle goal is a **reporting** goal.
-It adds a report of Checkstyle violations to the output of the maven-site-plugin.
-The checkstyle:check goal is an ordinary goal.
-It reports violations to the console.
-It fails the build when there are violations.
+`checkstyle:checkstyle` is a reporting goal.
+It writes an HTML report of Checkstyle violations, as part of the site or on its own.
+It does not fail the build unless you set `failsOnError` to `true`.
+`checkstyle:check` logs violations to the console and fails the build when there are violations.
