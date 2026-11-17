@@ -23,6 +23,8 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+<a id="Using_Custom_Checkstyle_Property_Expansion_Definitions"></a>
+
 # Custom Checkstyle Property Expansion Definitions
 
 You can define custom [property expansion definitions](https://checkstyle.org/config.html#Properties) for the Checker.
@@ -45,7 +47,7 @@ It also lets the Checker users specify their own projectname.
   <module name="TreeWalker">
     <module name="PackageName">
       <property name="format"
-         value="com\.example\.$\{projectname\}(\.[a-z][a-zA-Z0-9]+)*$"/>
+         value="com\.example\.${esc.dollar}{projectname}(\.[a-z][a-zA-Z0-9]+)*$"/>
     </module>
   </module>
 </module>
@@ -78,7 +80,7 @@ Checkstyle uses it when it encounters the variable in the Checker configuration 
 ```
 
 You can also provide the property expansion information from a location with the `propertiesLocation` parameter as shown below.
-The parameter can point to a URL, a file, or a build classpath resource.
+The parameter can point to a file relative to the project directory, a URL, or a resource on the plugin classpath.
 
 ```xml
 <project>
@@ -91,7 +93,7 @@ The parameter can point to a URL, a file, or a build classpath resource.
         <version>${project.version}</version>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
-          <propertiesLocation>${basedir}/checkstyle.properties</propertiesLocation>
+          <propertiesLocation>checkstyle.properties</propertiesLocation>
         </configuration>
       </plugin>
     </plugins>

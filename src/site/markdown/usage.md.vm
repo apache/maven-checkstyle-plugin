@@ -31,90 +31,113 @@ The examples below describe the basic usage of the Checkstyle Plugin.
 Generate Checkstyle Report As Part of the Project Reports
 ---------------------------------------------------------
 
-Generate the Checkstyle report as part of the Project Reports.
-Add the Checkstyle Plugin to the `<reporting>` section of your `pom.xml`.
+Add the Checkstyle Plugin to the `<reporting>` section of your `pom.xml`:
 
 ```xml
 <project>
   ...
-   <reporting>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${project.version}</version>
-          <reportSets>
-            <reportSet>
-              <reports>
-                <report>checkstyle</report>
-              </reports>
-            </reportSet>
-          </reportSets>
-        </plugin>
-      </plugins>
-    </reporting>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
   ...
 </project>
 ```
 
-Run the site phase to generate the report.
+Run the `site` phase to generate the report in `target/site/checkstyle.html`:
 
 ```shell
 mvn site
 ```
 
+In a multi-module build, you can add one report for all modules with the `checkstyle-aggregate` report.
+List the reports you want in a `<reportSet>`:
+
+```xml
+<project>
+  ...
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+              <report>checkstyle-aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  ...
+</project>
+```
+
 Generate Checkstyle Report As Standalone
 ----------------------------------------
 
-You can also generate the Checkstyle report with the `checkstyle:checkstyle` goal from the command line.
-You do not need to specify the Checkstyle Plugin in your `pom.xml` unless you need a specific configuration.
+You can also generate the Checkstyle report from the command line.
+You do not need to declare the plugin in your `pom.xml` unless you need a specific configuration.
 
 ```shell
 mvn checkstyle:checkstyle
 ```
 
+The report is written to `target/reports/checkstyle.html`.
+For a multi-module build, run `mvn checkstyle:checkstyle-aggregate` from the root project; it writes `target/reports/checkstyle-aggregate.html`.
+
+<a id="Checking_for_Violations_as_Part_of_the_Build"></a>
+
 Check for Violations as Part of the Build
 -----------------------------------------
 
-If you want the console report or a build failure, add an execution of `checkstyle::check` to the `<build>` element.
-Configure any options that you need.
-
-Options that you set in the `<reporting>` element do not affect executions in the `<build>` element.
-
-The phase that `checkstyle::check` is bound to is important.
-If you bind it to the validate phase, it checks the code before compilation.
-It is guaranteed to run.
-If the code is invalid, the errors that checkstyle reports can differ from the errors from the javac compiler.
-
-Another common option binds the goal to the verify phase.
-The verify phase runs much later than the validate phase.
-A later phase lets the javac compiler flag invalid code before checkstyle runs.
-
-If developers run `mvn test` before they push changes, checkstyle does not run.
-The verify phase occurs after the test phase.
-
-For example:
+To log violations to the console and fail the build, add an execution of the `check` goal to the `<build>` section.
+Options that you set in the `<reporting>` section do not affect executions in the `<build>` section.
 
 ```xml
- <plugin>
-   <groupId>org.apache.maven.plugins</groupId>
-   <artifactId>maven-checkstyle-plugin</artifactId>
-   <version>${project.version}</version>
-   <configuration>
-     <configLocation>checkstyle.xml</configLocation>
-     <inputEncoding>UTF-8</inputEncoding>
-     <consoleOutput>true</consoleOutput>
-     <failsOnError>true</failsOnError>
-     <linkXRef>false</linkXRef>
-   </configuration>
-   <executions>
-     <execution>
-       <id>validate</id>
-       <phase>validate</phase>
-       <goals>
-         <goal>check</goal>
-       </goals>
-     </execution>
-   </executions>
- </plugin>
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  ...
+</project>
 ```
+
+The phase that you bind `check` to matters:
+
+- Bound to `validate`, as above, it runs before compilation, so it also runs on `mvn compile` and `mvn test`.
+  For code that does not compile, Checkstyle can report different errors than the `javac` compiler.
+- Without a `<phase>`, it binds to `verify`.
+  The compiler then flags invalid code first, but `mvn test` does not run the check.
+
+By default, only violations of severity `error` are logged and fail the build.
+Set `violationSeverity` to `warning` to include warnings, or `failOnViolation` to `false` to log violations without failing.
+To skip the check for one build, pass `-Dcheckstyle.skip`.

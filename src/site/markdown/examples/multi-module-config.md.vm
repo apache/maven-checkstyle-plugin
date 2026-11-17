@@ -25,10 +25,8 @@ under the License.
 
 # Multimodule Configuration
 
-From version 2.12 of this Plugin, you can [inline](./inline-checker-config.html) the configuration directly in the parent POM.
-
-You can configure the Checkstyle Plugin for large multimodule projects.
-It requires some setup.
+To share one Checkstyle configuration across the modules of a large project, put it in a JAR and add that JAR as a plugin dependency.
+For a small set of rules, you can instead [inline](./inline-checker-config.html) the configuration in the parent POM.
 
 This example uses a sample project called _whizbang_.
 The project has the structure below:
@@ -63,7 +61,7 @@ whizbang
 |   |       `-- resources
 |   |           `-- whizbang
 |   |               |-- checkstyle.xml
-|   |               `-- LICENSE.TXT
+|   |               `-- LICENSE.txt
 |   `-- pom.xml
 |-- core
 |-- gui
@@ -141,14 +139,14 @@ Do the rest of the configuration in the normal way in the `<reporting>` element.
 </project>
 ```
 
-Make sure that you do not include the Maven Checkstyle Plugin in your submodules.
-A submodule definition overrides the top level parent POM definition.
+Keep the Checkstyle Plugin configuration in the parent POM only.
+If a submodule declares the plugin as well, its settings override the parent's for that submodule.
 
 The plugin resolves the values of `configLocation` and `headerLocation` from the classpath.
 The _build-tools_ JAR is in the classpath.
 You declared the JAR as a dependency to the plugin.
 
-Then run a build of the site:
+Then build the site:
 
 ```shell
 mvn site

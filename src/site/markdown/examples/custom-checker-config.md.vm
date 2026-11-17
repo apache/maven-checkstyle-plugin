@@ -23,6 +23,8 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+<a id="Using_a_Custom_Checkstyle_Checker_Configuration"></a>
+
 # Custom Checkstyle Checker Configuration
 
 You can define a custom [Checker configuration xml file](https://checkstyle.org/config.html#Checker).
@@ -49,11 +51,13 @@ Use the `configLocation` parameter to reference a custom Checkstyle Checker conf
 </project>
 ```
 
-This example makes the plugin check for a file named `checkstyle.xml`.
-It can find the file in the compile scope of the dependencies or in the build extensions classpath.
+With this example, the plugin looks for `checkstyle.xml` in these places:
 
-The Checkstyle Plugin ships with two predefined configuration definitions.
-It selects the Sun Microsystems definition by default.
+- as a file, relative to the project directory or to the directory of a parent project;
+- as a URL;
+- as a resource on the plugin classpath, for example in a JAR that you add as a plugin dependency, as the [multimodule example](./multi-module-config.html) shows.
 
-- **sun_checks.xml** - Sun Microsystems Definition (default).
-- **google_checks.xml** - Google Definition.
+Two predefined configurations ship with Checkstyle, and the plugin uses the Sun one by default:
+
+- `sun_checks.xml`: [Sun code conventions](https://checkstyle.org/sun_style.html) (default).
+- `google_checks.xml`: [Google Java Style](https://checkstyle.org/google_style.html).
