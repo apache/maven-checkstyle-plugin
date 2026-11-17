@@ -145,6 +145,7 @@ public final class RuleUtil {
             this.rule = rule;
         }
 
+        @Override
         public boolean match(String eventSrcName) {
             return rule.equals(getName(eventSrcName));
         }
@@ -157,6 +158,7 @@ public final class RuleUtil {
             this.packageName = packageName;
         }
 
+        @Override
         public boolean match(String eventSrcName) {
             return eventSrcName.startsWith(packageName)
                     && !eventSrcName.substring(packageName.length() + 1).contains(".");
@@ -167,6 +169,7 @@ public final class RuleUtil {
      * An extension does not start with Checkstyle package.
      */
     private static class ExtensionMatcher implements Matcher {
+        @Override
         public boolean match(String eventSrcName) {
             return !eventSrcName.startsWith(CHECKSTYLE_PACKAGE);
         }

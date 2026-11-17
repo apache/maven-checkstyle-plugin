@@ -42,26 +42,31 @@ public class MultiMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getCompileClasspathElements() throws DependencyResolutionRequiredException {
         return Collections.emptyList();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getTestClasspathElements() throws DependencyResolutionRequiredException {
         return Collections.emptyList();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getCompileSourceRoots() {
         return Collections.emptyList();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getTestCompileSourceRoots() {
         return Collections.emptyList();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<ReportPlugin> getReportPlugins() {
         ReportPlugin jxrPlugin = new ReportPlugin();
 
@@ -71,6 +76,7 @@ public class MultiMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Organization getOrganization() {
         Organization organization = new Organization();
 
@@ -80,11 +86,13 @@ public class MultiMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getInceptionYear() {
         return "2006";
     }
 
     /** {@inheritDoc} */
+    @Override
     public Build getBuild() {
         Build build = new Build();
 
