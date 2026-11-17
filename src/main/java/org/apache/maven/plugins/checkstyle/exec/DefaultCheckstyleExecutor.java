@@ -284,12 +284,11 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             }
             Configuration config = ConfigurationLoader.loadConfiguration(
                     configFile, new PropertiesExpander(overridingProperties), omitIgnoredModules);
-            String effectiveEncoding =
-                    request.getEncoding() != null && !request.getEncoding().isEmpty()
-                            ? request.getEncoding()
-                            : System.getProperty("file.encoding", "UTF-8");
+            String effectiveEncoding = StringUtils.isNotEmpty(request.getEncoding())
+                    ? request.getEncoding()
+                    : System.getProperty("file.encoding", "UTF-8");
 
-            if (request.getEncoding() == null || request.getEncoding().isEmpty()) {
+            if (StringUtils.isEmpty(request.getEncoding())) {
                 logger.warn("File encoding has not been set, using platform encoding " + effectiveEncoding
                         + ", i.e. build is platform dependent!");
             }
@@ -440,7 +439,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
     private List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
         StringBuilder excludesStr = new StringBuilder();
 
-        if (request.getExcludes() != null && !request.getExcludes().isEmpty()) {
+        if (StringUtils.isNotEmpty(request.getExcludes())) {
             excludesStr.append(request.getExcludes());
         }
 

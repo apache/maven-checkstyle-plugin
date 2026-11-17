@@ -422,7 +422,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         // Sort the files before writing them to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
-        fileList.sort(null);
+        Collections.sort(fileList);
 
         for (String filename : fileList) {
             List<AuditEvent> violations = results.getFileViolations(filename);
@@ -464,7 +464,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         // Sort the files before writing their details to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
-        fileList.sort(null);
+        Collections.sort(fileList);
 
         for (String file : fileList) {
             List<AuditEvent> violations = results.getFileViolations(file);
@@ -601,7 +601,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         sortConfiguration(result, checkstyleConfig, null, results);
 
-        result.sort(null);
+        Collections.sort(result);
 
         return result;
     }
