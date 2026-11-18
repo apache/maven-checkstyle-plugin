@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.PathTool;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -507,6 +509,14 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
+        if (!skipExec
+                && "pom".equalsIgnoreCase(project.getPackaging())
+                && project.getModules().isEmpty()
+                && !hasFilesToProcess()) {
+            getLog().debug("No files to process. Skipping Checkstyle execution.");
+            return;
+        }
+
         outputXmlFile = outputFile;
 
         if (!skipExec) {
@@ -880,6 +890,63 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             testSourceDirs.add(FileUtils.resolveFile(project.getBasedir(), testSourceDir));
         }
         return testSourceDirs;
+    }
+
+    private boolean hasFilesToProcess() throws MojoExecutionException {
+        try {
+            if (hasFiles(getSourceDirectories())) {
+                return true;
+            }
+            if (includeTestSourceDirectory && hasFiles(getTestSourceDirectories())) {
+                return true;
+            }
+            return (includeResources && hasResourceFiles(resources))
+                    || (includeTestResources && hasResourceFiles(testResources));
+        } catch (IOException e) {
+            throw new MojoExecutionException("Failed to determine files to process", e);
+        }
+    }
+
+    private boolean hasFiles(Collection<File> directories) throws IOException {
+        for (File directory : directories) {
+            if (directory.isDirectory()
+                    && !FileUtils.getFiles(directory, includes, excludes).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasResourceFiles(List<Resource> resourceList) throws IOException {
+        if (resourceList == null) {
+            return false;
+        }
+        for (Resource resource : resourceList) {
+            if (resource.getDirectory() != null) {
+                File directory = new File(resource.getDirectory());
+                if (directory.isDirectory()) {
+                    String includes = resourceIncludes;
+                    String excludes = resourceExcludes;
+                    // Match DefaultCheckstyleExecutor's project-root resource filtering (MCHECKSTYLE-214).
+                    if (directory.equals(project.getBasedir())) {
+                        String additionalIncludes =
+                                StringUtils.join(resource.getIncludes().iterator(), ",");
+                        includes = includes == null || includes.isEmpty()
+                                ? additionalIncludes
+                                : includes + "," + additionalIncludes;
+                        String additionalExcludes =
+                                StringUtils.join(resource.getExcludes().iterator(), ",");
+                        excludes = excludes == null || excludes.isEmpty()
+                                ? additionalExcludes
+                                : excludes + "," + additionalExcludes;
+                    }
+                    if (!FileUtils.getFiles(directory, includes, excludes).isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private List<String> filterBuildTarget(List<String> sourceDirectories) {
