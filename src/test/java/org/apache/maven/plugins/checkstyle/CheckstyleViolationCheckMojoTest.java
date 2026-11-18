@@ -27,8 +27,10 @@ import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -131,5 +133,21 @@ public class CheckstyleViolationCheckMojoTest {
     @Test
     public void testNoFail(CheckstyleViolationCheckMojo mojo) throws Exception {
         mojo.execute();
+    }
+
+    @InjectMojo(goal = "check", pom = "src/test/resources/plugin-configs/check-plugin-config.xml")
+    @MojoParameter(name = "outputFile", value = "src/test/resources/plugin-configs/check-plugin-warning-output.xml")
+    @MojoParameter(name = "skipExec", value = "true")
+    @MojoParameter(name = "failOnViolation", value = "false")
+    @MojoParameter(name = "violationSeverity", value = "error")
+    @MojoParameter(name = "logViolationsToConsole", value = "true")
+    @Test
+    public void testWarningsAreLoggedWhenSeverityIsError(CheckstyleViolationCheckMojo mojo) throws Exception {
+        Log log = Mockito.mock(Log.class);
+        mojo.setLog(log);
+
+        mojo.execute();
+
+        Mockito.verify(log).warn(Mockito.contains("A warning violation"));
     }
 }
