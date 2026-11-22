@@ -49,7 +49,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.getVariableValueFromObject;
-import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,7 +79,7 @@ public class CheckstyleReportTest {
     public void setUp() throws Exception {
         // prepare realistic repository session
         ArtifactRepository localRepo = Mockito.mock(ArtifactRepository.class);
-        Mockito.when(localRepo.getBasedir()).thenReturn(new File(getBasedir(), "target/local-repo").getAbsolutePath());
+        Mockito.when(localRepo.getBasedir()).thenReturn(new File("target/local-repo").getAbsolutePath());
 
         MavenExecutionRequest request = new DefaultMavenExecutionRequest();
         request.setLocalRepository(localRepo);
@@ -96,6 +95,7 @@ public class CheckstyleReportTest {
         Mockito.when(mojoExecution.getPlugin()).thenReturn(new Plugin());
     }
 
+    @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "src/test/resources/plugin-configs/no-source-plugin-config.xml")
     @MojoParameter(name = "siteDirectory", value = "src/site")
     @Test
@@ -103,12 +103,12 @@ public class CheckstyleReportTest {
         mojo.execute();
 
         File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
+        String filename = mojo.getOutputPath() + ".html";
         File generatedReport = new File(outputDir, filename);
         assertFalse(new File(generatedReport.getAbsolutePath()).exists());
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "min-plugin-config.xml")
@@ -120,7 +120,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "custom-plugin-config.xml")
@@ -131,7 +131,7 @@ public class CheckstyleReportTest {
 
         assertGeneratedReport(mojo);
     }
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "useFile-plugin-config.xml")
@@ -142,7 +142,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "no-rules-plugin-config.xml")
@@ -154,7 +154,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "no-severity-plugin-config.xml")
@@ -166,7 +166,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "no-files-plugin-config.xml")
@@ -178,7 +178,7 @@ public class CheckstyleReportTest {
         assertGeneratedReport(mojo);
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "fail-on-error-plugin-config.xml")
@@ -196,7 +196,7 @@ public class CheckstyleReportTest {
         }
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "dep-resolution-exception-plugin-config.xml")
@@ -216,7 +216,7 @@ public class CheckstyleReportTest {
         }
     }
 
-    // We need to change the basedir to point to test repositor with out site.xml file
+    // We need to change the basedir to point to test repository without site.xml file.
     // without it test will use real project site.xml without skin configuration
     @Basedir("/plugin-configs")
     @InjectMojo(goal = "checkstyle", pom = "test-source-directory-plugin-config.xml")
@@ -230,7 +230,7 @@ public class CheckstyleReportTest {
 
     private void assertGeneratedReport(CheckstyleReport mojo) throws IllegalAccessException, IOException {
         File outputDir = mojo.getReportOutputDirectory();
-        String filename = mojo.getOutputName() + ".html";
+        String filename = mojo.getOutputPath() + ".html";
 
         File generatedReport = new File(outputDir, filename);
         assertTrue(new File(generatedReport.getAbsolutePath()).exists());
@@ -250,6 +250,8 @@ public class CheckstyleReportTest {
         }
 
         String str = new String(Files.readAllBytes(generatedReport.toPath()), StandardCharsets.UTF_8);
+        // severities are text: the report must not rely on the site skin's severity images
+        assertFalse(str.contains("images/icon_"), "Report references a site skin image");
 
         ResourceBundle bundle =
                 ResourceBundle.getBundle("checkstyle-report", SiteTool.DEFAULT_LOCALE, getClassLoader());

@@ -66,14 +66,14 @@ public class RuleUtilTest {
                 assertEquals(
                         i == j,
                         matcher.match(eventSrcName),
-                        spec + " should" + ((i == j) ? " " : " not ") + "match " + eventSrcName);
+                        spec + " should" + (i == j ? " " : " not ") + "match " + eventSrcName);
             }
         }
     }
 
     @Test
     public void testMatcherWithBlankStrings() {
-        String[] specs = ("   ,,foo, ").split(",");
+        String[] specs = "   ,,foo, ".split(",");
 
         List<RuleUtil.Matcher> matchers = RuleUtil.parseMatchers(specs);
 

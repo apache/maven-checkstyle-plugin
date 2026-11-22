@@ -1,0 +1,262 @@
+---
+title: Custom Developed Checkstyle Checks
+author: 
+  - 2008-02-04
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<a id="Using_Custom_Developed_Checkstyle_Checks"></a>
+
+# Custom Developed Checkstyle Checks
+
+This example shows how to create a Maven project for your own Checkstyle checks.
+The project builds a JAR file, which you add as a dependency of the Checkstyle Plugin in your other projects.
+
+A [package names file](https://checkstyle.org/config.html#Packages) named `checkstyle_packages.xml` in the JAR lets your Checkstyle configuration refer to the checks by their short names.
+
+This example uses the [example check](https://checkstyle.org/writing-checks.html#Visitor_in_action) from the Checkstyle website.
+
+<a id="Structuring_your_project"></a>
+
+Project Structure
+-----------------
+
+This project has the directory structure below:
+
+```text
+mycompany-checkstyle-checks
+|-- pom.xml
+`-- src
+    `-- main
+        |-- java
+        |   `-- com
+        |       `-- mycompany
+        |           `-- checks
+        |               `-- MethodLimitCheck.java
+        `-- resources
+            `-- checkstyle_packages.xml
+```
+
+The sections below describe the three files.
+
+#[[### `pom.xml`]]#
+
+This POM adds a dependency on Checkstyle.
+Use the Checkstyle version that the plugin runs; the `provided` scope keeps it out of your JAR's dependencies.
+
+```xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany</groupId>
+  <artifactId>mycompany-checkstyle-checks</artifactId>
+  <name>MyCompany Checkstyle Checks</name>
+  <version>1.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.puppycrawl.tools</groupId>
+      <artifactId>checkstyle</artifactId>
+      <version>${checkstyleVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
+```
+
+<a id="packagenames.xml"></a>
+
+#[[### `checkstyle_packages.xml`]]#
+
+Checkstyle reads every `checkstyle_packages.xml` file at the root of the classpath.
+This one adds `com.mycompany.checks` to the packages that Checkstyle searches for modules.
+You can then use your checks in the Checkstyle configuration without their package name.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE checkstyle-packages PUBLIC
+  "-//Checkstyle//DTD Package Names Configuration 1.0//EN"
+  "https://checkstyle.org/dtds/packages_1_0.dtd">
+
+<checkstyle-packages>
+  <package name="com.mycompany.checks"/>
+</checkstyle-packages>
+```
+
+#[[### `MethodLimitCheck.java`]]#
+
+Here is the example check from the Checkstyle site.
+It checks that a class or interface does not have more than 30 methods.
+The `max` property can change the limit.
+
+```java
+package com.mycompany.checks;
+
+import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+
+public class MethodLimitCheck extends AbstractCheck {
+
+    private int max = 30;
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    @Override
+    public int[] getDefaultTokens() {
+        return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF};
+    }
+
+    @Override
+    public int[] getAcceptableTokens() {
+        return getDefaultTokens();
+    }
+
+    @Override
+    public int[] getRequiredTokens() {
+        return new int[0];
+    }
+
+    @Override
+    public void visitToken(DetailAST ast) {
+        // find the OBJBLOCK node below the CLASS_DEF/INTERFACE_DEF
+        DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
+        // count the number of direct children of the OBJBLOCK that are METHOD_DEFs
+        int methodDefs = objBlock.getChildCount(TokenTypes.METHOD_DEF);
+        // report a violation if the limit is exceeded
+        if (methodDefs > max) {
+            log(ast, "too many methods, only " + max + " are allowed");
+        }
+    }
+}
+```
+
+<a id="Building_a_JAR_for_your_custom_checks_project"></a>
+
+Build the JAR for Your Custom Checks Project
+--------------------------------------------
+
+To use your custom checks in other projects, package and install them:
+
+```shell
+mvn install
+```
+
+This command builds a JAR file with these contents and installs it into your local repository.
+
+#[[### `mycompany-checkstyle-checks-1.0.jar`]]#
+
+```text
+mycompany-checkstyle-checks-1.0.jar
+|-- META-INF
+|   |-- MANIFEST.MF
+|   `-- maven
+|       `-- com.mycompany
+|           `-- mycompany-checkstyle-checks
+|               |-- pom.xml
+|               `-- pom.properties
+|-- checkstyle_packages.xml
+`-- com
+    `-- mycompany
+        `-- checks
+            `-- MethodLimitCheck.class
+```
+
+<a id="Using_your_checks_in_another_project"></a>
+
+Use Your Checks in Another Project
+----------------------------------
+
+You are now ready to use your custom checks in another project.
+
+#[[### Create a Checkstyle configuration]]#
+
+Create the file `checkstyle.xml` in the root of the project that uses your custom checks.
+In this file, tell Checkstyle which checks to run.
+Thanks to `checkstyle_packages.xml`, `MethodLimit` is enough; you do not need the fully qualified class name.
+
+```xml
+<?xml version="1.0"?>
+
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+  <module name="TreeWalker">
+    <module name="MethodLimit">
+      <property name="max" value="20"/>
+    </module>
+  </module>
+</module>
+```
+
+#[[### Configure the Checkstyle Plugin to use your custom checks]]#
+
+Finally, tell the other project to use your custom Checkstyle checks.
+Add this configuration to the `pom.xml` of that project.
+
+**Note:** Declare the plugin dependency on `mycompany-checkstyle-checks` in the `<build>` section of your `pom.xml`.
+The `<reporting>` section does not support plugin dependencies, but the report uses the ones declared in `<build>`.
+Do the rest of the configuration in the normal way in the `<reporting>` section.
+
+```xml
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>mycompany-checkstyle-checks</artifactId>
+            <version>1.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  ...
+</project>
+```
+
+Run `mvn site` for the report, or `mvn checkstyle:check -Dcheckstyle.config.location=checkstyle.xml` to check from the command line.
+With `max` set to `2`, a class with three methods logs:
+
+```text
+[ERROR] src/main/java/com/example/Big.java:[3,1] (extension) MethodLimit: too many methods, only 2 are allowed
+```

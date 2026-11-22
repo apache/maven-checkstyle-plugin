@@ -1,0 +1,155 @@
+---
+title: Multimodule Configuration
+author: 
+  - 2008-02-05
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+# Multimodule Configuration
+
+To share one Checkstyle configuration across the modules of a large project, put it in a JAR and add that JAR as a plugin dependency.
+For a small set of rules, you can instead [inline](./inline-checker-config.html) the configuration in the parent POM.
+
+This example uses a sample project called _whizbang_.
+The project has the structure below:
+
+```text
+whizbang
+|-- pom.xml
+|-- core
+|   `-- pom.xml
+|-- gui
+|   `-- pom.xml
+|-- jmx
+|   `-- pom.xml
+`-- src
+```
+
+Create a subproject to house the resources
+------------------------------------------
+
+Create another subproject that houses your common configuration.
+Call it _build-tools_.
+Put the resources that you want to include in the subproject.
+In this example, add configuration files for the Checkstyle Plugin.
+You can also include configuration files for other plugins, like the PMD plugin, in the same subproject.
+
+```text
+whizbang
+|-- pom.xml
+|-- build-tools
+|   |-- src
+|   |   `-- main
+|   |       `-- resources
+|   |           `-- whizbang
+|   |               |-- checkstyle.xml
+|   |               `-- LICENSE.txt
+|   `-- pom.xml
+|-- core
+|-- gui
+|-- jmx
+`-- src
+```
+
+**Tip:** Put the resources into a unique subdirectory so that they do not conflict with anyone else.
+
+The `pom.xml` file for _build-tools_ looks like this:
+
+```xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.whizbang</groupId>
+  <artifactId>build-tools</artifactId>
+  <version>1.0</version>
+  <name>Build Tools</name>
+</project>
+```
+
+Configure the other projects to use it
+--------------------------------------
+
+Now include the Checkstyle configuration in the top level `pom.xml`.
+
+**Note:** You must specify a plugin dependency on `build-tools` in the `<build>` element of your `pom.xml`.
+This dependency will not work in the `<reporting>` element.
+The `<reporting>` element does not support plugin dependencies.
+Do the rest of the configuration in the normal way in the `<reporting>` element.
+
+```xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.whizbang</groupId>
+  <artifactId>whizbang-parent</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>WhizBang Parent</name>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.example.whizbang</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>1.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <configLocation>whizbang/checkstyle.xml</configLocation>
+          <headerLocation>whizbang/LICENSE.txt</headerLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  <modules>
+    <module>build-tools</module>
+    <module>core</module>
+    <module>jmx</module>
+    <module>gui</module>
+  </modules>
+</project>
+```
+
+Keep the Checkstyle Plugin configuration in the parent POM only.
+If a submodule declares the plugin as well, its settings override the parent's for that submodule.
+
+The plugin resolves the values of `configLocation` and `headerLocation` from the classpath.
+The _build-tools_ JAR is in the classpath.
+You declared the JAR as a dependency to the plugin.
+
+Then build the site:
+
+```shell
+mvn site
+```
+
+Every subproject now uses the same Checkstyle setup and configuration.

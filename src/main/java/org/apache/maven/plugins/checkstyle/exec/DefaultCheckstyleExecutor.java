@@ -436,6 +436,19 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
     }
 
     List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
+        StringBuilder excludesStr = new StringBuilder();
+        if (StringUtils.isNotEmpty(request.getExcludes())) {
+            excludesStr.append(request.getExcludes());
+        }
+        String[] defaultExcludes = FileUtils.getDefaultExcludes();
+        for (String defaultExclude : defaultExcludes) {
+            if (excludesStr.length() > 0) {
+                excludesStr.append(",");
+            }
+            excludesStr.append(defaultExclude);
+        }
+        String excludes = excludesStr.toString();
+
         Set<File> files = new LinkedHashSet<>();
         if (request.isAggregate()) {
             for (MavenProject project : request.getReactorProjects()) {
@@ -460,7 +473,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                         project.getResources(),
                         project.getTestResources(),
                         files,
-                        testSourceDirectories);
+                        testSourceDirectories,
+                        excludes);
             }
         } else {
             Collection<File> sourceDirectories = request.getSourceDirectories();
@@ -470,7 +484,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     request.getResources(),
                     request.getTestResources(),
                     files,
-                    request.getTestSourceDirectories());
+                    request.getTestSourceDirectories(),
+                    excludes);
         }
 
         logger.debug("Added " + files.size() + " files to process.");
@@ -484,17 +499,9 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             List<Resource> resources,
             List<Resource> testResources,
             Collection<File> files,
-            Collection<File> testSourceDirectories)
+            Collection<File> testSourceDirectories,
+            String excludes)
             throws IOException {
-
-        String excludes = request.getExcludes();
-        String defaultExcludes = String.join(",", FileUtils.getDefaultExcludes());
-        if (excludes == null || excludes.isEmpty()) {
-            excludes = defaultExcludes;
-        } else {
-            excludes = excludes + "," + defaultExcludes;
-        }
-
         if (sourceDirectories != null) {
             for (File sourceDirectory : sourceDirectories) {
                 if (sourceDirectory.isDirectory()) {
@@ -541,7 +548,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     String includes = request.getResourceIncludes();
                     String excludes = request.getResourceExcludes();
 
-                    // MCHECKSTYLE-214: Only with project-root respect in/excludes, otherwise you'll get every file
+                    // MCHECKSTYLE-214: Only with project-root respect includes/excludes. Otherwise, you get every file
                     if (resourcesDirectory.equals(request.getProject().getBasedir())) {
                         String resourceIncludes =
                                 StringUtils.join(resource.getIncludes().iterator(), ",");

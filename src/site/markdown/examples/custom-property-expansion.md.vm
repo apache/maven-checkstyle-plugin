@@ -1,0 +1,103 @@
+---
+title: Custom Checkstyle Property Expansion Definitions
+author: 
+  - 2006-07-21
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<a id="Using_Custom_Checkstyle_Property_Expansion_Definitions"></a>
+
+# Custom Checkstyle Property Expansion Definitions
+
+You can define custom [property expansion definitions](https://checkstyle.org/config.html#Properties) for the Checker.
+
+Checkstyle uses the property expansion mechanism to inject specific values into a pre-defined Checker configuration.
+Property expansion alone is not enough to customize the checks that Checkstyle performs.
+
+Example: `checkstyle.xml` - This configuration checks the package name in use.
+It makes sure that the package name conforms to the desired scheme.
+It also lets the Checker users specify their own projectname.
+
+```xml
+<?xml version="1.0" ?>
+
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.2//EN"
+  "https://checkstyle.org/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+  <module name="TreeWalker">
+    <module name="PackageName">
+      <property name="format"
+         value="com\.example\.${esc.dollar}{projectname}(\.[a-z][a-zA-Z0-9]+)*$"/>
+    </module>
+  </module>
+</module>
+```
+
+Example: `pom.xml` - This configuration specifies the `projectname` property expansion.
+Checkstyle uses it when it encounters the variable in the Checker configuration above.
+
+```xml
+<project>
+  ...
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+          <propertyExpansion>
+            projectname=whizbang
+            anotherProperty=bazinga
+          </propertyExpansion>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  ...
+</project>
+```
+
+You can also provide the property expansion information from a location with the `propertiesLocation` parameter as shown below.
+The parameter can point to a file relative to the project directory, a URL, or a resource on the plugin classpath.
+
+```xml
+<project>
+  ...
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+          <propertiesLocation>checkstyle.properties</propertiesLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  ...
+</project>
+```

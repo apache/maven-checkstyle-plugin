@@ -19,7 +19,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+<site xmlns="http://maven.apache.org/SITE/2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SITE/2.1.0 https://maven.apache.org/xsd/site-2.1.0.xsd">
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
@@ -27,18 +27,18 @@ under the License.
       <item name="Usage" href="usage.html"/>
       <item name="FAQ" href="faq.html"/>
       <!-- According to https://issues.apache.org/jira/browse/MNGSITE-152 -->
-      <item name="License" href="http://www.apache.org/licenses/"/>
+      <item name="License" href="https://www.apache.org/licenses/"/>
       <item name="Download" href="download.html"/>
       <item name="Releases History" href="history.html"/>
     </menu>
     <menu name="Examples">
-      <item name="Upgrading Checkstyle at Runtime" href="/examples/upgrading-checkstyle.html"/>
-      <item name="Using an Inline Checkstyle Checker Configuration" href="/examples/inline-checker-config.html"/>
-      <item name="Using a Custom Checkstyle Checker Configuration" href="/examples/custom-checker-config.html"/>
-      <item name="Using Custom Checkstyle Property Expansion Definitions" href="/examples/custom-property-expansion.html"/>
-      <item name="Using a Suppressions Filter" href="/examples/suppressions-filter.html"/>
-      <item name="Using Custom Developed Checkstyle Checks" href="/examples/custom-developed-checkstyle.html"/>
+      <item name="Upgrade Checkstyle at Runtime" href="/examples/upgrading-checkstyle.html"/>
+      <item name="Inline Checkstyle Checker Configuration" href="/examples/inline-checker-config.html"/>
+      <item name="Custom Checkstyle Checker Configuration" href="/examples/custom-checker-config.html"/>
+      <item name="Custom Checkstyle Property Expansion Definitions" href="/examples/custom-property-expansion.html"/>
+      <item name="Suppressions Filter" href="/examples/suppressions-filter.html"/>
+      <item name="Custom Developed Checkstyle Checks" href="/examples/custom-developed-checkstyle.html"/>
       <item name="Multimodule Configuration" href="/examples/multi-module-config.html"/>
     </menu>
   </body>
-</project>
+</site>

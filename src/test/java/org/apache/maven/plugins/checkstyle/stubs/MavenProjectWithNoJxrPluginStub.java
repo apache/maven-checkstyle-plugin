@@ -29,11 +29,13 @@ import org.apache.maven.model.ReportPlugin;
  */
 public class MavenProjectWithNoJxrPluginStub extends MinMavenProjectStub {
     /** {@inheritDoc} */
+    @Override
     public String getInceptionYear() {
         return "2005";
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<ReportPlugin> getReportPlugins() {
         return Collections.emptyList();
     }

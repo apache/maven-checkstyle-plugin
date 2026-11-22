@@ -42,7 +42,6 @@ import org.codehaus.plexus.i18n.I18N;
  * Generate a report based on CheckstyleResults.
  */
 public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
-    private static final int NO_TEXT = 0;
     private static final int TEXT_SIMPLE = 1;
     private static final int TEXT_TITLE = 2;
     private static final int TEXT_ABBREV = 3;
@@ -111,8 +110,8 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     }
 
     /**
-     * @param key The key.
-     * @return The translated string.
+     * @param key the key
+     * @return the translated string
      */
     private String getI18nString(String key) {
         return i18n.getString("checkstyle-report", locale, "report.checkstyle." + key);
@@ -183,8 +182,6 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
     /**
      * Create the rules summary section of the report.
-     *
-     * @param results the results to summarize
      */
     private void renderRulesSummarySection() {
         if (!enableRulesSummary) {
@@ -225,9 +222,9 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     /**
      * Create a summary for one Checkstyle rule.
      *
-     * @param ref The configuration reference for the row
-     * @param results The results to summarize
-     * @param previousCategory The previous row's category
+     * @param ref the configuration reference for the row
+     * @param results the results to summarize
+     * @param previousCategory the previous row's category
      */
     private void renderRuleRow(ConfReference ref, CheckstyleResults results, String previousCategory) {
         Configuration checkerConfig = ref.configuration;
@@ -316,7 +313,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         // Grab the severity from the rule configuration, this time use error as default value
         // Also pass along all parent configurations, so that we can try to find the severity there
         String severity = getConfigProperty(checkerConfig, parentConfiguration, "severity", "error");
-        iconSeverity(severity, TEXT_SIMPLE);
+        severityText(severity, TEXT_SIMPLE);
         sink.tableCell_();
 
         sink.tableRow_();
@@ -326,10 +323,10 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
      * Check if a violation matches a rule.
      *
      * @param event the violation to check
-     * @param ruleName The name of the rule
-     * @param expectedMessage A message that, if it's not null, will be matched to the message from the violation
-     * @param expectedSeverity A severity that, if it's not null, will be matched to the severity from the violation
-     * @return The number of rule violations
+     * @param ruleName the name of the rule
+     * @param expectedMessage a message that, if it's not null, will be matched to the message from the violation
+     * @param expectedSeverity a severity that, if it's not null, will be matched to the severity from the violation
+     * @return the number of rule violations
      */
     public boolean matchRule(AuditEvent event, String ruleName, String expectedMessage, String expectedSeverity) {
         if (!ruleName.equals(RuleUtil.getName(event))) {
@@ -341,8 +338,8 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         if (expectedMessage != null) {
             // event.getMessage() uses java.text.MessageFormat in its implementation.
             // Read MessageFormat Javadoc about single quote:
-            // http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
-            String msgWithoutSingleQuote = StringUtils.replace(expectedMessage, "'", "");
+            // https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html
+            String msgWithoutSingleQuote = expectedMessage.replace("'", "");
 
             if (!(expectedMessage.equals(event.getMessage()) || msgWithoutSingleQuote.equals(event.getMessage()))) {
                 return false;
@@ -375,15 +372,15 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconSeverity("info", TEXT_TITLE);
+        severityText("info", TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconSeverity("warning", TEXT_TITLE);
+        severityText("warning", TEXT_TITLE);
         sink.tableHeaderCell_();
 
         sink.tableHeaderCell();
-        iconSeverity("error", TEXT_TITLE);
+        severityText("error", TEXT_TITLE);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
@@ -413,19 +410,19 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
         sink.text(getI18nString("file"));
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconSeverity("info", TEXT_ABBREV);
+        severityText("info", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconSeverity("warning", TEXT_ABBREV);
+        severityText("warning", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableHeaderCell();
-        iconSeverity("error", TEXT_ABBREV);
+        severityText("error", TEXT_ABBREV);
         sink.tableHeaderCell_();
         sink.tableRow_();
 
         // Sort the files before writing them to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
-        Collections.sort(fileList);
+        fileList.sort(null);
 
         for (String filename : fileList) {
             List<AuditEvent> violations = results.getFileViolations(filename);
@@ -467,7 +464,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
 
         // Sort the files before writing their details to the report
         List<String> fileList = new ArrayList<>(results.getFiles().keySet());
-        Collections.sort(fileList);
+        fileList.sort(null);
 
         for (String file : fileList) {
             List<AuditEvent> violations = results.getFileViolations(file);
@@ -506,7 +503,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             sink.tableRow();
 
             sink.tableCell();
-            iconSeverity(level.getName(), TEXT_SIMPLE);
+            severityText(level.getName(), TEXT_SIMPLE);
             sink.tableCell_();
 
             sink.tableCell();
@@ -568,47 +565,43 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
     }
 
     /**
-     * Render an icon of given level with associated text.
+     * Render the name of the given severity level as text, without the site skin's severity images.
+     *
      * @param level one of <code>INFO</code>, <code>WARNING</code> or <code>ERROR</code> constants
-     * @param textType one of <code>NO_TEXT</code>, <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or
-     * <code>TEXT_ABBREV</code> constants
+     * @param textType one of <code>TEXT_SIMPLE</code>, <code>TEXT_TITLE</code> or <code>TEXT_ABBREV</code> constants
      */
-    private void iconSeverity(String level, int textType) {
-        sink.figureGraphics("images/icon_" + level + "_sml.gif");
-
-        if (textType > NO_TEXT) {
-            sink.nonBreakingSpace();
-            String suffix;
-            switch (textType) {
-                case TEXT_TITLE:
-                    suffix = "s";
-                    break;
-                case TEXT_ABBREV:
-                    suffix = "s.abbrev";
-                    break;
-                default:
-                    suffix = "";
-            }
-            sink.text(getI18nString(level + suffix));
+    private void severityText(String level, int textType) {
+        String suffix;
+        switch (textType) {
+            case TEXT_TITLE:
+                suffix = "s";
+                break;
+            case TEXT_ABBREV:
+                suffix = "s.abbrev";
+                break;
+            default:
+                suffix = "";
         }
+        sink.text(getI18nString(level + suffix));
     }
 
     /**
      * Get the effective Checkstyle version at runtime.
+     *
      * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
      */
     private String getCheckstyleVersion() {
         Package checkstyleApiPackage = Configuration.class.getPackage();
 
-        return (checkstyleApiPackage == null) ? null : checkstyleApiPackage.getImplementationVersion();
+        return checkstyleApiPackage == null ? null : checkstyleApiPackage.getImplementationVersion();
     }
 
-    public List<ConfReference> sortConfiguration(CheckstyleResults results) {
+    private List<ConfReference> sortConfiguration(CheckstyleResults results) {
         List<ConfReference> result = new ArrayList<>();
 
         sortConfiguration(result, checkstyleConfig, null, results);
 
-        Collections.sort(result);
+        result.sort(null);
 
         return result;
     }
@@ -622,7 +615,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             String ruleName = childConfig.getName();
 
             if (treeWalkerNames.contains(ruleName)) {
-                // special sub-case: TreeWalker is the parent of multiple rules, not an effective rule
+                // special subcase: TreeWalker is the parent of multiple rules, not an effective rule
                 sortConfiguration(result, childConfig, new ChainedItem<>(config, parent), results);
             } else {
                 String fixedmessage = getConfigProperty(childConfig, null, "message", null);
@@ -679,7 +672,7 @@ public class CheckstyleReportRenderer extends AbstractMavenReportRenderer {
             if (compare == 0) {
                 compare = configuration.getName().compareTo(o.configuration.getName());
             }
-            return (compare == 0) ? (o.count - count) : compare;
+            return compare == 0 ? (o.count - count) : compare;
         }
     }
 

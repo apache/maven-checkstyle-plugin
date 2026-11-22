@@ -21,13 +21,12 @@ package org.apache.maven.plugins.checkstyle;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,7 +60,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.PathTool;
-import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -72,7 +70,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * It can also be configured to re-use an earlier analysis.
  *
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
- *
  */
 @Mojo(
         name = "check",
@@ -309,7 +306,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * The Plugin Descriptor
+     * The Plugin Descriptor.
      */
     @Parameter(defaultValue = "${plugin}", readonly = true, required = true)
     private PluginDescriptor plugin;
@@ -337,6 +334,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Specifies the names filter of the files to be excluded for
      * Checkstyle when checking resources.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.resourceExcludes")
@@ -344,6 +342,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Specifies the names filter of the files to be used for Checkstyle when checking resources.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.resourceIncludes", defaultValue = "**/*.properties", required = true)
@@ -372,6 +371,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Specifies the location of the test source directories to be used for Checkstyle.
      * Default value is <code>${project.testCompileSourceRoots}</code>.
+     *
      * @since 2.13
      */
     // Compatibility with all Maven 3: default of 'project.testCompileSourceRoots' is done manually because of MNG-5440
@@ -399,6 +399,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Specifies the location of the source directories to be used for Checkstyle.
      * Default value is <code>${project.compileSourceRoots}</code>.
+     *
      * @since 2.13
      */
     // Compatibility with all Maven 3: default of 'project.compileSourceRoots' is done manually because of MNG-5440
@@ -407,6 +408,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Whether to apply Checkstyle to resource directories.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.includeResources", defaultValue = "true", required = true)
@@ -414,6 +416,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
 
     /**
      * Whether to apply Checkstyle to test resource directories.
+     *
      * @since 2.11
      */
     @Parameter(property = "checkstyle.includeTestResources", defaultValue = "true", required = true)
@@ -493,7 +496,9 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         this.checkstyleExecutor = checkstyleExecutor;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         checkDeprecatedParameterUsage(sourceDirectory, "sourceDirectory", "sourceDirectories");
@@ -579,16 +584,16 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
-        try (Reader reader = new BufferedReader(ReaderFactory.newXmlReader(outputXmlFile))) {
+        try (InputStream in = Files.newInputStream(outputXmlFile.toPath())) {
             XmlPullParser xpp = new MXParser();
-            xpp.setInput(reader);
+            xpp.setInput(in, null); // null tells the parser to detect the encoding
 
             final List<Violation> violationsList = getViolations(xpp);
             long violationCount = countViolations(violationsList);
             printViolations(violationsList);
 
             String msg = "You have " + violationCount + " Checkstyle violation"
-                    + ((violationCount > 1 || violationCount == 0) ? "s" : "") + ".";
+                    + (violationCount > 1 || violationCount == 0 ? "s" : "") + ".";
 
             if (violationCount > maxAllowedViolations) {
                 if (failOnViolation) {
@@ -658,9 +663,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     }
 
     private int countViolations(List<Violation> violations) {
-        List<RuleUtil.Matcher> ignores = violationIgnore == null
-                ? Collections.<RuleUtil.Matcher>emptyList()
-                : RuleUtil.parseMatchers(violationIgnore.split(","));
+        List<RuleUtil.Matcher> ignores =
+                violationIgnore == null ? Collections.emptyList() : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         int ignored = 0;
         int countedViolations = 0;
@@ -679,8 +683,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
         }
 
         if (ignored > 0) {
-            getLog().info("Ignored " + ignored + " error" + ((ignored > 1L) ? "s" : "") + ", " + countedViolations
-                    + " violation" + ((countedViolations > 1) ? "s" : "") + " remaining.");
+            getLog().info("Ignored " + ignored + " error" + (ignored > 1L ? "s" : "") + ", " + countedViolations
+                    + " violation" + (countedViolations > 1 ? "s" : "") + " remaining.");
         }
 
         return countedViolations;
@@ -691,9 +695,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return;
         }
 
-        List<RuleUtil.Matcher> ignores = violationIgnore == null
-                ? Collections.<RuleUtil.Matcher>emptyList()
-                : RuleUtil.parseMatchers(violationIgnore.split(","));
+        List<RuleUtil.Matcher> ignores =
+                violationIgnore == null ? Collections.emptyList() : RuleUtil.parseMatchers(violationIgnore.split(","));
 
         violations.stream()
                 .filter(violation -> isViolation(violation.getSeverity()))
@@ -703,7 +706,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                             "%s:[%s%s] (%s) %s: %s",
                             violation.getFile(),
                             violation.getLine(),
-                            (Violation.NO_COLUMN.equals(violation.getColumn())) ? "" : (',' + violation.getColumn()),
+                            Violation.NO_COLUMN.equals(violation.getColumn()) ? "" : (',' + violation.getColumn()),
                             violation.getCategory(),
                             violation.getRuleName(),
                             violation.getMessage());
@@ -724,7 +727,7 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
     /**
      * Checks if the given severity is considered a violation.
      *
-     * @param severity The severity to check
+     * @param severity the severity to check
      * @return <code>true</code> if the given severity is a violation, otherwise <code>false</code>
      */
     private boolean isViolation(String severity) {

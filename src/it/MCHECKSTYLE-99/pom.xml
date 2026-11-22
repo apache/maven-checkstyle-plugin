@@ -44,6 +44,35 @@ under the License.
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-xref-test-location</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>checkstyle</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/reports-default</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>custom-xref-test-location</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>checkstyle</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/reports-custom</outputDirectory>
+              <xrefTestLocation>custom-xref-test-location</xrefTestLocation>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <reporting>
     <plugins>

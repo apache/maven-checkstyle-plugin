@@ -33,11 +33,13 @@ import org.apache.maven.model.ReportPlugin;
  */
 public class MinMavenProjectStub extends CheckstyleProjectStub {
     /** {@inheritDoc} */
+    @Override
     public List<String> getCompileClasspathElements() throws DependencyResolutionRequiredException {
         return getCompileSourceRoots();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getTestClasspathElements() throws DependencyResolutionRequiredException {
         List<String> list = new ArrayList<>(getCompileClasspathElements());
         list.add(getBasedir() + "/target/test-classes");
@@ -45,11 +47,13 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getCompileSourceRoots() {
         return Collections.singletonList(getBasedir() + "/target/classes");
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<String> getTestCompileSourceRoots() {
         List<String> list = new ArrayList<>(getCompileSourceRoots());
         list.add(getBasedir() + "/target/test-classes");
@@ -57,6 +61,7 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<ReportPlugin> getReportPlugins() {
         ReportPlugin jxrPlugin = new ReportPlugin();
 
@@ -66,6 +71,7 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Organization getOrganization() {
         Organization organization = new Organization();
 
@@ -75,11 +81,13 @@ public class MinMavenProjectStub extends CheckstyleProjectStub {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getInceptionYear() {
         return "2006";
     }
 
     /** {@inheritDoc} */
+    @Override
     public Build getBuild() {
         Build build = new Build();
 

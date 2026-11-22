@@ -1,0 +1,114 @@
+---
+title: Inline Checkstyle Checker Configuration
+author: 
+  - 2015-10-04
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<a id="Using_an_Inline_Checkstyle_Checker_Configuration"></a>
+
+# Inline Checkstyle Checker Configuration
+
+You can define a [Checker configuration](https://checkstyle.org/config.html#Checker) directly in the `<configuration>` section of the plugin in your `pom.xml`.
+You then need no separate ruleset file, no separate project for your Checkstyle rules, and no parent POM structure.
+
+Use the `checkstyleRules` parameter to define the checker configuration inside your `pom.xml`:
+
+```xml
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>verify-style</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <logViolationsToConsole>true</logViolationsToConsole>
+          <checkstyleRules>
+            <module name="Checker">
+
+              <!-- Checks for size violations.                    -->
+              <!-- See https://checkstyle.org/checks/sizes/       -->
+              <module name="FileLength">
+                <property name="max" value="3500" />
+                <property name="fileExtensions" value="java"/>
+              </module>
+
+              <!-- Checks for whitespace.                         -->
+              <!-- See https://checkstyle.org/checks/whitespace/  -->
+              <module name="FileTabCharacter"/>
+
+              <module name="TreeWalker">
+                <module name="StaticVariableName"/>
+                <module name="TypeName">
+                  <property name="format" value="^_?[A-Z][a-zA-Z0-9]*$"/>
+                </module>
+              </module>
+            </module>
+          </checkstyleRules>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  ...
+</project>
+```
+
+<a id="Using_a_different_header"></a>
+
+${esc.h}${esc.h} Different Header
+
+The plugin writes the inline configuration to `target/checkstyle-checker.xml` and passes that file to Checkstyle.
+The file starts with a [document type declaration](https://checkstyle.org/config.html#Configuration_XML_Structure), which the plugin adds for you.
+The default declaration references the Checkstyle configuration DTD 1.3:
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+```
+
+DTD 1.3 is the current version, and the default works when you [upgrade Checkstyle at runtime](./upgrading-checkstyle.html).
+Set the `checkstyleRulesHeader` parameter only if you need a different declaration:
+
+```xml
+<configuration>
+  <checkstyleRules>
+    ...
+  </checkstyleRules>
+  <checkstyleRulesHeader>
+<![CDATA[<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+]]>
+  </checkstyleRulesHeader>
+</configuration>
+```

@@ -30,7 +30,6 @@ import org.apache.maven.project.MavenProject;
 /**
  * @author Olivier Lamy
  * @since 2.5
- *
  */
 public class CheckstyleExecutorRequest {
 
@@ -131,7 +130,7 @@ public class CheckstyleExecutorRequest {
     /**
      * Returns the includes parameter.
      *
-     * @return The includes parameter.
+     * @return the includes parameter
      */
     public String getIncludes() {
         return includes;
@@ -334,7 +333,7 @@ public class CheckstyleExecutorRequest {
     /**
      * Returns true if the report is aggregated.
      *
-     * @return <code>true</code> if the report is aggregated.
+     * @return <code>true</code> if the report is aggregated
      */
     public boolean isAggregate() {
         return aggregate;
@@ -343,8 +342,8 @@ public class CheckstyleExecutorRequest {
     /**
      * Sets the aggregate parameter.
      *
-     * @param pAggregate <code>true</code> if an aggregated report is desired.
-     * @return This object.
+     * @param pAggregate <code>true</code> if an aggregated report is desired
+     * @return this object
      */
     public CheckstyleExecutorRequest setAggregate(boolean pAggregate) {
         this.aggregate = pAggregate;
@@ -354,7 +353,7 @@ public class CheckstyleExecutorRequest {
     /**
      * Returns the list of reactor projects.
      *
-     * @return The reactor projects.
+     * @return the reactor projects
      */
     public List<MavenProject> getReactorProjects() {
         return reactorProjects;
@@ -363,8 +362,8 @@ public class CheckstyleExecutorRequest {
     /**
      * Sets the list of reactor projects.
      *
-     * @param pReactorProjects The reactor projects.
-     * @return This object.
+     * @param pReactorProjects the reactor projects
+     * @return this object
      */
     public CheckstyleExecutorRequest setReactorProjects(List<MavenProject> pReactorProjects) {
         this.reactorProjects = pReactorProjects;
@@ -383,8 +382,8 @@ public class CheckstyleExecutorRequest {
     /**
      * Sets a list of license artifacts, which may contain the license.
      *
-     * @param licenseArtifacts List of license artifacts.
-     * @return This object.
+     * @param licenseArtifacts list of license artifacts
+     * @return this object
      */
     public CheckstyleExecutorRequest setLicenseArtifacts(List<Artifact> licenseArtifacts) {
         this.licenseArtifacts = licenseArtifacts;
@@ -403,8 +402,8 @@ public class CheckstyleExecutorRequest {
     /**
      * Sets a list of artifacts, which may contain the checkstyle configuration.
      *
-     * @param configArtifacts List of artifacts.
-     * @return This object.
+     * @param configArtifacts list of artifacts
+     * @return this object
      */
     public CheckstyleExecutorRequest setConfigurationArtifacts(List<Artifact> configArtifacts) {
         this.configurationArtifacts = configArtifacts;
@@ -416,8 +415,8 @@ public class CheckstyleExecutorRequest {
     }
 
     /**
-     * @param includeResources whether to include the resource directories in the checks.
-     * @return This object.
+     * @param includeResources whether to include the resource directories in the checks
+     * @return this object
      */
     public CheckstyleExecutorRequest setIncludeResources(boolean includeResources) {
         this.includeResources = includeResources;
@@ -429,8 +428,8 @@ public class CheckstyleExecutorRequest {
     }
 
     /**
-     * @param includeTestResources whether to set the test resource directories in the checks.
-     * @return This object.
+     * @param includeTestResources whether to set the test resource directories in the checks
+     * @return this object
      */
     public CheckstyleExecutorRequest setIncludeTestResources(boolean includeTestResources) {
         this.includeTestResources = includeTestResources;
@@ -440,15 +439,15 @@ public class CheckstyleExecutorRequest {
     /**
      * Returns true if ignored modules (modules with severity 'ignore') should be omitted.
      *
-     * @return <code>true</code> if ignored modules should be omitted.
+     * @return <code>true</code> if ignored modules should be omitted
      */
     public boolean isOmitIgnoredModules() {
         return omitIgnoredModules;
     }
 
     /**
-     * @param omitIgnoredModules Whether to omit ignored modules (modules with severity 'ignore').
-     * @return This object.
+     * @param omitIgnoredModules whether to omit ignored modules (modules with severity 'ignore')
+     * @return this object
      */
     public CheckstyleExecutorRequest setOmitIgnoredModules(boolean omitIgnoredModules) {
         this.omitIgnoredModules = omitIgnoredModules;

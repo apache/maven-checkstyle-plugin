@@ -32,7 +32,6 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
  * TODO: provide fallback to disk based storage if too many results.
  *
  * @author <a href="mailto:joakim@erdfelt.net">Joakim Erdfelt</a>
- *
  */
 public class CheckstyleResults {
     private Map<String, List<AuditEvent>> files;

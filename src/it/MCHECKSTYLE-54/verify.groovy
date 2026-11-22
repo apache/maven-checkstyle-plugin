@@ -22,3 +22,8 @@ def srcFile = new File(basedir, 'src/main/java/org/apache/maven/plugins/checksty
 
 def matcher = srcFile =~ /(\r\n|\r|\n)/ 
 assert matcher[0][0].bytes == eol : "EOL in file should have been ${eol} but was ${matcher[0][0].bytes}"
+
+// the check ran on the sources, with their system line separators, and found nothing
+def buildLog = new File( basedir, 'build.log' ).text
+assert buildLog.contains( "Added 2 source files found in" ) : "the sources were not checked"
+assert buildLog.contains( "[INFO] You have 0 Checkstyle violations." )

@@ -1,0 +1,108 @@
+---
+title: Introduction
+author: 
+  - Maria Odea Ching
+date: 2015-05-01
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+# ${project.name}
+
+The Checkstyle Plugin runs [Checkstyle](https://checkstyle.org/) on your project's sources and resources.
+It can fail the build on violations, or add a Checkstyle report to the project site.
+
+This version of the plugin uses Checkstyle ${checkstyleVersion} by default.
+It requires Maven 3.9.0 or later and Java ${javaVersion} or later.
+You can [use a newer Checkstyle version](./examples/upgrading-checkstyle.html) at runtime.
+
+Quick Start
+-----------
+
+Check the code against the default `sun_checks.xml` ruleset and fail on violations:
+
+```shell
+mvn checkstyle:check
+```
+
+Check against the Google ruleset instead.
+The `google_checks.xml` ruleset reports at `warning` severity, so also lower the severity that counts as a violation:
+
+```shell
+mvn checkstyle:check -Dcheckstyle.config.location=google_checks.xml -Dcheckstyle.violationSeverity=warning
+```
+
+Write an HTML report to `target/reports/checkstyle.html` without failing the build:
+
+```shell
+mvn checkstyle:checkstyle
+```
+
+To run the check in every build, bind the `check` goal in your POM, as shown on the [usage page](./usage.html).
+
+The plugin ships two predefined rulesets from Checkstyle: [`sun_checks.xml`](https://checkstyle.org/sun_style.html) (the default) and [`google_checks.xml`](https://checkstyle.org/google_style.html).
+You can also [use your own ruleset](./examples/custom-checker-config.html) or [write it inline in the POM](./examples/inline-checker-config.html).
+Rulesets from older plugin versions are listed on the [Predefined Rulesets](./config/index.html) page.
+
+Goals Overview
+--------------
+
+The Checkstyle Plugin has three goals:
+
+- [checkstyle:check](./check-mojo.html) performs Checkstyle analysis and logs violations to the console.
+  It fails the build on violations by default, and binds to the `verify` phase.
+  It can also re-use the result of an earlier `checkstyle:checkstyle` run.
+- [checkstyle:checkstyle](./checkstyle-mojo.html) is a reporting goal that performs Checkstyle analysis and generates a report on violations.
+- [checkstyle:checkstyle-aggregate](./checkstyle-aggregate-mojo.html) is a reporting goal that generates one report for all modules of a multi-module build.
+  Run it from the root project.
+
+[checkstyle:help](./help-mojo.html) lists the goals and their parameters.
+
+Usage
+-----
+
+General instructions on how to use the Checkstyle Plugin are on the [usage page](./usage.html).
+The [examples](#Examples) below describe more specific use cases.
+If you still have questions, look at the [FAQ](./faq.html) or ask on the [user mailing list](./mailing-lists.html).
+
+Report a defect or request a feature in the [issue tracker](./issue-management.html).
+For a bug, include the steps or a small project that reproduces it.
+The source code is in the [source repository](./scm.html).
+
+<a id="Major_Version_Upgrade_to_version_3.0.0"></a>
+
+Upgrading From 2.x
+------------------
+
+Version 3.0.0 removed the `sourceDirectory` and `testSourceDirectory` parameters.
+Use `sourceDirectories` and `testSourceDirectories` instead.
+
+Examples
+--------
+
+The examples below show how to use the Checkstyle Plugin in more advanced use cases:
+
+- [Upgrade Checkstyle at Runtime](./examples/upgrading-checkstyle.html)
+- [Inline Checkstyle Checker Configuration](./examples/inline-checker-config.html)
+- [Custom Checkstyle Checker Configuration](./examples/custom-checker-config.html)
+- [Custom Checkstyle Property Expansion Definitions](./examples/custom-property-expansion.html)
+- [Suppressions Filter](./examples/suppressions-filter.html)
+- [Custom Developed Checkstyle Check Modules](./examples/custom-developed-checkstyle.html)
+- [Multimodule Configuration](./examples/multi-module-config.html)

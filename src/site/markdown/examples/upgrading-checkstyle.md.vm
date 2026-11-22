@@ -1,0 +1,72 @@
+---
+title: Upgrade Checkstyle at Runtime
+author: 
+  - 2022-02-07
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<a id="Upgrading_Checkstyle_at_Runtime"></a>
+
+# Upgrade Checkstyle at Runtime
+
+The Maven Checkstyle Plugin has a default Checkstyle version.
+For `maven-checkstyle-plugin ${project.version}`, the plugin uses Checkstyle ${checkstyleVersion} by default.
+
+You can override the version used at runtime with a plugin dependency.
+This lets you use the [latest Checkstyle checks and bug fixes](https://checkstyle.org/release-notes.html).
+Declare it in `<pluginManagement>` so that it applies both to the `check` goal and to the reports:
+
+```xml
+<project>
+  ...
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${project.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>...choose your version...</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  ...
+</project>
+```
+
+Newer Checkstyle versions need a newer Java version than the plugin itself.
+Run Maven with a JDK that the chosen Checkstyle version supports:
+
+| Checkstyle | Minimum Java |
+|:---|:---|
+| 10.x | 11 |
+| 11.x and 12.x | 17 |
+| 13.x and later | 21 |
+
+The predefined `sun_checks.xml` and `google_checks.xml` rulesets come from the Checkstyle JAR.
+When you upgrade Checkstyle, they change with it and can report new violations.

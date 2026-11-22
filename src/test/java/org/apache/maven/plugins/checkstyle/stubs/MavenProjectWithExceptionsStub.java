@@ -29,6 +29,7 @@ import org.apache.maven.plugin.testing.stubs.ArtifactStub;
  */
 public class MavenProjectWithExceptionsStub extends MinMavenProjectStub {
     /** {@inheritDoc} */
+    @Override
     public List<String> getCompileClasspathElements() throws DependencyResolutionRequiredException {
         throw new DependencyResolutionRequiredException(new ArtifactStub());
     }
