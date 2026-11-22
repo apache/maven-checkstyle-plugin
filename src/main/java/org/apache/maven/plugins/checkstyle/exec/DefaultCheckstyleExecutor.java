@@ -358,12 +358,12 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
      * Get the effective Checkstyle version at runtime.
      * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
      *
-     *@todo Copied from CheckstyleReportGenerator - move to a utility class
+     * @todo Copied from CheckstyleReportGenerator - move to a utility class
      */
     private String getCheckstyleVersion() {
         Package checkstyleApiPackage = Configuration.class.getPackage();
 
-        return (checkstyleApiPackage == null) ? null : checkstyleApiPackage.getImplementationVersion();
+        return checkstyleApiPackage == null ? null : checkstyleApiPackage.getImplementationVersion();
     }
 
     private Properties getOverridingProperties(CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
@@ -387,7 +387,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             if (StringUtils.isNotEmpty(request.getPropertyExpansion())) {
                 String propertyExpansion = request.getPropertyExpansion();
                 // Convert \ to \\, so that p.load will convert it back properly
-                propertyExpansion = StringUtils.replace(propertyExpansion, "\\", "\\\\");
+                propertyExpansion = propertyExpansion.replace("\\", "\\\\");
                 p.load(new ByteArrayInputStream(propertyExpansion.getBytes()));
             }
 
@@ -634,7 +634,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
      * Configures search paths in the resource locator.
      * This method should only be called once per execution.
      *
-     * @param request executor request data.
+     * @param request executor request data
      */
     private void configureResourceLocator(
             final ResourceManager resourceManager,
