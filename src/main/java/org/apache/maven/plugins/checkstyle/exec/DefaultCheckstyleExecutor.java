@@ -312,7 +312,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
     private void addAttributeIfNotExists(DefaultConfiguration config, String name, String value) {
         try {
             // MCHECKSTYLE-132 DefaultConfiguration addAttribute has changed in checkstyle 5.3
-            if (config.getAttribute(name) == null) {
+            if (config.getProperty(name) == null) {
                 config.addProperty(name, value);
             }
         } catch (CheckstyleException ex) {
