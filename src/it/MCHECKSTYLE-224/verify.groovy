@@ -17,7 +17,7 @@
  * under the License.
  */
 
-File buildLog = new File( basedir, 'build.log' )
+File buildLog = new File(basedir, 'build.log')
 assert buildLog.exists()
 
 // This warning should not appear in the log

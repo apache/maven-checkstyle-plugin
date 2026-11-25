@@ -19,7 +19,7 @@
 
 def srcDir = new File(basedir, 'src/main/java')
 
-srcDir.eachFileRecurse (groovy.io.FileType.FILES) { 
-  it.text = it.text.replaceAll( ~ /(\r\n|\r|\n)/, System.lineSeparator() )
+srcDir.eachFileRecurse(groovy.io.FileType.FILES) {
+    it.text = it.text.replaceAll(~ /(\r\n|\r|\n)/, System.lineSeparator())
 }
-return true;
+return true

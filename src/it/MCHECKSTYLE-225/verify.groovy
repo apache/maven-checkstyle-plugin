@@ -18,14 +18,14 @@
  * under the License.
  */
 
-def buildLog = new File( basedir, 'build.log' ).text
+def buildLog = new File(basedir, 'build.log').text
 
 // core-license: the default header location LICENSE.txt is found in the plugin dependency
-assert buildLog.contains( "The resource 'LICENSE.txt' was found" )
-assert new File( basedir, 'core-license/target/checkstyle-header.txt' ).text == "MCHECKSTYLE-225 CUSTOM LICENSE"
+assert buildLog.contains("The resource 'LICENSE.txt' was found")
+assert new File(basedir, 'core-license/target/checkstyle-header.txt').text == "MCHECKSTYLE-225 CUSTOM LICENSE"
 
 // core-custom-header and core-managed: a custom header location is found in the plugin dependency,
 // declared in the module or in the pluginManagement of its parent
-assert buildLog.contains( "The resource 'test/custom-header.txt' was found" )
-assert new File( basedir, 'core-custom-header/target/checkstyle-header.txt' ).text == "This is a custom header file."
-assert new File( basedir, 'core-managed/target/checkstyle-header.txt' ).text == "This is a custom header file."
+assert buildLog.contains("The resource 'test/custom-header.txt' was found")
+assert new File(basedir, 'core-custom-header/target/checkstyle-header.txt').text == "This is a custom header file."
+assert new File(basedir, 'core-managed/target/checkstyle-header.txt').text == "This is a custom header file."

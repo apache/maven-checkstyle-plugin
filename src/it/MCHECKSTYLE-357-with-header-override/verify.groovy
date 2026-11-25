@@ -17,11 +17,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-assert new File(basedir, 'target/site/checkstyle.html').exists();
+assert new File(basedir, 'target/site/checkstyle.html').exists()
 
-assert new File(basedir, 'target/checkstyle-cachefile').exists();
-assert new File(basedir, 'target/checkstyle-checker.xml').exists();
-assert new File(basedir, 'target/checkstyle-result.xml').exists();
-assert new File(basedir, 'target/checkstyle-rules.xml').exists();
+assert new File(basedir, 'target/checkstyle-cachefile').exists()
+assert new File(basedir, 'target/checkstyle-checker.xml').exists()
+assert new File(basedir, 'target/checkstyle-result.xml').exists()
+assert new File(basedir, 'target/checkstyle-rules.xml').exists()
 
-return true;
+return true

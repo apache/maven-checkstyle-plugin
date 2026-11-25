@@ -18,14 +18,14 @@
  * under the License.
  */
 
-buildLog = new File( basedir, 'build.log' )
+buildLog = new File(basedir, 'build.log')
 
 // verify that the "check" goal correctly raised a violation when the ignored module is not omitted
-assert buildLog.text.contains( 'EmptyLogging: EmptyLoggingCheck on file TestFalse.java' )
-assert !buildLog.text.contains( 'EmptyLogging: EmptyLoggingCheck on file TestTrue.java' )
+assert buildLog.text.contains('EmptyLogging: EmptyLoggingCheck on file TestFalse.java')
+assert !buildLog.text.contains('EmptyLogging: EmptyLoggingCheck on file TestTrue.java')
 
 // verify that the "checkstyle" goal does the same
-site = new File( basedir, 'omitignoredmodules-false/target/reports/checkstyle.html' )
-assert site.text.contains( 'EmptyLoggingCheck on file TestFalse.java' )
-site = new File( basedir, 'omitignoredmodules-true/target/reports/checkstyle.html' )
-assert !site.text.contains( 'EmptyLoggingCheck on file TestTrue.java' )
+site = new File(basedir, 'omitignoredmodules-false/target/reports/checkstyle.html')
+assert site.text.contains('EmptyLoggingCheck on file TestFalse.java')
+site = new File(basedir, 'omitignoredmodules-true/target/reports/checkstyle.html')
+assert !site.text.contains('EmptyLoggingCheck on file TestTrue.java')
