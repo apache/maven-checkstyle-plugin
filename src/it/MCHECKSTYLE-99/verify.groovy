@@ -19,13 +19,13 @@
  */
 
 // default xrefTestLocation
-def defaultReport = new File( basedir, 'target/reports-default/checkstyle.html' )
+def defaultReport = new File(basedir, 'target/reports-default/checkstyle.html')
 assert defaultReport.exists()
-assert defaultReport.text.contains( '<a href="./xref/com/example/App.html#L26">' )
-assert defaultReport.text.contains( '<a href="./xref-test/com/example/AppTest.html#L23">' )
+assert defaultReport.text.contains('<a href="./xref/com/example/App.html#L26">')
+assert defaultReport.text.contains('<a href="./xref-test/com/example/AppTest.html#L23">')
 
 // custom xrefTestLocation
-def customReport = new File( basedir, 'target/reports-custom/checkstyle.html' )
+def customReport = new File(basedir, 'target/reports-custom/checkstyle.html')
 assert customReport.exists()
-assert customReport.text.contains( '<a href="./xref/com/example/App.html#L26">' )
-assert customReport.text.contains( '<a href="./custom-xref-test-location/com/example/AppTest.html#L23">' )
+assert customReport.text.contains('<a href="./xref/com/example/App.html#L26">')
+assert customReport.text.contains('<a href="./custom-xref-test-location/com/example/AppTest.html#L23">')

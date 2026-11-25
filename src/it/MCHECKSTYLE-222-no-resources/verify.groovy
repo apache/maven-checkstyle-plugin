@@ -17,11 +17,11 @@
  * under the License.
  */
 
-def buildLog = new File( basedir, 'build.log' ).text
+def buildLog = new File(basedir, 'build.log').text
 
 // the goal ran and skipped the report, as there are no sources and no resources
-assert buildLog.contains( "Skipping org.apache.maven.plugins:maven-checkstyle-plugin:" )
-assert buildLog.contains( ":checkstyle report goal" )
+assert buildLog.contains("Skipping org.apache.maven.plugins:maven-checkstyle-plugin:")
+assert buildLog.contains(":checkstyle report goal")
 
 // checkstyle:checkstyle writes its report to target/reports
-assert !new File( basedir, 'target/reports/checkstyle.html' ).exists()
+assert !new File(basedir, 'target/reports/checkstyle.html').exists()

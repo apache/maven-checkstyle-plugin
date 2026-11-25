@@ -17,12 +17,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-def buildLog = new File( basedir, 'build.log' ).text
+def buildLog = new File(basedir, 'build.log').text
 
 // 3 errors would be in child-a/src/generated/java and child-b/src/generated/java
 // but both locations shouldn't be checked
-assert !buildLog.contains( "[INFO] There are 3 errors reported by Checkstyle" )
+assert !buildLog.contains("[INFO] There are 3 errors reported by Checkstyle")
 
 // the check ran in the parent (pom packaging, counted as one of the three) and in both children: child-a with
 // sourceDirectories, child-b with testSourceDirectories
-assert buildLog.count( "[INFO] You have 0 Checkstyle violations." ) == 3
+assert buildLog.count("[INFO] You have 0 Checkstyle violations.") == 3

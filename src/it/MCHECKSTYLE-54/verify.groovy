@@ -20,7 +20,7 @@
 def eol = System.lineSeparator().bytes
 def srcFile = new File(basedir, 'src/main/java/org/apache/maven/plugins/checkstyle/mcheckstyle54/Mcheckstyle54.java').text
 
-def matcher = srcFile =~ /(\r\n|\r|\n)/ 
+def matcher = srcFile =~ /(\r\n|\r|\n)/
 assert matcher[0][0].bytes == eol : "EOL in file should have been ${eol} but was ${matcher[0][0].bytes}"
 
 // the check ran on the sources, with their system line separators, and found nothing

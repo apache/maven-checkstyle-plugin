@@ -18,10 +18,10 @@
  * under the License.
  */
 
-assert new File(basedir, 'test/target/checkstyle-cachefile').exists();
-assert new File(basedir, 'test/target/checkstyle-checker.xml').exists();
-assert new File(basedir, 'test/target/checkstyle-suppressions.xml').exists();
-assert new File(basedir, 'test/target/checkstyle-header.txt').exists();
-assert new File(basedir, 'test/target/checkstyle-result.xml').exists();
+assert new File(basedir, 'test/target/checkstyle-cachefile').exists()
+assert new File(basedir, 'test/target/checkstyle-checker.xml').exists()
+assert new File(basedir, 'test/target/checkstyle-suppressions.xml').exists()
+assert new File(basedir, 'test/target/checkstyle-header.txt').exists()
+assert new File(basedir, 'test/target/checkstyle-result.xml').exists()
 
-return true;
+return true
