@@ -24,6 +24,14 @@ under the License.
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <build>
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>no-source-root-resource-probe.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>

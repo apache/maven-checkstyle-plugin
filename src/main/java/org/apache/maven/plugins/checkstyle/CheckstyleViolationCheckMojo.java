@@ -903,7 +903,8 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
             return (includeResources && hasResourceFiles(resources))
                     || (includeTestResources && hasResourceFiles(testResources));
         } catch (IOException e) {
-            throw new MojoExecutionException("Failed to determine files to process", e);
+            getLog().debug("Failed to determine whether files are available to process", e);
+            return true;
         }
     }
 
