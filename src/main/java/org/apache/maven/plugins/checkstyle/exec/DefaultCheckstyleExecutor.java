@@ -45,8 +45,8 @@ import com.puppycrawl.tools.checkstyle.PropertiesExpander;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.api.Filter;
-import com.puppycrawl.tools.checkstyle.filters.SuppressionFilter;
+import com.puppycrawl.tools.checkstyle.api.FilterSet;
+import com.puppycrawl.tools.checkstyle.filters.SuppressionsLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -106,7 +106,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         }
 
         final String suppressionsFilePath = getSuppressionsFilePath(request);
-        Filter suppressionFilter = createSuppressionFilter(suppressionsFilePath);
+        FilterSet filterSet = getSuppressionsFilterSet(suppressionsFilePath);
 
         Checker checker = new Checker();
 
@@ -156,8 +156,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
 
-        if (suppressionFilter != null) {
-            checker.addFilter(suppressionFilter);
+        if (filterSet != null) {
+            checker.addFilter(filterSet);
         }
         Configuration configuration = getConfiguration(request);
         checker.configure(configuration);
@@ -284,12 +284,11 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             }
             Configuration config = ConfigurationLoader.loadConfiguration(
                     configFile, new PropertiesExpander(overridingProperties), omitIgnoredModules);
-            String effectiveEncoding =
-                    request.getEncoding() != null && !request.getEncoding().isEmpty()
-                            ? request.getEncoding()
-                            : System.getProperty("file.encoding", "UTF-8");
+            String effectiveEncoding = StringUtils.isNotEmpty(request.getEncoding())
+                    ? request.getEncoding()
+                    : System.getProperty("file.encoding", "UTF-8");
 
-            if (request.getEncoding() == null || request.getEncoding().isEmpty()) {
+            if (StringUtils.isEmpty(request.getEncoding())) {
                 logger.warn("File encoding has not been set, using platform encoding " + effectiveEncoding
                         + ", i.e. build is platform dependent!");
             }
@@ -357,8 +356,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
 
     /**
      * Get the effective Checkstyle version at runtime.
-     *
      * @return the MANIFEST implementation version of Checkstyle API package (can be <code>null</code>)
+     *
      * @todo Copied from CheckstyleReportGenerator - move to a utility class
      */
     private String getCheckstyleVersion() {
@@ -385,8 +384,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                 }
             }
 
-            if (request.getPropertyExpansion() != null
-                    && !request.getPropertyExpansion().isEmpty()) {
+            if (StringUtils.isNotEmpty(request.getPropertyExpansion())) {
                 String propertyExpansion = request.getPropertyExpansion();
                 // Convert \ to \\, so that p.load will convert it back properly
                 propertyExpansion = propertyExpansion.replace("\\", "\\\\");
@@ -437,21 +435,19 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         return p;
     }
 
-    private List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
+    List<File> getFilesToProcess(CheckstyleExecutorRequest request) throws IOException {
         StringBuilder excludesStr = new StringBuilder();
-
-        if (request.getExcludes() != null && !request.getExcludes().isEmpty()) {
+        if (StringUtils.isNotEmpty(request.getExcludes())) {
             excludesStr.append(request.getExcludes());
         }
-
         String[] defaultExcludes = FileUtils.getDefaultExcludes();
         for (String defaultExclude : defaultExcludes) {
             if (excludesStr.length() > 0) {
                 excludesStr.append(",");
             }
-
             excludesStr.append(defaultExclude);
         }
+        String excludes = excludesStr.toString();
 
         Set<File> files = new LinkedHashSet<>();
         if (request.isAggregate()) {
@@ -477,7 +473,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                         project.getResources(),
                         project.getTestResources(),
                         files,
-                        testSourceDirectories);
+                        testSourceDirectories,
+                        excludes);
             }
         } else {
             Collection<File> sourceDirectories = request.getSourceDirectories();
@@ -487,7 +484,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     request.getResources(),
                     request.getTestResources(),
                     files,
-                    request.getTestSourceDirectories());
+                    request.getTestSourceDirectories(),
+                    excludes);
         }
 
         logger.debug("Added " + files.size() + " files to process.");
@@ -501,13 +499,13 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             List<Resource> resources,
             List<Resource> testResources,
             Collection<File> files,
-            Collection<File> testSourceDirectories)
+            Collection<File> testSourceDirectories,
+            String excludes)
             throws IOException {
         if (sourceDirectories != null) {
             for (File sourceDirectory : sourceDirectories) {
                 if (sourceDirectory.isDirectory()) {
-                    final List<File> sourceFiles =
-                            FileUtils.getFiles(sourceDirectory, request.getIncludes(), request.getExcludes());
+                    final List<File> sourceFiles = FileUtils.getFiles(sourceDirectory, request.getIncludes(), excludes);
                     files.addAll(sourceFiles);
                     logger.debug("Added " + sourceFiles.size() + " source files found in '"
                             + sourceDirectory.getAbsolutePath() + "'.");
@@ -519,7 +517,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
             for (File testSourceDirectory : testSourceDirectories) {
                 if (testSourceDirectory.isDirectory()) {
                     final List<File> testSourceFiles =
-                            FileUtils.getFiles(testSourceDirectory, request.getIncludes(), request.getExcludes());
+                            FileUtils.getFiles(testSourceDirectory, request.getIncludes(), excludes);
 
                     files.addAll(testSourceFiles);
                     logger.debug("Added " + testSourceFiles.size() + " test source files found in '"
@@ -550,7 +548,7 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
                     String includes = request.getResourceIncludes();
                     String excludes = request.getResourceExcludes();
 
-                    // MCHECKSTYLE-214: Only with project-root respect in/excludes, otherwise you'll get every file
+                    // MCHECKSTYLE-214: Only with project-root respect includes/excludes. Otherwise, you get every file
                     if (resourcesDirectory.equals(request.getProject().getBasedir())) {
                         String resourceIncludes =
                                 StringUtils.join(resource.getIncludes().iterator(), ",");
@@ -581,37 +579,16 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         }
     }
 
-    /**
-     * Builds a {@code SuppressionFilter} module configured with the given suppressions file, the same way
-     * Checkstyle builds one when it is declared as a module in the checker configuration.
-     * <p>
-     * This matters for the cache file (MCHECKSTYLE-372): Checkstyle invalidates its cache for an external
-     * resource only when the module holding it implements {@code ExternalResourceHolder}, which
-     * {@code SuppressionFilter} does but a pre-parsed {@code FilterSet} does not. Loading the suppressions
-     * ourselves and adding the result as a plain {@code FilterSet} - as this method used to - left Checkstyle
-     * with no way to notice the suppressions file had changed, so edits to it were silently ignored as long
-     * as the cache file was still considered up to date for everything else.
-     *
-     * @param suppressionsFilePath absolute path to the suppressions file, or {@code null} if none configured
-     * @return the configured filter, or {@code null} if {@code suppressionsFilePath} is {@code null}
-     * @throws CheckstyleExecutorException if the suppressions file cannot be loaded
-     */
-    private Filter createSuppressionFilter(final String suppressionsFilePath) throws CheckstyleExecutorException {
+    private FilterSet getSuppressionsFilterSet(final String suppressionsFilePath) throws CheckstyleExecutorException {
         if (suppressionsFilePath == null) {
             return null;
         }
 
-        SuppressionFilter suppressionFilter = new SuppressionFilter();
-        DefaultConfiguration suppressionFilterConfig = new DefaultConfiguration("SuppressionFilter");
-        suppressionFilterConfig.addProperty("file", suppressionsFilePath);
-
         try {
-            suppressionFilter.configure(suppressionFilterConfig);
+            return SuppressionsLoader.loadSuppressions(suppressionsFilePath);
         } catch (CheckstyleException ce) {
             throw new CheckstyleExecutorException("Failed to load suppressions file from: " + suppressionsFilePath, ce);
         }
-
-        return suppressionFilter;
     }
 
     private String getSuppressionsFilePath(final CheckstyleExecutorRequest request) throws CheckstyleExecutorException {
