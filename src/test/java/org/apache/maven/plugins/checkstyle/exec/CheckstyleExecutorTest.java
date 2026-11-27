@@ -20,9 +20,13 @@ package org.apache.maven.plugins.checkstyle.exec;
 
 import javax.inject.Inject;
 
+import java.lang.reflect.Method;
+
+import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MojoTest
@@ -33,5 +37,31 @@ public class CheckstyleExecutorTest {
     @Test
     public void testDefaultConfig() throws Exception {
         assertNotNull(executor, "project null.");
+    }
+
+    @Test
+    public void testAddsMissingProperty() throws Exception {
+        DefaultConfiguration config = new DefaultConfiguration("Checker");
+
+        addAttributeIfNotExists(config, "charset", "UTF-8");
+
+        assertEquals("UTF-8", config.getProperty("charset"));
+    }
+
+    @Test
+    public void testKeepsExistingProperty() throws Exception {
+        DefaultConfiguration config = new DefaultConfiguration("Checker");
+        config.addProperty("charset", "ISO-8859-1");
+
+        addAttributeIfNotExists(config, "charset", "UTF-8");
+
+        assertEquals("ISO-8859-1", config.getProperty("charset"));
+    }
+
+    private void addAttributeIfNotExists(DefaultConfiguration config, String name, String value) throws Exception {
+        Method method = DefaultCheckstyleExecutor.class.getDeclaredMethod(
+                "addAttributeIfNotExists", DefaultConfiguration.class, String.class, String.class);
+        method.setAccessible(true);
+        method.invoke(executor, config, name, value);
     }
 }
