@@ -109,6 +109,8 @@ public class DefaultCheckstyleExecutor implements CheckstyleExecutor {
         Filter suppressionFilter = createSuppressionFilter(suppressionsFilePath);
 
         Checker checker = new Checker();
+        checker.setLocaleLanguage("");
+        checker.setLocaleCountry("");
 
         // setup classloader, needed to avoid "Unable to get class information for ..." errors
         List<String> classPathStrings = new ArrayList<>();
