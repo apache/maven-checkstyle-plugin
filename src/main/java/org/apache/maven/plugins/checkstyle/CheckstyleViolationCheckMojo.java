@@ -56,6 +56,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutor;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorException;
 import org.apache.maven.plugins.checkstyle.exec.CheckstyleExecutorRequest;
+import org.apache.maven.plugins.checkstyle.exec.CheckstyleResults;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.FileUtils;
@@ -562,7 +563,10 @@ public class CheckstyleViolationCheckMojo extends AbstractMojo {
                         .setEncoding(inputEncoding)
                         .setPropertiesLocation(propertiesLocation)
                         .setOmitIgnoredModules(omitIgnoredModules);
-                checkstyleExecutor.executeCheckstyle(request);
+                CheckstyleResults results = checkstyleExecutor.executeCheckstyle(request);
+                if (results.getFailsOnErrorMessage() != null) {
+                    throw new MojoFailureException(results.getFailsOnErrorMessage());
+                }
 
             } catch (CheckstyleException e) {
                 throw new MojoExecutionException("Failed during checkstyle configuration", e);
